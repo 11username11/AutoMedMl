@@ -18,7 +18,7 @@ AI-powered medical assistant platform featuring deep learning models for disease
 ---
 
 ## 👨‍💻 Authors
-| [<img src="https://github.com/arseni-kachan.png" width="100px" /><br><sub>Arseni Kachan</sub>](https://github.com/11username11) | [<img src="https://github.com/vlad-verbovetskyi.png" width="100px" /><br><sub>Vlad Verbovetskyi</sub>](https://github.com/Amatsuhabe) |
+| [<img src="https://github.com/11username11.png" width="100px" /><br><sub>Arseni Kachan</sub>](https://github.com/11username11) | [<img src="https://github.com/Amatsuhabe.png" width="100px" /><br><sub>Vlad Verbovetskyi</sub>](https://github.com/Amatsuhabe) |
 | :---: | :---: |
 | ML Models, System Design, Backend, Data Preprocessing | Frontend, UX/UI Design, Testing |
 ---
