@@ -1,8 +1,11 @@
-# AutoMedMl
-AI-powered medical assistant platform featuring deep learning models for disease detection from MRI and X-ray scans, combined with a diagnostic agent for preliminary clinical insights. 
-**Warning:**⚠️ Intended for research and educational purposes only.
+# AutoMedML
 
+AI-powered medical assistant platform featuring deep learning models for disease detection from **MRI** and **X-ray** scans, combined with a diagnostic agent for preliminary clinical insights.  
 
-## Authors
-- Arseni Kachan — ML models, System Designer, Backend, Data Preprocessing
-- Vlad Verbovetskyi — Frontend, UX/UI Designer, Tester
+> ⚠️ **Warning:** This project is intended for **research and educational purposes only**. Not for medical use.
+
+---
+
+## 👨‍💻 Authors
+- **Arseni Kachan** — ML Models, System Design, Backend, Data Preprocessing  
+- **Vlad Verbovetskyi** — Frontend, UX/UI Design, Testing
