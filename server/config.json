@@ -1,0 +1,7 @@
+{"front_address": "some_address",
+"secure":  "no",
+"upload_dir":  "upload_docs",
+"mongo_link": "mongodb://localhost:27017/",
+"db_name":  "AutoMedMl",
+"users_collection":  "users",
+"patients_collection":  "patients"}
