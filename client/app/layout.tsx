@@ -31,17 +31,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
           >
             <SidebarProvider defaultOpen={defaultOpen}>
-              <div className="flex min-h-screen w-full">
+              <div className="flex h-screen w-full">
                 <LayoutSidebar></LayoutSidebar>
 
-                <div className="flex flex-col w-full bg-background/60">
-                  <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border">
-                    <SidebarTrigger className="cursor-pointer"></SidebarTrigger>
-                    <Header></Header>
-                  </div>
+                <div className="flex flex-col w-full h-full bg-background/60">
+                  <Header></Header>
                   {children}
                 </div>
               </div>

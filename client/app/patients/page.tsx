@@ -1,5 +1,6 @@
 'use client'
 
+import NewCase from "@/components/new-case-btn";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -66,16 +67,16 @@ const mockPatients: Patient[] = [
 
 const getStatusBadge = (status: Patient["status"]) => {
   const statusConfig = {
-    active: { label: "Active", className: "bg-accent text-primary" },
+    active: { label: "Active", className: "bg-success text-accent-foreground" },
     inactive: { label: "Inactive", className: "bg-primary-foreground text-foreground" },
-    scheduled: { label: "Scheduled", className: "bg-secondary text-primary" },
+    scheduled: { label: "Scheduled", className: "bg-secondary text-accent-foreground" },
   };
 
   const config = statusConfig[status];
   return <Badge className={config.className}>{config.label}</Badge>;
 };
 
-export default function Home() {
+export default function Patients() {
   const [searchTerm, setSearchTerm] = useState("")
   const filteredPatients = mockPatients.filter((patient) =>
     Object.values(patient).some((value) => String(value).toLowerCase().includes(searchTerm.toLowerCase())
@@ -84,9 +85,13 @@ export default function Home() {
 
   return (
     <div className="flex flex-col p-6">
-      <div className="p-4">
-        <div className="text-3xl font-bold">Patients</div>
-        <div className="text-muted ">Manage and view patient information</div>
+      <div className="flex justify-between p-4 items-start">
+        <div>
+          <div className="text-3xl font-bold">Patients</div>
+          <div className="text-muted ">Manage and view patient information</div>
+        </div>
+
+        <NewCase></NewCase>
       </div>
 
       <div className="flex flex-col gap-4 p-4 bg-primary">
@@ -123,7 +128,7 @@ export default function Home() {
                 <TableRow key={patient.id}>
                   <TableCell>
                     <div className="flex items-center gap-3 my-1">
-                      <div className="rounded-full shrink-0 flex items-center justify-center text-primary bg-secondary-foreground w-10 h-10">
+                      <div className="rounded-full text-accent-foreground shrink-0 flex items-center justify-center bg-secondary-foreground w-10 h-10">
                         {(patient.name.charAt(0) + patient.name.charAt(1)).toUpperCase()}
                       </div>
                       <div>

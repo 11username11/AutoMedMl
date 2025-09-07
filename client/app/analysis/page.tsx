@@ -50,7 +50,7 @@ const mockModels: AnalysisModel[] = [
   },
 ];
 
-export default function Home() {
+export default function Analysis() {
   return (
     <div className="flex flex-col p-6 gap-8">
       <div className="p-4">
@@ -76,7 +76,7 @@ export default function Home() {
             <div className="flex gap-32 text-muted text-sm">
               <div className="flex flex-col gap-1">
                 <div>Accuracy</div>
-                <div className="text-accent-foreground font-semibold">{model.accuracy}</div>
+                <div className="text-success font-semibold">{model.accuracy}</div>
               </div>
               <div className="flex flex-col gap-1">
                 <div>Processing</div>
