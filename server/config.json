@@ -4,4 +4,5 @@
 "mongo_link": "mongodb+srv://1q0918567mmm:9YaNslJyattu6TwN@cluster0.0sfsv.mongodb.net/",
 "db_name":  "AutoMedMl",
 "users_collection":  "users",
-"patients_collection":  "patients"}
+"patients_collection":  "patients",
+"models_collection":  "models"}
