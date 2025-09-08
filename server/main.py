@@ -212,11 +212,11 @@ async def login(user: UserLogin, response: Response):
 
     db_user = users_collection.find_one({"email": email})
     if not db_user:
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     if not verify_password(user.password, db_user["password"]):
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
-
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
+    # TODO: Написать ошибку если пользователь не верифицирован
     user_id = str(db_user["_id"])
     access_token = create_access_token(
         {"id": user_id},
