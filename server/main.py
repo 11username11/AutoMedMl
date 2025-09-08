@@ -2,7 +2,7 @@ import json
 import os
 from typing import *
 
-from fastapi import FastAPI, Response, Depends, Cookie, Form, UploadFile
+from fastapi import FastAPI, Response, Depends, Cookie, Form, UploadFile, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
 from pymongo import MongoClient
@@ -55,10 +55,12 @@ MONGO_LINK = config["mongo_link"]
 DB_NAME = config["db_name"]
 USER_COLLECTION = config["users_collection"]
 PATIENTS_COLLECTION = config["patients_collection"]
+MODELS_COLLECTION = config["models_collection"]
 
 client = MongoClient(MONGO_LINK)
 db = client[DB_NAME]
 users_collection = db[USER_COLLECTION]
+models_collection = db[MODELS_COLLECTION]
 patients_collection = db[PATIENTS_COLLECTION]
 
 
@@ -146,12 +148,44 @@ async def add_patient(current_user: dict = Depends(get_optional_user)):
 
 @app.get("/models")
 async def models(current_user: dict = Depends(get_optional_user)):
-    return  # TODO: Доделать
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    models_cursor = models_collection.find({})
+    models_list = []
+    for m in models_cursor:
+        models_list.append({
+            "title": m["title"],
+            "technical_name": m["technical_name"],
+            "category": m["category"],
+            "description": m["description"],
+            "accuracy": m["accuracy"],
+            "processing_time": m["processing_time"],
+            "supported_formats": m["supported_formats"],
+            "button_text": m["button_text"]
+        })
+    return models_list
 
 
 @app.get("/model/{model_name}")
 async def current_model(model_name: str, current_user: dict = Depends(get_optional_user)):
-    return  # TODO: Доделать
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    model = models_collection.find_one({"technical_name": model_name})
+    if not model:
+        raise HTTPException(status_code=404, detail="Model not found")
+
+    return {
+        "title": model["title"],
+        "technical_name": model["technical_name"],
+        "category": model["category"],
+        "description": model["description"],
+        "accuracy": model["accuracy"],
+        "processing_time": model["processing_time"],
+        "supported_formats": model["supported_formats"],
+        "button_text": model["button_text"]
+    }
 
 
 @app.get("/model/{model_name}/send_data")
@@ -216,7 +250,10 @@ async def login(user: UserLogin, response: Response):
 
     if not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
-    # TODO: Написать ошибку если пользователь не верифицирован
+
+    if not db_user.get("verify", False):
+        raise HTTPException(status_code=403, detail="User is not verified")
+
     user_id = str(db_user["_id"])
     access_token = create_access_token(
         {"id": user_id},
@@ -226,9 +263,7 @@ async def login(user: UserLogin, response: Response):
     )
 
     refresh_token = create_access_token(
-        {
-            "id": user_id,
-        },
+        {"id": user_id},
         SECRET_KEY_REFRESH,
         ALGORITHM_REFRESH,
         REFRESH_TOKEN_EXPIRE_MINUTES
@@ -257,9 +292,6 @@ async def logout(response: Response):
     response.delete_cookie(key="access_token")
     response.delete_cookie(key="refresh_token")
     return {"message": "Logged out successfully"}
-
-
-from fastapi import Depends, HTTPException, status, Response
 
 
 @app.get("/delete_account")
