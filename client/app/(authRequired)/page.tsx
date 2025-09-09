@@ -1,16 +1,26 @@
 'use client'
 
-import ChatSidebar from "@/components/chat-sidebar";
+import ChatSidebar from "@/components/layout/chat-sidebar";
 import { Input } from "@/components/ui/input";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { LuSend } from "react-icons/lu";
 import { RiRobot2Line } from "react-icons/ri";
 
 export default function Home() {
-  return (
-    <div className="flex gap-8 p-6 h-full overflow-hidden">
-      <ChatSidebar></ChatSidebar>
+  const [isMinimized, setIsMinimized] = useState(false)
 
-      <div className="w-full flex flex-col">
+  const minimizeChatSidebar = () => setIsMinimized(true)
+  const maximizeChatSidebar = () => setIsMinimized(false)
+
+  const ref = useClickOutside<HTMLDivElement>(maximizeChatSidebar)
+
+  return (
+    <div className={cn("flex gap-8 p-6 h-full overflow-hidden")}>
+      <ChatSidebar isMinimized={isMinimized}></ChatSidebar>
+
+      <div ref={ref} className="w-full flex flex-col">
         <div className="text-2xl font-bold">Medical AI Chat</div>
         <div className="text-muted">
           Get instant medical information and guidance from our AI assistant
@@ -34,6 +44,7 @@ export default function Home() {
           <Input
             className="bg-primary h-10"
             placeholder="Type your medical question here"
+            onFocus={minimizeChatSidebar}
           ></Input>
 
           <div className="flex items-center justify-center shrink-0 h-10 w-10 p-2 rounded-md bg-secondary text-accent-foreground hover:bg-secondary-foreground cursor-pointer duration-200">

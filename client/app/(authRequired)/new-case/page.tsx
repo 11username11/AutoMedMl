@@ -12,6 +12,10 @@ import { Separator } from "@/components/ui/separator";
 import { Save } from "lucide-react";
 import { redirect, useRouter } from "next/navigation";
 import { MouseEventHandler } from "react";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import api from "@/lib/axios";
+import SubmitButton from "@/components/ui/submit-btn";
 
 export const FormSchema = z.object({
   name: z
@@ -55,6 +59,17 @@ export const FormSchema = z.object({
 export default function NewCase() {
   const router = useRouter()
 
+  const { mutate, isError, isPending, error, } = useMutation(
+    {
+      mutationFn: (data: z.infer<typeof FormSchema>) => api.post("/new-case", data),
+      onSuccess: () => {
+        toast.success("You have created a new patient!")
+
+        router.push("/patients")
+      },
+    }
+  )
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -69,7 +84,7 @@ export default function NewCase() {
   })
 
   function osSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+    mutate(data)
   }
 
   function handleCancel(e: React.MouseEvent<HTMLButtonElement>) {
@@ -174,10 +189,12 @@ export default function NewCase() {
           <Separator></Separator>
 
           <div className="flex gap-4 text-sm font-semibold ">
-            <button className="flex items-center gap-2 p-2 px-4 bg-secondary text-accent-foreground rounded-md cursor-pointer hover:bg-secondary-foreground duration-200">
-              <Save strokeWidth={2.5} size={16}></Save>
-              Create Patient
-            </button>
+            <SubmitButton className="w-auto" isPending={isPending}>
+              <div className="flex items-center justify-center gap-2">
+                <Save strokeWidth={2.5} size={16}></Save>
+                Create Patient
+              </div>
+            </SubmitButton>
             <button className="p-2 px-6 bg-background border rounded-md cursor-pointer hover:bg-primary-foreground duration-200" onClick={handleCancel}>Cancel</button>
           </div>
         </form>

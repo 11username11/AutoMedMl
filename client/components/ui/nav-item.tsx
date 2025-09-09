@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation"
-import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton } from "./ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem } from "./sidebar";
 
 export default function NavItem({ href, children }: { href: string, children: React.ReactNode }) {
   const pathname = usePathname();

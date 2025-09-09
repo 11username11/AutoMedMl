@@ -75,6 +75,7 @@ export const Dropzone = ({
     },
     ...props,
   });
+  const bgImage = src ? URL.createObjectURL(src[0]) : ""
 
   return (
     <DropzoneContext.Provider
@@ -83,10 +84,16 @@ export const Dropzone = ({
     >
       <Button
         className={cn(
-          'relative h-auto w-full flex-col overflow-hidden p-4 border-2 border-dashed dash cursor-pointer',
-          isDragActive && 'outline-none ring-1 ring-ring',
+          'relative h-auto w-full flex-col overflow-hidden p-4 border-2 border-dashed dash bg-contain cursor-pointer duration-200',
+          isDragActive && 'bg-accent! border-foreground/30!',
           className
         )}
+        style={{
+          backgroundImage: bgImage ? `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),url(${bgImage})` : '',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
         disabled={disabled}
         type="button"
         variant="outline"
@@ -135,11 +142,11 @@ export const DropzoneContent = ({
       <div className="flex items-center justify-center rounded-md text-muted-foreground">
         <UploadIcon size={24} />
       </div>
-      <p className="my-2 w-full truncate font-medium text-sm">
+      <p className="my-2 w-full truncate font-medium text-xs">
         {src.length > maxLabelItems
           ? `${new Intl.ListFormat('en').format(
-              src.slice(0, maxLabelItems).map((file) => file.name)
-            )} and ${src.length - maxLabelItems} more`
+            src.slice(0, maxLabelItems).map((file) => file.name)
+          )} and ${src.length - maxLabelItems} more`
           : new Intl.ListFormat('en').format(src.map((file) => file.name))}
       </p>
       <p className="w-full truncate text-wrap text-secondary text-xs">

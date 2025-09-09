@@ -1,0 +1,23 @@
+import { cn } from "@/lib/utils";
+import { Url } from "next/dist/shared/lib/router/router";
+import Link from "next/link";
+import { FaPlus } from "react-icons/fa6";
+
+const variants = {
+  default: "text-accent-foreground bg-secondary hover:bg-secondary-foreground",
+  secondary: "bg-primary border hover:bg-primary-foreground",
+}
+
+type NewCaseButtonProps = Omit<React.ComponentProps<typeof Link>, "href"> &{
+  variant?: "default" | "secondary",
+  isMinimized?: boolean,
+  href?: Url
+};
+
+export default function NewCase({ variant = "default", isMinimized, href="/new-case", className, ...props }: NewCaseButtonProps) {
+  return (
+    <Link {...props} href={href} className={cn(variants[variant], "flex justify-center gap-3 items-center whitespace-nowrap py-2.5 px-16 rounded-md text-sm duration-200 cursor-pointer h-10", className)}>
+      <FaPlus className="shrink-0"/> {!isMinimized && "New Case"}
+    </Link>
+  )
+}

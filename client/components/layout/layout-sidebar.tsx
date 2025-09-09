@@ -1,6 +1,8 @@
+'use client'
+
 import Image from "next/image";
 import { FiMessageSquare } from "react-icons/fi";
-import NavItem from "./nav-item";
+import NavItem from "../ui/nav-item";
 import { LuSettings, LuUsers } from "react-icons/lu";
 import { PiPulseBold } from "react-icons/pi";
 import {
@@ -14,8 +16,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAuthStore } from "@/providers/AuthProvider";
+import Link from "next/link";
 
-export default async function LayoutSidebar() {
+export default function LayoutSidebar() {
+  const user = useAuthStore((state) => state.user)
+
+  if (!user) return;
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="flex items-center px-0 mt-4">
@@ -23,7 +31,7 @@ export default async function LayoutSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton className="box-content px-0! bg-transparent! h-fit overflow-visible group-data-[collapsible=icon]:size-10!" asChild>
-                <div className="flex items-center gap-3 ">
+                <Link href={"/"} className="flex items-center gap-3 ">
                   <div className="shrink-0 w-10 h-10 flex items-center justify-center">
                     <Image
                       src={"/logo.svg"}
@@ -42,7 +50,7 @@ export default async function LayoutSidebar() {
                       AI-powered analysis
                     </div>
                   </div>
-                </div>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

@@ -2,16 +2,23 @@
 
 import { Select, SelectGroup, SelectValue, SelectContent, SelectItem, SelectTrigger, SelectLabel } from "@/components/ui/select";
 import { LuPalette, LuShield } from "react-icons/lu";
-import { MdLanguage } from "react-icons/md";
 import { GoSignOut } from "react-icons/go";
 import { Separator } from "@/components/ui/separator";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useTheme } from "next-themes";
+import { logout } from "@/lib/data/client/user";
+import { useRouter } from "next/navigation";
 
 export default function Settigs() {
+  const router = useRouter();
   const { setTheme, theme } = useTheme()
 
   const handleThemeChange = (value: string) => setTheme(value)
+
+  const handleLogout = async () => {
+    const ok = await logout();
+    if (ok) router.refresh();
+  };
 
   return (
     <div className="flex flex-col items-center gap-8 p-6 h-full w-full">
@@ -60,12 +67,12 @@ export default function Settigs() {
           <div className="flex flex-col gap-3 mt-3">
             <div className="flex justify-between items-center p-3 bg-background rounded-md">
               <div>
-                <div className="font-semibold">Sign Out</div>
-                <div className="text-sm text-muted">Sign out of your account on this device</div>
+                <div className="font-semibold">Log Out</div>
+                <div className="text-sm text-muted">Log out of your account on this device</div>
               </div>
-              <div className="flex items-center justify-center text-sm py-2 font-semibold gap-2 px-3 border bg-primary rounded-md cursor-pointer hover:bg-primary-foreground duration-200">
-                <GoSignOut strokeWidth={1}/>
-                Sign Out
+              <div onClick={handleLogout} className="flex items-center justify-center text-sm py-2 font-semibold gap-2 px-3 border bg-primary rounded-md cursor-pointer hover:bg-primary-foreground duration-200">
+                <GoSignOut strokeWidth={1} />
+                Log Out
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import NewCase from "@/components/new-case-btn";
+import NewCase from "@/components/ui/new-case-btn";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";

@@ -9,22 +9,44 @@ import { useForm } from "react-hook-form"
 import Image from "next/image"
 import Link from "next/link"
 import z from "zod"
+import api from "@/lib/axios"
+import SubmitButton from "@/components/ui/submit-btn"
+import toast from "react-hot-toast"
+import { useMutation } from "@tanstack/react-query"
 
 export default function Login() {
+  const { mutate, isError, error, isPending} = useMutation(
+    {
+      mutationFn: (data: FormData) => api.post("/registration", data).then((response) => response.data),
+      onSuccess: () => {
+        toast.success("You are registered!")
+      },
+    }
+  )
+
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
+      name: "",
+      surname: "",
       email: "",
       password: "",
       code: "",
-      name: "",
-      surname: "",
       verification: undefined
     }
   })
 
   function osSubmit(data: z.infer<typeof RegisterSchema>) {
-    console.log(data)
+    const formData = new FormData()
+
+    formData.append("name", data.name)
+    formData.append("surname", data.surname)
+    formData.append("email", data.email)
+    formData.append("password", data.password)
+    formData.append("code", data.code)
+    formData.append("doc", data.verification[0])
+
+    mutate(formData)
   }
 
   return (
@@ -106,9 +128,9 @@ export default function Login() {
                 )} />
 
 
-              <button className="flex items-center justify-center gap-2 font-semibold text-sm h-12 p-2 px-4 w-full bg-secondary text-accent-foreground rounded-sm cursor-pointer hover:bg-secondary-foreground duration-200">
+              <SubmitButton isPending={isPending}>
                 Sign Up
-              </button>
+              </SubmitButton>
             </form>
           </Form>
         </div>

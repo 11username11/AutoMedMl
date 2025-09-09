@@ -3,24 +3,46 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { InputField } from "@/components/ui/input-field"
+import api from "@/lib/axios"
 import { LoginSchema } from "@/lib/schemas/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Image from "next/image"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import z from "zod"
+import { useMutation } from "@tanstack/react-query"
+import toast from "react-hot-toast"
+import SubmitButton from "@/components/ui/submit-btn"
+import { useAuthStore } from "@/providers/AuthProvider"
+import { getCurrentUser } from "@/lib/data/client/user"
+import { useRouter } from "next/navigation"
 
 export default function Login() {
+  const router = useRouter()
+  const setUser = useAuthStore(state => state.setUser)
+
+  const { mutate, isError, isPending, error, } = useMutation(
+    {
+      mutationFn: (data: z.infer<typeof LoginSchema>) => api.post("/login", data).then((response) => getCurrentUser()).then((user) => user),
+      onSuccess: (user) => {
+        toast.success("You are logged in!")
+
+        setUser(user!)
+        router.push("/")
+      },
+    }
+  )
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
-      password: ""
+      password: "",
+      remember: false
     }
   })
 
   function osSubmit(data: z.infer<typeof LoginSchema>) {
-    console.log(data)
+    mutate(data)
   }
 
   return (
@@ -71,13 +93,11 @@ export default function Login() {
                     )
                   }}
                 />
-                <button className="text-secondary-foreground hover:underline cursor-pointer">
+                <button className="text-secondary hover:underline cursor-pointer">
                   Forgot password?
                 </button>
               </div>
-              <button className="flex items-center justify-center gap-2 font-semibold text-sm h-12 p-2 px-4 w-full bg-secondary text-accent-foreground rounded-sm cursor-pointer hover:bg-secondary-foreground duration-200">
-                Sign In
-              </button>
+              <SubmitButton isPending={isPending}>Sign In</SubmitButton>
             </form>
           </Form>
         </div>

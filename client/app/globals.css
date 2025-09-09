@@ -57,7 +57,7 @@
   --secondary-foreground: oklch(0.6152 0.3108 256.1);
   --muted: oklch(0.554 0.046 257.417);
   --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: #e7e7eb;
+  --accent: rgb(240, 239, 239);
   --accent-foreground: #e7e7eb;
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.929 0.013 255.508);
@@ -121,5 +121,16 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin{
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-hidden {
+    scrollbar-width: none;
   }
 }
