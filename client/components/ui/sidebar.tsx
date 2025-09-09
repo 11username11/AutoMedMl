@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { usePathname } from "next/navigation"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -151,6 +152,21 @@ function SidebarProvider({
   )
 }
 
+function findParentWithDataset(
+  element: HTMLElement | null,
+  datasetKey: string,
+  datasetValue: string
+): HTMLElement | null {
+  console.log(element)
+  while (element) {
+    if (element.dataset[datasetKey] === datasetValue) {
+      return element
+    }
+    element = element.parentElement
+  }
+  return null
+}
+
 function Sidebar({
   side = "left",
   variant = "sidebar",
@@ -164,6 +180,14 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+
+  const pathname = usePathname()
+
+  const handleClick = (e : React.MouseEvent<HTMLDivElement>) => {
+    const el = e.target as HTMLElement
+
+    if (findParentWithDataset(el, "slot", "sidebar-menu-item")) setOpenMobile(false)
+  } 
 
   if (collapsible === "none") {
     return (
@@ -199,7 +223,7 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div className="flex h-full w-full flex-col" onClick={handleClick}>{children}</div>
         </SheetContent>
       </Sheet>
     )
@@ -569,7 +593,7 @@ function SidebarMenuAction({
         "peer-data-[size=lg]/menu-button:top-2.5",
         "group-data-[collapsible=icon]:hidden",
         showOnHover &&
-          "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+        "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
         className
       )}
       {...props}
