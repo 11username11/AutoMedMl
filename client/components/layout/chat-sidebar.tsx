@@ -81,7 +81,7 @@ export default function ChatSidebar({ isMinimized }: { isMinimized: boolean }) {
     <div className={cn("flex flex-col gap-3 h-full w-96 shrink-0 duration-200 overflow-hidden", isMinimized && "w-[calc(var(--chat-sidebar-width-icon)+(--spacing(5.5*2)))]")} style={{ "--chat-sidebar-width-icon": ICON_SIZE } as React.CSSProperties}>
       <div className="font-semibold">Chats</div>
 
-      <NewCase variant="secondary" className={cn(isMinimized && "p-2")} isMinimized={isMinimized}></NewCase>
+      <NewCase variant="secondary" isMinimized={isMinimized}></NewCase>
 
       <div className={cn("flex flex-col gap-2 w-full border bg-primary rounded-md h-full overflow-hidden duration-200 p-3")}>
         <div className={cn("flex gap-3 text-accent-foreground bg-secondary overflow-hidden p-2.5 rounded-md items-center box-content")}>
