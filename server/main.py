@@ -129,13 +129,17 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
 
 @app.get("/patients")
 async def patients(current_user: dict = Depends(get_optional_user)):
-    result = patients_collection.find()
-    return  # TODO: Доделать
+    result = patients_collection.find({"doctor": fr"{ObjectId(current_user["_id"])}"})
+    return  [i for i in result]
 
 
 @app.get("/patients_names")
 async def patients_names(current_user: dict = Depends(get_optional_user)):
-    return  # TODO: Доделать
+    result = patients_collection.find({"doctor": fr"{ObjectId(current_user["_id"])}"})
+    all_patient_name_surname = []
+    for i in result:
+        all_patient_name_surname.append({"name": i["name"], "surname": i["surname"]})
+    return all_patient_name_surname
 
 
 @app.get("/send_message")
@@ -150,6 +154,7 @@ async def add_patient(patient: Patient, response: Response, current_user: dict =
                             detail=fr"Status of Patients must be: {STATUS_PATIENTS_LIST}")
     try:
         result = patients_collection.insert_one({
+            "doctor": ObjectId(current_user["_id"]),
             "name": patient.name,
             "surname": patient.surname,
             "email": patient.email,
