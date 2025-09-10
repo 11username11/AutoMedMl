@@ -184,9 +184,9 @@ async def models(current_user: dict = Depends(get_optional_user)):
             "accuracy": m["accuracy"],
             "processing_time": m["processing_time"],
             "supported_formats": m["supported_formats"],
-            "button_text": m["button_text"]
+            "button_text": m["button_text"],
+            "icon": m["icon"]
         })
-        # TODO: название иконок кидать
     return models_list
 
 
