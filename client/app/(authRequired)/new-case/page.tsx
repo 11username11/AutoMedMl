@@ -31,7 +31,7 @@ export const FormSchema = z.object({
     .regex(/^[A-Za-z]+$/, { message: "Surname can only contain letters" }),
 
   email: z
-    .email({ message: "Please enter a valid email address" }),
+    .email({ message: "Please enter a valid email address" }).optional(),
 
   phone: z
     .string()
@@ -39,15 +39,15 @@ export const FormSchema = z.object({
     .transform((val) => val.replace(/\s+/g, ""))
     .refine((val) => /^\+?\d{10,15}$/.test(val), {
       message: "Phone number must be 10–15 digits (with optional +)",
-    }),
+    }).optional(),
 
   age: z
     .string()
     .trim()
     .refine((val) => {
       const num = Number(val)
-      return !isNaN(num) && num >= 18 && num <= 100
-    }, { message: "Age must be a number between 18 and 100" }),
+      return !isNaN(num) && num >= 0 && num <= 150
+    }, { message: "Age must be a number between 0 and 150" }),
 
   gender: z.enum(["male", "female", "other"], {
     message: "Please select a gender",
@@ -61,7 +61,7 @@ export default function NewCase() {
 
   const { mutate, isError, isPending, error, } = useMutation(
     {
-      mutationFn: (data: z.infer<typeof FormSchema>) => api.post("/new-case", data),
+      mutationFn: (data: z.infer<typeof FormSchema>) => api.post("/add_patient", data),
       onSuccess: () => {
         toast.success("You have created a new patient!")
 

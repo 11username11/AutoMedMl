@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from typing import *
 
 from fastapi import FastAPI, Response, Depends, Cookie, Form, UploadFile, HTTPException, status
@@ -8,7 +9,7 @@ from jose import JWTError, jwt
 from pymongo import MongoClient
 from pymongo.synchronous.collection import ObjectId
 
-from classes import UserLogin
+from classes import UserLogin, Patient
 from functions import create_access_token, is_valid_email, verify_password, is_valid_password, hash_password
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -62,6 +63,8 @@ db = client[DB_NAME]
 users_collection = db[USER_COLLECTION]
 models_collection = db[MODELS_COLLECTION]
 patients_collection = db[PATIENTS_COLLECTION]
+
+STATUS_PATIENTS_LIST = ["Active Treatment", "Recovered", "Deceased"]
 
 
 async def get_optional_user(
@@ -119,11 +122,6 @@ async def get_user_info(current_user: dict = Depends(get_optional_user)):
             "verify": result["verify"]}
 
 
-@app.get("/get_avatar")
-async def get_avatar(current_user: dict = Depends(get_optional_user)):
-    return  # TODO доделать
-
-
 @app.get("/chat_history/{chat}")
 async def chat_history(chat: str, current_user: dict = Depends(get_optional_user)):
     return  # TODO доделать
@@ -131,6 +129,7 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
 
 @app.get("/patients")
 async def patients(current_user: dict = Depends(get_optional_user)):
+    result = patients_collection.find()
     return  # TODO: Доделать
 
 
@@ -145,8 +144,23 @@ async def send_message(current_user: dict = Depends(get_optional_user)):
 
 
 @app.get("/add_patient")
-async def add_patient(current_user: dict = Depends(get_optional_user)):
-    return  # TODO: Доделать
+async def add_patient(patient: Patient, response: Response, current_user: dict = Depends(get_optional_user)):
+    if patient.status not in STATUS_PATIENTS_LIST:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=fr"Status of Patients must be: {STATUS_PATIENTS_LIST}")
+    try:
+        result = patients_collection.insert_one({
+            "name": patient.name,
+            "surname": patient.surname,
+            "email": patient.email,
+            "phone": patient.phone,
+            "last_visit": datetime.now(),
+            "status": patient.status
+        })
+    except Exception as e:
+        return e
+    print(result)  # TODO: FOR DEBUG ONLY
+    return "Success"
 
 
 @app.get("/models")
