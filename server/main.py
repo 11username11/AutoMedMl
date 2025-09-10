@@ -103,7 +103,7 @@ async def get_optional_user(
             return None
     response.delete_cookie(key="access_token")
     response.delete_cookie(key="refresh_token")
-    return None
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
 
 @app.get("/user_info")
