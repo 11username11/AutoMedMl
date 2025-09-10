@@ -75,8 +75,11 @@ async def get_optional_user(
             if id_ is None:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
             return {"id": id_}
-        except JWTError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
+        except Exception as e:
+            if e == "Signature has expired.":
+                pass
+            else:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
 
     if refresh_token:
         try:
@@ -164,6 +167,7 @@ async def models(current_user: dict = Depends(get_optional_user)):
             "supported_formats": m["supported_formats"],
             "button_text": m["button_text"]
         })
+        # TODO: название иконок кидать
     return models_list
 
 
