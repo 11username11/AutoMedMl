@@ -88,7 +88,7 @@ async def get_optional_user(
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
             return {"id": id_}
         except Exception as e:
-            if e == "Signature has expired.":
+            if str(e) == "Signature has expired.":
                 pass
             else:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
@@ -105,7 +105,7 @@ async def get_optional_user(
             response.set_cookie(key="access_token", value=new_access_token, httponly=True, samesite=SAMESITE,
                                 secure=SECURE)
             return {"id": id_}
-        except JWTError:
+        except JWTError as e:
             response.delete_cookie(key="access_token")
             response.delete_cookie(key="refresh_token")
             return None
@@ -120,7 +120,7 @@ async def home():
 
 
 @app.get("/user_info")
-async def get_user_info(current_user: dict = Depends(get_optional_user)):
+async def user_info(current_user: dict = Depends(get_optional_user)):
     if not current_user:
         return None
 

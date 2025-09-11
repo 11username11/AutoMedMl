@@ -1,18 +1,29 @@
 import re
-from datetime import datetime, timedelta, UTC
+import uuid
+from datetime import datetime, timedelta, timezone
 
 from jose import jwt
 from passlib.context import CryptContext
+
+UTC = timezone.utc
 
 
 def create_access_token(data: dict, secret_key: str, algorithm: str, access_token_time: int,
                         expires_delta: timedelta = None):
     to_encode = data.copy()
+
     if expires_delta:
         expire = datetime.now(UTC) + expires_delta
     else:
         expire = datetime.now(UTC) + timedelta(minutes=access_token_time)
-    to_encode.update({"exp": expire})
+
+    to_encode.update({
+        "exp": expire,
+        "iat": datetime.now(UTC),
+        "jti": uuid.uuid4().hex,
+        "rand": uuid.uuid4().hex
+    })
+
     encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
     return encoded_jwt
 
