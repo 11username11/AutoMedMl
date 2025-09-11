@@ -485,9 +485,18 @@ async def delete_account(
     user_id = current_user["id"]
 
     result = users_collection.delete_one({"_id": ObjectId(user_id)})
+    result2 = patients_collection.delete_one({"medic_id": user_id})
+    result3 = chats_collection.delete_one({"medic_id": user_id})
 
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
+
+    if result2.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Patients of user not found")
+
+    if result3.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Chats of user not found")
+
 
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
