@@ -414,7 +414,7 @@ async def registration(
         response.set_cookie(key="access_token", value=access_token, httponly=True, samesite=SAMESITE, secure=SECURE)
         response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite=SAMESITE, secure=SECURE)
 
-    return {"message": "User successfully registered"}
+    return {"message": "User successfully registered", "verify": verify}
 
 
 @app.post("/login")
