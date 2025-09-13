@@ -2,58 +2,45 @@
 
 import { FaChevronDown } from "react-icons/fa6";
 import { SidebarTrigger } from "../ui/sidebar";
-import { GoSignIn, GoSignOut } from "react-icons/go";
-import { LogIn, LogOut, User, UserPlus } from "lucide-react";
+import { LogIn, LogOut, User as UserIcon, UserPlus } from "lucide-react";
 import Link from "next/link";
-import { useAuthStore } from "@/providers/AuthProvider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { logout } from "@/lib/data/client/user";
-import { useRouter } from "next/navigation";
+import LogoutButton from "../ui/logout-btn";
+import { User } from "@/lib/types/user";
+import Avatar from "../ui/avatar";
 
-export default function Header() {
-  const router = useRouter();
-  const user = useAuthStore((store) => store.user)
-
-  const handleLogout = async () => {
-    const ok = await logout();
-    if (ok) router.refresh();
-  };
-
+export default function Header({ user }: { user: User | null }) {
   return (
     <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border bg-sidebar">
-
       {user ? (
         <>
-          <SidebarTrigger className="cursor-pointer [&>svg]:size-5 p-5"></SidebarTrigger>
+          <SidebarTrigger className="cursor-pointer p-4"></SidebarTrigger>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-2 cursor-pointer ml-auto hover:bg-primary-foreground rounded-sm px-2.5 py-1.5 duration-200">
-                <div className="rounded-full flex items-center justify-center text-accent-foreground bg-secondary-foreground w-10 h-10">
-                  {user.name[0] + user.surname[0]}
-                </div>
+              <div className="group flex items-center gap-2 cursor-pointer ml-auto hover:bg-primary-foreground rounded-sm px-2.5 py-1.5 duration-200">
+                <Avatar letters={user.name[0] + user.surname[0]}></Avatar>
 
                 <div>
-                  <div className="text-sm font-semibold text-foreground">
+                  <div className="text-sm font-semibold text-foreground whitespace-nowrap">
                     {user.name} {user.surname}
                   </div>
                   <div className="text-muted-foreground text-xs">
                     {user.email}
                   </div>
                 </div>
-                <FaChevronDown className="text-muted-foreground text-xs" />
+                <FaChevronDown className="text-muted-foreground text-xs group-data-[state=open]:rotate-180 duration-200" />
               </div>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuContent className="min-w-56" align="end">
               <DropdownMenuGroup>
                 <div className="flex items-center gap-2 p-2">
                   <div className="flex items-center gap-2">
-                    <div className="rounded-full flex items-center justify-center text-accent-foreground bg-secondary-foreground w-10 h-10">
-                      {user.name[0] + user.surname[0]}
-                    </div>
+                    <Avatar letters={user.name[0] + user.surname[0]}></Avatar>
 
                     <div>
-                      <div className="text-sm font-semibold text-foreground">
+                      <div className="text-sm font-semibold text-foreground whitespace-nowrap">
                         {user.name} {user.surname}
                       </div>
                       <div className="text-muted-foreground text-xs">
@@ -65,15 +52,17 @@ export default function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/account" className="flex items-center gap-2 cursor-pointer">
-                    <User className="h-4 w-4" />
+                    <UserIcon className="h-4 w-4" />
                     Account
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </DropdownMenuItem>
+                <LogoutButton>
+                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </LogoutButton>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>

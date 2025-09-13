@@ -142,7 +142,7 @@ export const DropzoneContent = ({
       <div className="flex items-center justify-center rounded-md text-muted-foreground">
         <UploadIcon size={24} />
       </div>
-      <p className="my-2 w-full truncate font-medium text-xs">
+      <p className="my-2 w-full truncate font-medium text-xs text-accent-foreground">
         {src.length > maxLabelItems
           ? `${new Intl.ListFormat('en').format(
             src.slice(0, maxLabelItems).map((file) => file.name)

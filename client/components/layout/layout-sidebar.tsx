@@ -1,5 +1,3 @@
-'use client'
-
 import Image from "next/image";
 import { FiMessageSquare } from "react-icons/fi";
 import NavItem from "../ui/nav-item";
@@ -16,14 +14,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { useAuthStore } from "@/providers/AuthProvider";
 import Link from "next/link";
 
 export default function LayoutSidebar() {
-  const user = useAuthStore((state) => state.user)
-
-  if (!user) return;
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="flex items-center px-0 mt-4">

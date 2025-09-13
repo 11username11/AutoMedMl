@@ -3,6 +3,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --animate-fade-in: fade-in 0.4s ease-out forwards;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -125,8 +141,8 @@
 }
 
 @layer utilities {
-  .scrollbar-thin{
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  .scrollbar-thin {
+    scrollbar-color: rgba(var(--color-foreground), 0.2) transparent;
     scrollbar-width: thin;
   }
 

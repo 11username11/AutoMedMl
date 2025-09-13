@@ -3,7 +3,6 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { InputField } from "@/components/ui/input-field"
-import api from "@/lib/axios"
 import { LoginSchema } from "@/lib/schemas/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
@@ -12,22 +11,22 @@ import z from "zod"
 import { useMutation } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import SubmitButton from "@/components/ui/submit-btn"
-import { useAuthStore } from "@/providers/AuthProvider"
-import { getCurrentUser } from "@/lib/data/client/user"
-import { useRouter } from "next/navigation"
+import { AxiosError, AxiosResponse } from "axios"
+import api from "@/lib/axios"
+import { useLayoutEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 
 export default function Login() {
-  const router = useRouter()
-  const setUser = useAuthStore(state => state.setUser)
+  const params = useSearchParams()
+  const isVerifying = params.get("isVerifying")
 
-  const { mutate, isError, isPending, error, } = useMutation(
+  const { mutateAsync, isPending } = useMutation(
     {
-      mutationFn: (data: z.infer<typeof LoginSchema>) => api.post("/login", data).then((response) => getCurrentUser()).then((user) => user),
-      onSuccess: (user) => {
-        toast.success("You are logged in!")
-
-        setUser(user!)
-        router.push("/")
+      mutationFn: async (data: z.infer<typeof LoginSchema>) => {
+        return api.post<{ detail: string }>("/login", data)
+      },
+      onSuccess: async () => {
+        window.location.reload()
       },
     }
   )
@@ -42,7 +41,11 @@ export default function Login() {
   })
 
   function osSubmit(data: z.infer<typeof LoginSchema>) {
-    mutate(data)
+    toast.promise(mutateAsync(data), {
+      loading: "Verifying your data",
+      error: (error: AxiosError<{ detail: string }>) => error?.response?.data.detail || "Something went wrong",
+      success: (success: AxiosResponse<{ detail: string }>) => success.data.detail || "You are logged in"
+    })
   }
 
   return (
@@ -50,7 +53,7 @@ export default function Login() {
       <div className="flex flex-col items-center justify-center gap-8  max-w-md w-full p-6 ">
         <div className="flex flex-col gap-2 rounded-md w-full">
           <div className="font-medium">Welcome back</div>
-          <div className="text-muted text-sm">Don't have an account? <Link href={"/register"} className="text-foreground hover:underline">Sign Up</Link></div>
+          <div className="text-muted text-sm">Don't have an account? <Link href={"/register"} className="text-foreground underline">Sign Up</Link></div>
           <Form {...form} >
             <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col gap-4 mt-3">
               <div className="flex gap-4 items-start">
@@ -100,6 +103,13 @@ export default function Login() {
               <SubmitButton isPending={isPending}>Sign In</SubmitButton>
             </form>
           </Form>
+
+          {isVerifying && (
+            <div className="text-center text-sm" suppressHydrationWarning={true}>
+              <div>We are veryfing your account</div>
+              <div>It can take a while</div>
+            </div>
+          )}
         </div>
       </div>
     </div >

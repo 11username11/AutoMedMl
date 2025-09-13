@@ -6,21 +6,38 @@ import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/s
 import { RegisterSchema } from "@/lib/schemas/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import Image from "next/image"
 import Link from "next/link"
 import z from "zod"
 import api from "@/lib/axios"
 import SubmitButton from "@/components/ui/submit-btn"
 import toast from "react-hot-toast"
 import { useMutation } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { AxiosError, AxiosResponse } from "axios"
+
+interface ApiResponse {
+  message: string,
+  verify: boolean
+}
+
+interface ApiError {
+  detail: string
+}
 
 export default function Login() {
-  const { mutate, isError, error, isPending} = useMutation(
+  const router = useRouter()
+
+  const { mutateAsync, isPending } = useMutation(
     {
-      mutationFn: (data: FormData) => api.post("/registration", data).then((response) => response.data),
-      onSuccess: () => {
-        toast.success("You are registered!")
-      },
+      mutationFn: (data: FormData) => api.post<ApiResponse>("/registration", data),
+      onSuccess: async (response) => {
+        if (response.data.verify) {
+          window.location.reload()
+        }
+        else {
+          router.push("/login?isVerifying=true")
+        }
+      }
     }
   )
 
@@ -46,7 +63,11 @@ export default function Login() {
     formData.append("code", data.code)
     formData.append("doc", data.verification[0])
 
-    mutate(formData)
+    toast.promise(mutateAsync(formData), {
+      loading: "Verifying your data",
+      error: (error: AxiosError<ApiError>) => error?.response?.data.detail || "Something went wrong",
+      success: (success: AxiosResponse<ApiResponse>) => success.data.message || "You are signed up"
+    })
   }
 
   return (
@@ -54,10 +75,10 @@ export default function Login() {
       <div className="flex flex-col items-center gap-8 justify-center  max-w-md w-full p-6 ">
         <div className="flex flex-col gap-2 rounded-md w-full">
           <div className="font-medium">Create your account</div>
-          <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground hover:underline">Sign In</Link></div>
+          <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link></div>
           <Form {...form} >
             <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col gap-4 mt-3">
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-start">
                 <InputField
                   control={form.control}
                   name="name"
@@ -69,7 +90,7 @@ export default function Login() {
                 <InputField
                   control={form.control}
                   name="surname"
-                  label="Password"
+                  label="Last name"
                   type="text"
                   placeholder="Doe"
                   className="p-3 shadow-none h-12"

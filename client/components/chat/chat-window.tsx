@@ -1,0 +1,85 @@
+'use client'
+
+import { getChat } from "@/lib/data/client/chat";
+import { useQuery } from "@tanstack/react-query";
+import { RiRobot2Line } from "react-icons/ri";
+import Avatar from "../ui/avatar";
+import { useAuthStore } from "@/providers/AuthProvider";
+import { formatToHHMM, scrollDown } from "@/lib/utils";
+import { useChat } from "@/hooks/useChat";
+import { Chat } from "@/lib/types/chat";
+import { useEffect, useRef, useState } from "react";
+import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
+
+export default function ChatWindow({ chatId }: { chatId: string }) {
+  const user = useAuthStore((state) => state.user)
+  const setMessages = useChat((state) => state.setMessages)
+  const messages = useChat((state) => state.messages)
+
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  const { data: chat, isLoading, isError, error } = useQuery<Chat>({
+    queryKey: [`chat-${chatId}`],
+    queryFn: () => getChat(chatId || "main"),
+  });
+
+  useEffect(() => {
+    if (!chat) return;
+
+    setMessages(chat.messages);
+  }, [chat, chatId]);
+
+  useEffect(() => {
+    scrollDown(containerRef, "instant")
+  }, [messages])
+
+  useEffect(() => {
+    if (!isLoading) {
+      const timeout = setTimeout(() => setShowSkeleton(false), 300); 
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoading]);
+
+  return (
+    <div className="flex relative h-full overflow-hidden">
+      {showSkeleton && (
+        <div
+          className={`absolute inset-0 transition-opacity bg-background duration-300 ${isLoading ? 'opacity-100' : 'opacity-0'
+            }`}
+        >
+          <ChatWindowSkeleton rows={6} />
+        </div>
+      )}
+      <div ref={containerRef} className="flex flex-col gap-4 h-full rounded-md overflow-y-auto pb-4">
+        <div className="flex flex-col items-start gap-4">
+          {
+            !isLoading && user && messages.map((message, index) => (
+              <div key={new Date(message.timestamp).getTime() + index} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
+                {
+                  message.sender == "system" ?
+                    (
+                      <div className="p-2 rounded-full bg-secondary text-accent-foreground">
+                        <RiRobot2Line size={20} />
+                      </div>
+                    ) :
+                    (
+                      <Avatar letters={user.name[0] + user.surname[0]}></Avatar>
+                    )
+                }
+
+                <div className="flex flex-col gap-2 text-muted bg-primary-foreground/40 p-3 rounded-md">
+                  <div className="text-sm">
+                    {message.text}
+                  </div>
+                  <div className="text-xs">{formatToHHMM(new Date(message.timestamp))}</div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  )
+}

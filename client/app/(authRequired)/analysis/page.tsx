@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import api from "@/lib/axios";
 import { Activity, Brain, Eye, Heart } from "lucide-react";
 
 interface AnalysisModel {
@@ -50,7 +51,10 @@ const mockModels: AnalysisModel[] = [
   },
 ];
 
-export default function Analysis() {
+export default async function Analysis() {
+  const models = api.get("/models")
+  console.log(models)
+
   return (
     <div className="flex flex-col p-6 gap-8">
       <div className="p-4">

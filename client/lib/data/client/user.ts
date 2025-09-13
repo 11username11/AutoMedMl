@@ -26,9 +26,6 @@ export const logout = async () => {
   try {
     await api.get("/logout");
 
-    toast.success("You are logged out!")
-    getAuthStore().getState().clearUser();
-
     return true
   }
   catch (error) {

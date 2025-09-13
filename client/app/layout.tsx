@@ -4,12 +4,13 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import LayoutSidebar from "@/components/layout/layout-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import Header from "@/components/layout/header";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { getCurrentUser } from "@/lib/data/server/user";
 import { Toaster } from 'react-hot-toast';
 import QueryProvider from "@/providers/QueryProvider";
+import { cloneElement } from "react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,17 +24,21 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser()
+
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
-  const user = await getCurrentUser()
-
   return (
-    <>
-      <html lang="en" suppressHydrationWarning className={inter.variable}>
-        <head />
-        <body className="bg-background antialiased">
-          <QueryProvider>
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <head />
+      <body className="bg-background antialiased">
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+          >
             <AuthProvider user={user}>
               <ThemeProvider
                 attribute="class"
@@ -42,28 +47,28 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               >
                 <SidebarProvider defaultOpen={defaultOpen}>
                   <div className="flex h-screen w-full">
-                    <LayoutSidebar></LayoutSidebar>
+                    {user && <LayoutSidebar></LayoutSidebar>}
 
                     <div className="flex flex-col w-full h-full bg-background/60">
-                      <Header></Header>
-                      {children}
+                      <Header user={user}></Header>
+                      {cloneElement(children as any, { user })}
                     </div>
                   </div>
 
                 </SidebarProvider>
               </ThemeProvider>
             </AuthProvider>
-          </QueryProvider>
-          <Toaster toastOptions={{
-            className: "bg-primary",
-            style: {
-              background: "var(--primary)",
-              color: "var(--foreground)",
-              border: "1px solid var(--border)"
-            }
-          }} />
-        </body>
-      </html>
-    </>
+          </ThemeProvider>
+        </QueryProvider>
+        <Toaster toastOptions={{
+          className: "bg-primary",
+          style: {
+            background: "var(--primary)",
+            color: "var(--foreground)",
+            border: "1px solid var(--border)"
+          }
+        }} />
+      </body>
+    </html>
   )
 }

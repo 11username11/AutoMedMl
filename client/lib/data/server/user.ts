@@ -1,21 +1,21 @@
 import { cookies } from "next/headers";
 import { cache } from 'react';
 import { User } from "@/lib/types/user";
-import api from "../../axios";
+import { baseURL } from "../../axios";
 
 export const getCurrentUser = cache(async (): Promise<User | null> => {
   const cookieStore = await cookies();
 
   try {
-    const response = await api.get(`/user_info`, {
+    const response = await fetch(`${baseURL}/user_info`, {
       headers: { Cookie: cookieStore.toString() },
     });
 
-    if (response.status != 200) {
+    if (!response.ok) {
       return null;
     }
 
-    const data = await response.data;
+    const data = await response.json();
 
     return data
   } catch (error) {
