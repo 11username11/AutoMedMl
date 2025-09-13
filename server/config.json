@@ -3,7 +3,6 @@
   "secure": "no",
   "upload_dir": "upload_docs",
   "image_dir": "image_dir",
-  "mongo_link": "mongodb+srv://1q0918567mmm:9YaNslJyattu6TwN@cluster0.0sfsv.mongodb.net/",
   "db_name": "AutoMedMl",
   "users_collection": "users",
   "patients_collection": "patients",

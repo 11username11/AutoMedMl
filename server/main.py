@@ -42,6 +42,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = secrets['access_token_expire_minutes']
 REFRESH_TOKEN_EXPIRE_MINUTES = secrets['refresh_token_expire_minutes']
 SAMESITE = secrets['samesite']
 CODE = secrets['code']
+MONGO_LINK = secrets["mongo_link"]
+
+client = MongoClient(MONGO_LINK)
 
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
@@ -59,14 +62,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MONGO_LINK = config["mongo_link"]
 DB_NAME = config["db_name"]
 USER_COLLECTION = config["users_collection"]
 PATIENTS_COLLECTION = config["patients_collection"]
 MODELS_COLLECTION = config["models_collection"]
 CHATS_COLLECTION = config["chats_collection"]
 
-client = MongoClient(MONGO_LINK)
 db = client[DB_NAME]
 users_collection = db[USER_COLLECTION]
 models_collection = db[MODELS_COLLECTION]
