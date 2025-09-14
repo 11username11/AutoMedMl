@@ -282,6 +282,7 @@ async def add_patient(
 @app.get("/models")
 async def models(current_user: dict = Depends(get_optional_user)):
     if not current_user:
+        print("ТЫ ОПЯТЬ ЗАБЫЛ КУКИ ОТПРАВИТЬ!!!")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
     models_cursor = models_collection.find({})
