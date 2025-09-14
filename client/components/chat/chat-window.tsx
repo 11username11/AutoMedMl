@@ -32,7 +32,7 @@ export default function ChatWindow() {
 
   useLayoutEffect(() => {
     if (!chat) return;
-    console.log(chat)
+
     setMessages(chatId, chat.messages);
   }, [chat, chatId]);
 
@@ -41,6 +41,8 @@ export default function ChatWindow() {
   }, [messages])
 
   useLayoutEffect(() => {
+    setShowSkeleton(true)
+
     if (!isLoading) {
       const timeout = setTimeout(() => setShowSkeleton(false), 300);
       return () => clearTimeout(timeout);

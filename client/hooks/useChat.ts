@@ -29,7 +29,7 @@ export const useChat = create<chatState>((set) => ({
       if (!messages.length) return state
       const updated = [...messages]
       updated[updated.length - 1].text += chunk
-      console.log(updated[updated.length - 1], chunk)
+
       return { messages: { ...state.messages, [id]: updated } }
     })
 }))
