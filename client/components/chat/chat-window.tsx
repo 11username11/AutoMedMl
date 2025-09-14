@@ -32,7 +32,7 @@ export default function ChatWindow() {
 
   useLayoutEffect(() => {
     if (!chat) return;
-
+    console.log(chat)
     setMessages(chatId, chat.messages);
   }, [chat, chatId]);
 
@@ -72,7 +72,7 @@ export default function ChatWindow() {
                 }
 
                 <div className="flex flex-col gap-2 text-muted bg-primary-foreground/40 p-3 rounded-md">
-                  <div className="text-sm">
+                  <div className="text-sm wrap-anywhere">
                     {message.text}
                   </div>
                   <div className="text-xs">{formatToHHMM(new Date(message.timestamp))}</div>

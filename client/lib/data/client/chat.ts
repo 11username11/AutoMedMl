@@ -1,6 +1,7 @@
 import { useChat } from "@/hooks/useChat"
 import api, { baseURL } from "@/lib/axios"
-import { Chat, Chats } from "@/lib/types/chat"
+import { queryClient } from "@/lib/react-query"
+import { Chat, Chats, Message } from "@/lib/types/chat"
 
 export const getChat = async (chat_id = "main") => {
   const chat = await api.get<Chat>(`/chat_history/${chat_id}`)
@@ -25,20 +26,42 @@ export const sendMessage = async (message: string) => {
 }
 
 export async function streamMessage(chatId: string, text: string) {
-  const id = crypto.randomUUID();
+  const systemMessageId = crypto.randomUUID();
 
-  useChat.getState().addMessage(chatId, {
+  const userMessage: Message = {
     id: crypto.randomUUID(),
     sender: "user",
     text,
     timestamp: new Date(),
-  });
+  }
+
+  useChat.getState().addMessage(chatId, userMessage);
 
   useChat.getState().addMessage(chatId, {
-    id,
+    id: systemMessageId,
     sender: "system",
     text: "",
     timestamp: new Date(),
+  });
+
+
+  queryClient.setQueryData<Chat>(["chat", chatId], (old) => {
+    if (!old) {
+      return {
+        patient_id: chatId,
+        name: "",
+        surname: "",
+        messages: [userMessage, { ...userMessage, id: systemMessageId, sender: "system", text: "" }],
+      };
+    }
+    return {
+      ...old,
+      messages: [
+        ...old.messages,
+        userMessage,
+        { id: systemMessageId, sender: "system", text: "", timestamp: new Date() },
+      ],
+    };
   });
 
   const response = await fetch(`${baseURL}/send_message`, {
@@ -62,4 +85,10 @@ export async function streamMessage(chatId: string, text: string) {
     const chunk = decoder.decode(value, { stream: true });
     useChat.getState().updateMessage(chatId, chunk);
   }
+
+  queryClient.setQueryData<Chat>(["chat", chatId], (old) => {
+    if (!old) return old;
+   
+    return { ...old, messages: useChat.getState().messages[chatId]};
+  });
 }
