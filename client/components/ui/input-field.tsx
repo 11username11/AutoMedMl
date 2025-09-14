@@ -15,7 +15,7 @@ export function InputField({ control, name, label, type = "text", placeholder, c
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input className={cn("h-10", className)} type={type} placeholder={placeholder} {...field} />

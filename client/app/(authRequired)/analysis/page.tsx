@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import api from "@/lib/axios";
+import { getModels } from "@/lib/data/server/model";
 import { Activity, Brain, Eye, Heart } from "lucide-react";
 
 interface AnalysisModel {
@@ -52,7 +53,7 @@ const mockModels: AnalysisModel[] = [
 ];
 
 export default async function Analysis() {
-  const models = api.get("/models")
+  const models = await getModels()
   console.log(models)
 
   return (

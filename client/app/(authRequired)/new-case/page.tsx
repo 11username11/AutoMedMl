@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import api from "@/lib/axios";
 import SubmitButton from "@/components/ui/submit-btn";
+import { GENDER, STATUS } from "@/lib/constants";
 
 export const FormSchema = z.object({
   name: z
@@ -29,26 +30,38 @@ export const FormSchema = z.object({
     .regex(/^[A-Za-z]+$/, { message: "Surname can only contain letters" }),
 
   email: z
-    .email({ message: "Please enter a valid email address" }).optional(),
+    .string()
+    .trim()
+    .optional()
+    .refine((val) => !val || z.string().email().safeParse(val).success, {
+      message: "Please enter a valid email address",
+    }),
 
   phone: z
     .string()
     .trim()
     .transform((val) => val.replace(/\s+/g, ""))
-    .refine((val) => /^\+?\d{10,15}$/.test(val), {
-      message: "Phone number must be 10–15 digits (with optional +)",
-    }).optional(),
+    .optional()
+    .refine(
+      (val) => !val || /^\+?\d{10,15}$/.test(val),
+      { message: "Phone number must be 10–15 digits (with optional +)" }
+    ),
 
   age: z
     .string()
     .trim()
+    .min(1, { message: "Age is required" })
     .refine((val) => {
       const num = Number(val)
       return !isNaN(num) && num >= 0 && num <= 150
     }, { message: "Age must be a number between 0 and 150" }),
 
-  gender: z.enum(["male", "female", "other"], {
+  gender: z.enum(GENDER, {
     message: "Please select a gender",
+
+  }),
+  status: z.enum(STATUS, {
+    message: "Please select a status",
   }),
 
   medical_history: z.string().optional(),
@@ -57,10 +70,10 @@ export const FormSchema = z.object({
 export default function NewCase() {
   const router = useRouter()
 
-  const { mutate, isError, isPending, error, } = useMutation(
+  const { mutateAsync, isError, isPending, error, } = useMutation(
     {
       mutationFn: (data: z.infer<typeof FormSchema>) => api.post("/add_patient", data),
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success("You have created a new patient!")
 
         router.push("/patients")
@@ -76,13 +89,14 @@ export default function NewCase() {
       email: "",
       phone: "",
       age: "",
-      gender: "female",
+      gender: "Female",
+      status: "Active Treatment",
       medical_history: ""
     }
   })
 
   function osSubmit(data: z.infer<typeof FormSchema>) {
-    mutate(data)
+    mutateAsync(data)
   }
 
   function handleCancel(e: React.MouseEvent<HTMLButtonElement>) {
@@ -99,7 +113,7 @@ export default function NewCase() {
       </div>
 
       <Form {...form} >
-        <form onSubmit={form.handleSubmit(osSubmit)} className="p-4 bg-primary rounded-md flex flex-col gap-4 w-full">
+        <form onSubmit={form.handleSubmit(osSubmit)} className="p-4 rounded-md flex flex-col gap-4 w-full">
           <div className="flex gap-4 items-start">
             <div className="space-y-4 flex-1">
               <InputField
@@ -109,6 +123,7 @@ export default function NewCase() {
                 type="text"
                 placeholder="Enter first name"
               />
+
               <InputField
                 control={form.control}
                 name="surname"
@@ -116,21 +131,24 @@ export default function NewCase() {
                 type="text"
                 placeholder="Enter last name"
               />
+
               <InputField
                 control={form.control}
                 name="email"
-                label="Email *"
+                label="Email"
                 type="email"
                 placeholder="Enter email address"
               />
+
               <InputField
                 control={form.control}
                 name="phone"
-                label="Phone Number *"
+                label="Phone Number"
                 type="text"
                 placeholder="Enter phone number"
               />
-              <div className="flex gap-4">
+
+              <div className="flex gap-4 items-start">
                 <InputField
                   control={form.control}
                   name="age"
@@ -138,6 +156,7 @@ export default function NewCase() {
                   type="number"
                   placeholder="Age"
                 />
+
                 <FormField
                   control={form.control}
                   name="gender"
@@ -145,15 +164,36 @@ export default function NewCase() {
                     <FormItem className="w-full flex flex-col">
                       <FormLabel>Gender *</FormLabel>
                       <FormControl>
-                        <Select defaultValue={"female"} onValueChange={field.onChange}>
-                          <SelectTrigger size="large" className="w-full cursor-pointer bg-background">
+                        <Select defaultValue={GENDER[0]} onValueChange={field.onChange}>
+                          <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
+                            <SelectValue ></SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {GENDER.map((gender) => <SelectItem key={gender} value={gender}>{gender}</SelectItem>)}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}>
+                </FormField>
+
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem className="w-full flex flex-col">
+                      <FormLabel>Status *</FormLabel>
+                      <FormControl>
+                        <Select defaultValue={STATUS[0]} onValueChange={field.onChange}>
+                          <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
                             <SelectValue></SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value="female">Female</SelectItem>
-                              <SelectItem value="male">Male</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
+                              {STATUS.map((status) => <SelectItem key={status} value={status}>{status}</SelectItem>)}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
@@ -174,7 +214,7 @@ export default function NewCase() {
                   <FormControl>
                     <Textarea
                       placeholder="Enter relevant medical history, allergies, medications, etc."
-                      className="resize-none h-full"
+                      className="resize-none h-full bg-primary"
                       {...field}
                     />
                   </FormControl>
@@ -184,8 +224,6 @@ export default function NewCase() {
             </FormField>
           </div>
 
-          <Separator></Separator>
-
           <div className="flex gap-4 text-sm font-semibold ">
             <SubmitButton className="w-auto" isPending={isPending}>
               <div className="flex items-center justify-center gap-2">
@@ -193,7 +231,7 @@ export default function NewCase() {
                 Create Patient
               </div>
             </SubmitButton>
-            <button className="p-2 px-6 bg-background border rounded-md cursor-pointer hover:bg-primary-foreground duration-200" onClick={handleCancel}>Cancel</button>
+            <button className="h-10 px-6 bg-primary border rounded-md cursor-pointer hover:bg-primary-foreground duration-200" onClick={handleCancel}>Cancel</button>
           </div>
         </form>
       </Form>

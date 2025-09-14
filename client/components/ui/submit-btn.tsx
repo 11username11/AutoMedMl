@@ -11,7 +11,7 @@ export default function SubmitButton({ isPending, children, className, ...props 
     <button
       {...props}
       className={cn(
-        "flex items-center justify-center gap-2 relative font-semibold text-sm h-12 p-2 px-4 w-full bg-secondary text-accent-foreground rounded-sm cursor-pointer hover:bg-secondary-foreground duration-200",
+        "flex items-center justify-center gap-2 h-10 relative font-semibold text-sm p-2 px-4 w-full bg-secondary text-accent-foreground rounded-sm cursor-pointer hover:bg-secondary-foreground duration-200",
         isPending && "bg-secondary/60 cursor-default hover:bg-secondary/60",
         className
       )}

@@ -3,13 +3,13 @@ import { createContext, useContext, useRef, type ReactNode } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 import { User } from '@/lib/types/user';
 
-interface AuthState {
+interface authState {
   user: User | null;
   setUser: (user: User) => void;
   clearUser: () => void;
 }
 
-let authStore: StoreApi<AuthState> | null = null;
+let authStore: StoreApi<authState> | null = null;
 
 export const getAuthStore = () => {
   if (!authStore) {
@@ -19,16 +19,17 @@ export const getAuthStore = () => {
 };
 
 const createAuthStore = ({ user }: { user: User | null }) =>
-  createStore<AuthState>((set) => ({
+  createStore<authState>((set) => ({
     user,
     setUser: (user) => set({ user }),
     clearUser: () => set({ user: null }),
   }));
 
-const StoreContext = createContext<StoreApi<AuthState> | null>(null);
+const StoreContext = createContext<StoreApi<authState> | null>(null);
 
 export const AuthProvider = ({ user, children }: { user: User | null; children: ReactNode }) => {
-  const storeRef = useRef<StoreApi<AuthState> | null>(null);
+  const storeRef = useRef<StoreApi<authState> | null>(null);
+  
   if (!authStore) {
     authStore = createAuthStore({ user: user ?? null });
   }
@@ -37,7 +38,7 @@ export const AuthProvider = ({ user, children }: { user: User | null; children: 
 };
 
 export function useAuthStore<T>(
-  selector: (state: AuthState) => T,
+  selector: (state: authState) => T,
 ): T {
   const store = useContext(StoreContext);
   if (!store) throw new Error('Missing StoreProvider');

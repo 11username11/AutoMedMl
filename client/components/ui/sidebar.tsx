@@ -157,7 +157,6 @@ function findParentWithDataset(
   datasetKey: string,
   datasetValue: string
 ): HTMLElement | null {
-  console.log(element)
   while (element) {
     if (element.dataset[datasetKey] === datasetValue) {
       return element
