@@ -50,10 +50,10 @@ export default function ChatWindow() {
   }, [isLoading]);
 
   return (
-    <div className="flex relative h-full overflow-hidden">
+    <div className="flex relative h-full overflow-hidden items-start">
       {showSkeleton && (
         <div className={`absolute inset-0 transition-opacity bg-background duration-300 ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
-          <ChatWindowSkeleton rows={6} />
+          <ChatWindowSkeleton/>
         </div>
       )}
       <div ref={containerRef} className="flex flex-col gap-4 h-full rounded-md overflow-y-auto pb-4 pr-4">

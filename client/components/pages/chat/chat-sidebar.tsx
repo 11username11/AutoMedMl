@@ -11,13 +11,15 @@ import { Button } from "@/components/ui/button"
 import { create } from "zustand";
 import Avatar from "@/components/ui/avatar";
 import { useChat } from "@/hooks/useChat";
-import { ICON_SIZE } from "@/lib/constants";
+import { CHAT_SIDEBAR_COOKIE_NAME, ICON_SIZE } from "@/lib/constants";
 import { Chats } from "@/lib/types/chat";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface chatSidebarState {
   isMinimized: boolean,
   toggleSidebar: () => void,
+  openOverride: boolean | undefined,
+  setOpenOverride: (openOverride: boolean) => void,
   setIsMinimized: (isMinimized: boolean) => void,
   minimizeChatSidebar: () => void
   maximizeChatSidebar: () => void
@@ -25,21 +27,31 @@ interface chatSidebarState {
 
 export const useChatSidebar = create<chatSidebarState>((set) => ({
   isMinimized: false,
+  openOverride: undefined,
+  setOpenOverride: (openOverride) => set((state) => ({ openOverride })),
   toggleSidebar: () => set((state) => ({ isMinimized: !state.isMinimized })),
-  setIsMinimized: (isMinimized) => set(() => ({ isMinimized })),
+  setIsMinimized: (isMinimized) => {
+    console.log(123)
+    set(() => ({ openOverride: true, isMinimized }))
+  },
   minimizeChatSidebar: () => set(() => ({ isMinimized: true })),
   maximizeChatSidebar: () => set(() => ({ isMinimized: false }))
 }))
 
-export default function ChatSidebar({ chats }: { chats: Chats }) {
+export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chats, defaultIsMinimized: boolean }) {
   const router = useRouter()
   const params = useSearchParams()
 
+  const openOverride = useChatSidebar(state => state.openOverride);
+  const isMinimized = useChatSidebar(state => state.isMinimized);
   const chatId = params.get("chat") || "main"
-  const isMinimized = useChatSidebar(state => state.isMinimized)
   const toggleSidebar = useChatSidebar(state => state.toggleSidebar)
   const setIsMinimized = useChatSidebar(state => state.setIsMinimized)
   const setChatId = useChat((state) => state.setChatId)
+
+  const effectiveMinimized = openOverride === undefined
+    ? defaultIsMinimized
+    : isMinimized;
 
   const [searchTerm, setSearchTerm] = useState("")
   const filteredChats = chats.filter((chat) =>
@@ -52,9 +64,17 @@ export default function ChatSidebar({ chats }: { chats: Chats }) {
     router.push(`/?chat=${id}`)
   }
 
+  useEffect(() => {
+    setIsMinimized(defaultIsMinimized)
+  }, [defaultIsMinimized])
+
+  useEffect(() => {
+    document.cookie = `${CHAT_SIDEBAR_COOKIE_NAME}=${isMinimized};path=/;`
+  }, [isMinimized])
+
   return (
     <div
-      data-minimized={isMinimized}
+      data-minimized={effectiveMinimized}
       className={cn(
         "flex flex-col gap-3 h-full w-96 shrink-0 duration-200 overflow-hidden group",
         "data-[minimized=true]:w-[calc(var(--chat-sidebar-width-icon)+(--spacing(5.5*2)))]"
@@ -67,7 +87,6 @@ export default function ChatSidebar({ chats }: { chats: Chats }) {
           className="w-full group-data-[minimized=true]:h-9 group-data-[minimized=true]:px-0 group-data-[minimized=true]:gap-0 group-data-[minimized=true]:w-9"
         />
         <Button
-          data-minimized={isMinimized}
           onClick={toggleSidebar}
           variant="ghost"
           size="icon"

@@ -56,15 +56,15 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
   }
 
   return (
-    <div className="p-2 rounded-md">
+    <div className="p-2 rounded-md shrink-0 w-fit">
       <Form {...form} >
         <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col xl:flex-row gap-4 h-full">
           <FormField
             control={form.control}
             name={"image"}
             render={({ field }) => (
-              <FormItem className="flex flex-col p-4 bg-primary rounded-md shadow-sm h-full aspect-video">
-                <FormLabel className="flex gap-2 items-center font-semibold text-xl h-fit">
+              <FormItem className="flex flex-col p-4 bg-primary rounded-md shadow-sm h-full ">
+                <FormLabel className="flex gap-2 items-center font-semibold text-xl">
                   <Image></Image> Upload Medical Image
                 </FormLabel>
                 <FormControl>
@@ -95,11 +95,11 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                     </DropzoneEmptyState>
                     <DropzoneContent>
                       <div className="flex flex-col items-center gap-3">
-                        <Check className="text-primary bg-primary/20 p-3 rounded-md box-content" />
+                        <Check className="text-primary bg-primary/20 dark:bg-foreground/20 dark:text-foreground p-3 rounded-md box-content" />
                         {field.value && (
-                          <div className="space-y-0.5 text-base text-foreground">
+                          <div className="space-y-0.5 text-base text-primary dark:text-foreground">
                             <div className="font-semibold">{field.value[0].name}</div>
-                            <div className="text-foreground/70 font-light text-sm">{renderBytes(field.value[0].size)} • {field.value[0].type}</div>
+                            <div className="text-primary/70 dark:text-foreground/70 font-light text-sm">{renderBytes(field.value[0].size)} • {field.value[0].type}</div>
                           </div>
                         )}
                         <div onClick={(e) => {
@@ -113,7 +113,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               </FormItem>
             )}
           />
-          <div className="space-y-4">
+          <div className="space-y-4 shrink-0">
             <FormField
               control={form.control}
               name="patient"

@@ -94,7 +94,7 @@ export const Dropzone = ({
       <Button
         className={cn(
           "relative h-auto w-full flex-col overflow-hidden p-4 border-2 border-dashed cursor-pointer duration-200",
-          isDragActive && "bg-accent/30 border-foreground/30",
+          isDragActive && "bg-accent/80! dark:bg-background/80! border-foreground/30!",
           className
         )}
         disabled={disabled}

@@ -11,13 +11,13 @@ type ChatWindowSkeletonProps = {
 
 export default function ChatWindowSkeleton({
   className,
-  rows = 6,
+  rows = 5,
   animate = true,
 }: ChatWindowSkeletonProps) {
   const items = Array.from({ length: rows });
 
   return (
-    <div className={cn('flex flex-col gap-4 h-full rounded-md overflow-hidden mb-4', className)}>
+    <div className={cn('flex flex-col gap-4 h-full rounded-md overflow-hidden', className)}>
       <div className="flex flex-col items-start gap-4">
         {items.map((_, idx) => {
           const isUser = idx % 2 === 1;
