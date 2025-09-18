@@ -2,7 +2,7 @@
 
 import { UploadIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useLayoutEffect, useState } from 'react';
 import type { DropEvent, DropzoneOptions, FileRejection } from 'react-dropzone';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ type DropzoneContextType = {
   maxFiles?: DropzoneOptions['maxFiles'];
 };
 
-const renderBytes = (bytes: number) => {
+export const renderBytes = (bytes: number) => {
   const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
   let size = bytes;
   let unitIndex = 0;
@@ -26,7 +26,7 @@ const renderBytes = (bytes: number) => {
     unitIndex++;
   }
 
-  return `${size.toFixed(2)}${units[unitIndex]}`;
+  return `${size.toFixed(2)} ${units[unitIndex]}`;
 };
 
 const DropzoneContext = createContext<DropzoneContextType | undefined>(
@@ -70,37 +70,49 @@ export const Dropzone = ({
         onError?.(new Error(message));
         return;
       }
-
       onDrop?.(acceptedFiles, fileRejections, event);
     },
     ...props,
   });
-  const bgImage = src ? URL.createObjectURL(src[0]) : ""
+
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    if (src && src.length > 0) {
+      const objectUrl = URL.createObjectURL(src[0]);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+    setPreview(null);
+  }, [src]);
 
   return (
     <DropzoneContext.Provider
-      key={JSON.stringify(src)}
+      key={JSON.stringify(src?.map(f => f.name))}
       value={{ src, accept, maxSize, minSize, maxFiles }}
     >
       <Button
         className={cn(
-          'relative h-auto w-full flex-col overflow-hidden p-4 border-2 border-dashed dash bg-contain cursor-pointer duration-200',
-          isDragActive && 'bg-accent! border-foreground/30!',
+          "relative h-auto w-full flex-col overflow-hidden p-4 border-2 border-dashed cursor-pointer duration-200",
+          isDragActive && "bg-accent/30 border-foreground/30",
           className
         )}
-        style={{
-          backgroundImage: bgImage ? `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),url(${bgImage})` : '',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
         disabled={disabled}
         type="button"
         variant="outline"
         {...getRootProps()}
       >
         <input {...getInputProps()} disabled={disabled} />
-        {children}
+
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none brightness-60"
+          />
+        )}
+
+        <div className="relative z-10">{children}</div>
       </Button>
     </DropzoneContext.Provider>
   );
@@ -139,17 +151,15 @@ export const DropzoneContent = ({
 
   return (
     <div className={cn('flex flex-col items-center justify-center', className)}>
-      <div className="flex items-center justify-center rounded-md text-muted-foreground">
-        <UploadIcon size={24} />
-      </div>
-      <p className="my-2 w-full truncate font-medium text-xs text-accent-foreground">
+      <UploadIcon className="flex items-center bg-primary/15 p-2 justify-center rounded-md text-primary box-content" size={24} />
+      <p className="my-2 w-full truncate font-medium text-xs text-primary">
         {src.length > maxLabelItems
           ? `${new Intl.ListFormat('en').format(
             src.slice(0, maxLabelItems).map((file) => file.name)
           )} and ${src.length - maxLabelItems} more`
           : new Intl.ListFormat('en').format(src.map((file) => file.name))}
       </p>
-      <p className="w-full truncate text-wrap text-secondary text-xs">
+      <p className="w-full truncate text-wrap text-primary text-xs">
         Drag and drop or click to replace
       </p>
     </div>
@@ -178,7 +188,7 @@ export const DropzoneEmptyState = ({
   let caption = '';
 
   if (accept) {
-    caption += 'PNF, JPG';
+    caption += 'PNG, JPG';
   }
 
   if (minSize && maxSize) {

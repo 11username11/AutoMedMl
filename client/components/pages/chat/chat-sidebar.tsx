@@ -1,15 +1,15 @@
 'use client'
 
-import SearchInput from "../ui/search-input";
-import { Separator } from "../ui/separator";
+import SearchInput from "@/components/ui/search-input";
+import { Separator } from "@/components/ui/separator";
 import { RiRobot2Line } from "react-icons/ri";
-import NewCase from "../ui/new-case-btn";
+import NewCase from "@/components/ui/new-case-btn";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import { create } from "zustand";
-import Avatar from "../ui/avatar";
+import Avatar from "@/components/ui/avatar";
 import { useChat } from "@/hooks/useChat";
 import { ICON_SIZE } from "@/lib/constants";
 import { Chats } from "@/lib/types/chat";
@@ -73,7 +73,7 @@ export default function ChatSidebar({ chats }: { chats: Chats }) {
           size="icon"
           className="h-10 w-10 group-data-[minimized=true]:h-9 group-data-[minimized=true]:w-9 cursor-pointer bg-primary border hover:bg-primary-foreground"
         >
-          <PanelLeft size={20} />
+          <PanelLeft size={24} />
         </Button>
       </div>
 

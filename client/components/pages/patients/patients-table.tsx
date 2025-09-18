@@ -9,8 +9,8 @@ import { useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import { Patient } from "@/lib/types/patient";
 import { STATUS } from "@/lib/constants";
-import { Badge } from "../ui/badge";
-import NewCase from "../ui/new-case-btn";
+import { Badge } from "@/components/ui/badge";
+import NewCase from "@/components/ui/new-case-btn";
 
 const getStatusBadge = (status: Patient["status"]) => {
   const statusConfig: Record<typeof STATUS[number], { className: string }> = {

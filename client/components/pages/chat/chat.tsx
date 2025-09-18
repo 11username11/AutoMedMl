@@ -5,9 +5,9 @@ import { LuSend } from "react-icons/lu";
 import { useChatSidebar } from "./chat-sidebar";
 import ChatWindow from "./chat-window";
 import { type Chat } from "@/lib/types/chat";
-import { Textarea } from "../ui/textarea";
 import { useSearchParams } from "next/navigation";
 import { streamMessage } from "@/lib/data/client/chat";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Chat() {
   const params = useSearchParams()

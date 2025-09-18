@@ -1,7 +1,5 @@
-import PatientsTable from "@/components/patients/patients-table";
+import PatientsTable from "@/components/pages/patients/patients-table";
 import { getPatients } from "@/lib/data/server/patient";
-
-// const mockPatients: Patient[] = [
 //   {
 //     id: "1",
 //     name: "John Anderson",
@@ -54,7 +52,6 @@ export default async function Patients() {
           <div className="text-3xl font-bold">Patients</div>
           <div className="text-muted ">Manage and view patient information</div>
         </div>
-
       </div>
 
       <PatientsTable patients={patients}></PatientsTable>

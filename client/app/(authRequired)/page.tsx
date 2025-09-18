@@ -1,5 +1,5 @@
-import Chat from "@/components/chat/chat";
-import ChatSidebar from "@/components/chat/chat-sidebar";
+import ChatSidebar from "@/components/pages/chat/chat-sidebar";
+import Chat from "@/components/pages/chat/chat";
 import { getPatients } from "@/lib/data/server/patient";
 import { cn } from "@/lib/utils";
 

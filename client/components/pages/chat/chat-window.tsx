@@ -3,7 +3,7 @@
 import { getChat } from "@/lib/data/client/chat";
 import { useQuery } from "@tanstack/react-query";
 import { RiRobot2Line } from "react-icons/ri";
-import Avatar from "../ui/avatar";
+import Avatar from "@/components/ui/avatar";
 import { useAuthStore } from "@/providers/AuthProvider";
 import { formatToHHMM, scrollDown } from "@/lib/utils";
 import { useChat } from "@/hooks/useChat";
