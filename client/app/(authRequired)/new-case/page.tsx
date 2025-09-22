@@ -21,13 +21,13 @@ export const FormSchema = z.object({
     .string()
     .trim()
     .min(2, { message: "Name must be at least 2 characters long" })
-    .regex(/^[A-Za-z]+$/, { message: "Name can only contain letters" }),
+    .regex(/^\p{L}+$/u, { message: "Name can only contain letters" }),
 
   surname: z
     .string()
     .trim()
     .min(2, { message: "Surname must be at least 2 characters long" })
-    .regex(/^[A-Za-z]+$/, { message: "Surname can only contain letters" }),
+    .regex(/^\p{L}+$/u, { message: "Surname can only contain letters" }),
 
   email: z
     .string()

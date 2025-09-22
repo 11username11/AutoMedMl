@@ -12,6 +12,8 @@ class Patient(BaseModel):
     email: str
     phone: str
     status: str
+    age: str
+    gender: str
 
 
 class MessageInput(BaseModel):

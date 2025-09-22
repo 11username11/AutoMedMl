@@ -156,6 +156,7 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
 @app.get("/patients")
 async def patients(current_user: dict = Depends(get_optional_user)):
     result = patients_collection.find_one({"medic_id": current_user["id"]})
+    print(result["patients_list"])
     return result["patients_list"]
 
 
@@ -234,7 +235,9 @@ async def add_patient(
             "email": patient.email,
             "phone": patient.phone,
             "last_visit": datetime.now(),
-            "status": patient.status
+            "status": patient.status,
+            "gender": patient.gender,
+            "age": patient.age
         }
 
         result = patients_collection.update_one(
