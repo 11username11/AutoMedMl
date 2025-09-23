@@ -5,7 +5,7 @@ import medicalHeroBg from "@/public/medical-hero-bg.jpg"
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
-  console.log(medicalHeroBg)
+
   if (user) redirect("/")
 
   return (

@@ -151,15 +151,15 @@ export const DropzoneContent = ({
 
   return (
     <div className={cn('flex flex-col items-center justify-center', className)}>
-      <UploadIcon className="flex items-center bg-primary/15 p-2 justify-center rounded-md text-primary box-content" size={24} />
-      <p className="my-2 w-full truncate font-medium text-xs text-primary">
+      <UploadIcon className="flex items-center bg-primary/15 p-2 justify-center rounded-md text-accent-foreground box-content" size={24} />
+      <p className="my-2 w-full truncate font-medium text-xs text-accent-foreground">
         {src.length > maxLabelItems
           ? `${new Intl.ListFormat('en').format(
             src.slice(0, maxLabelItems).map((file) => file.name)
           )} and ${src.length - maxLabelItems} more`
           : new Intl.ListFormat('en').format(src.map((file) => file.name))}
       </p>
-      <p className="w-full truncate text-wrap text-primary text-xs">
+      <p className="w-full truncate text-wrap text-accent-foreground text-xs">
         Drag and drop or click to replace
       </p>
     </div>

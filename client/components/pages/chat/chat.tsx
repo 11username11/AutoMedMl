@@ -31,18 +31,18 @@ export default function Chat() {
   };
 
   return (
-    <div className="relative w-full flex flex-col h-full">
+    <div className="w-full flex flex-col h-full">
       <div className="text-2xl font-bold mb-2">Medical AI Chat</div>
       <div className="text-muted mb-4">
         Get instant medical information and guidance from our AI assistant
       </div>
 
-      <div onClick={minimizeChatSidebar} className="flex flex-col h-full overflow-hidden">
+      <div onClick={minimizeChatSidebar} className="relative flex flex-col h-full overflow-hidden">
         <ChatWindow></ChatWindow>
-
-        <div className="flex gap-2 mb-2 items-end">
+        <div className="invisible min-h-16"></div>
+        <div className="absolute bottom-2 flex gap-2 items-end w-full">
           <Textarea
-            className="bg-primary"
+            className="bg-primary dark:bg-background max-h-72 resize-none"
             placeholder="Type your medical question here"
             value={text}
             onChange={(e) => setText(e.target.value)}
