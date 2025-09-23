@@ -69,7 +69,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
   }, [defaultIsMinimized])
 
   useEffect(() => {
-    document.cookie = `${CHAT_SIDEBAR_COOKIE_NAME}=${isMinimized};path=/;`
+    document.cookie = `${CHAT_SIDEBAR_COOKIE_NAME}=${isMinimized};path=/;max-age=${60 * 60 * 24 * 7}`
   }, [isMinimized])
 
   return (
