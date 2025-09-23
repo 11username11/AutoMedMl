@@ -13,7 +13,6 @@ import toast from "react-hot-toast"
 import SubmitButton from "@/components/ui/submit-btn"
 import { AxiosError, AxiosResponse } from "axios"
 import api from "@/lib/axios"
-import { useLayoutEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 
 export default function Login() {
@@ -96,9 +95,9 @@ export default function Login() {
                     )
                   }}
                 />
-                <button className="text-secondary hover:underline cursor-pointer">
+                <div className="text-secondary hover:underline cursor-pointer">
                   Forgot password?
-                </button>
+                </div>
               </div>
               <SubmitButton isPending={isPending}>Sign In</SubmitButton>
             </form>
