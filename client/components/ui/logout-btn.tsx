@@ -5,7 +5,7 @@ export default function LogoutButton({ children }: { children: React.ReactNode }
   const handleLogout = async () => {
     const ok = await logout();
 
-    if (ok) window.location.reload()
+    if (ok) window.location.href = "/login"
   };
 
   return <div onClick={handleLogout}>{children}</div>
