@@ -39,10 +39,10 @@ export default function Chat() {
 
       <div onClick={minimizeChatSidebar} className="relative flex flex-col h-full overflow-hidden">
         <ChatWindow></ChatWindow>
-        <div className="invisible min-h-16"></div>
-        <div className="absolute bottom-2 flex gap-2 items-end w-full">
+        <div className="invisible min-h-16 p-2 box-content"></div>
+        <div className="absolute bottom-0 flex gap-2 items-end w-full p-2">
           <Textarea
-            className="bg-primary dark:bg-background max-h-72 resize-none"
+            className="bg-primary dark:bg-primary max-h-52 resize-none"
             placeholder="Type your medical question here"
             value={text}
             onChange={(e) => setText(e.target.value)}
