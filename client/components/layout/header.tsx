@@ -33,7 +33,7 @@ export default function Header({ user }: { user: User | null }) {
               </div>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="min-w-56" align="end">
+            <DropdownMenuContent className="min-w-[var(--radix-dropdown-menu-trigger-width)]" align="end">
               <DropdownMenuGroup>
                 <div className="flex items-center gap-2 p-2">
                   <div className="flex items-center gap-2">

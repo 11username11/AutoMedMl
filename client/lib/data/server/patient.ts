@@ -14,10 +14,30 @@ export const getPatients = async () => {
       return [];
     }
 
-    const data : Patient[] = await response.json();
+    const data: Patient[] = await response.json();
 
     return data
   } catch (error) {
     return []
+  }
+}
+
+export const getPatient = async (id: string) => {
+  const cookieStore = await cookies();
+
+  try {
+    const response = await fetch(`${baseURL}/patient/${id}`, {
+      headers: { Cookie: cookieStore.toString() },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data: Patient = await response.json();
+
+    return data
+  } catch (error) {
+    return null
   }
 }

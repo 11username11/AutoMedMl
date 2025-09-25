@@ -10,7 +10,7 @@ import { CiFilter } from "react-icons/ci";
 import { Patient } from "@/lib/types/patient";
 import { STATUS } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
-import NewCase from "@/components/ui/new-case-btn";
+import NewCaseBtn from "@/components/ui/new-case-btn";
 
 const getStatusBadge = (status: Patient["status"]) => {
   const statusConfig: Record<typeof STATUS[number], { className: string }> = {
@@ -48,7 +48,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
           <div>
           </div>
         </div>
-        <NewCase></NewCase>
+        <NewCaseBtn></NewCaseBtn>
       </div>
 
       <div className="rounded-lg border bg-primary overflow-hidden">

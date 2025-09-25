@@ -3,8 +3,8 @@
 import SearchInput from "@/components/ui/search-input";
 import { Separator } from "@/components/ui/separator";
 import { RiRobot2Line } from "react-icons/ri";
-import NewCase from "@/components/ui/new-case-btn";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import NewCaseBtn from "@/components/ui/new-case-btn";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button"
@@ -31,7 +31,6 @@ export const useChatSidebar = create<chatSidebarState>((set) => ({
   setOpenOverride: (openOverride) => set((state) => ({ openOverride })),
   toggleSidebar: () => set((state) => ({ isMinimized: !state.isMinimized })),
   setIsMinimized: (isMinimized) => {
-    console.log(123)
     set(() => ({ openOverride: true, isMinimized }))
   },
   minimizeChatSidebar: () => set(() => ({ isMinimized: true })),
@@ -82,7 +81,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
       style={{ "--chat-sidebar-width-icon": ICON_SIZE } as React.CSSProperties}
     >
       <div className="flex gap-2 items-center w-full">
-        <NewCase
+        <NewCaseBtn
           variant="secondary"
           className="w-full group-data-[minimized=true]:h-9 group-data-[minimized=true]:px-0 group-data-[minimized=true]:gap-0 group-data-[minimized=true]:w-9"
         />

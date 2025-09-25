@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dropzone, DropzoneContent, DropzoneEmptyState, renderBytes } from "@/components/ui/shadcn-io/dropzone"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, Image, Info, Upload, User } from "lucide-react"
+import { Check, ChevronsUpDown, Image, Info, Upload, User } from "lucide-react"
 import { useForm } from "react-hook-form"
 import z from "zod"
 import toast from "react-hot-toast"
@@ -16,6 +16,8 @@ import { Badge } from "@/components/ui/badge"
 import { Patient } from "@/lib/types/patient"
 import { MouseEvent, useState } from "react"
 import SubmitButton from "@/components/ui/submit-btn"
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxItem, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox"
+import NewCaseBtn from "@/components/ui/new-case-btn"
 
 const FormSchema = z.object({
   patient: z.string(),
@@ -44,7 +46,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
 
   function osSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData()
-
+    console.log(data)
     formData.append("patient", data.patient)
     formData.append("image", data.image[0])
 
@@ -120,19 +122,39 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               render={({ field }) => (
                 <FormItem className="p-4 bg-primary rounded-md shadow-sm">
                   <FormLabel className="flex gap-2 items-center font-semibold text-xl">
-                    <User></User> Patient Assignment
+                    <User /> Patient Assignment
                   </FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                        <SelectValue className="placeholder:text-foreground" placeholder="Select a patient"></SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {patients.map((patient) => <SelectItem key={patient.patient_id} value={patient.patient_id}>{patient.name} {patient.surname}</SelectItem>)}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <Combobox value={field.value} onChange={field.onChange}>
+                      <ComboboxTrigger>
+                        <button
+                          role="combobox"
+                          className="flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm"
+                        >
+                          <ComboboxValue placeholder="Select a patient"/>
+                          <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                        </button>
+                      </ComboboxTrigger >
+                      <ComboboxContent>
+                        {patients.length > 0 ? (
+                          <ComboboxGroup>
+                            <ComboboxEmpty></ComboboxEmpty>
+
+                            {patients.map((p) => (
+                              <ComboboxItem key={p.patient_id} search={`${p.patient_id} ${p.name} ${p.surname} ${p.email} ${p.phone}`} value={p.patient_id}>
+                                {p.name} {p.surname}
+                              </ComboboxItem>
+                            ))
+                            }
+                          </ComboboxGroup>
+                        ) : (
+                          <div className="px-4 py-2 space-y-2 text-center">
+                            <div className="text-sm text-muted">You have no patients yet.</div>
+                            <NewCaseBtn className="h-8 px-0 w-full text-xs"></NewCaseBtn>
+                          </div>
+                        )}
+                      </ComboboxContent>
+                    </Combobox>
                   </FormControl>
                 </FormItem>
               )}
