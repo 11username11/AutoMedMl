@@ -416,8 +416,22 @@ async def registration(
         access_token = create_access_token({"id": id_}, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES)
         refresh_token = create_access_token({"id": id_}, SECRET_KEY_REFRESH, ALGORITHM_REFRESH,
                                             REFRESH_TOKEN_EXPIRE_MINUTES)
-        response.set_cookie(key="access_token", value=access_token, httponly=True, samesite=SAMESITE, secure=SECURE)
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite=SAMESITE, secure=SECURE)
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            samesite=SAMESITE,
+            secure=SECURE,
+            expires=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            samesite=SAMESITE,
+            secure=SECURE,
+            expires=REFRESH_TOKEN_EXPIRE_MINUTES
+        )
 
     return {"message": "User successfully registered", "verify": verify}
 
@@ -459,14 +473,16 @@ async def login(user: UserLogin, response: Response):
         value=access_token,
         httponly=True,
         samesite=SAMESITE,
-        secure=SECURE
+        secure=SECURE,
+        expires=ACCESS_TOKEN_EXPIRE_MINUTES
     )
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
         samesite=SAMESITE,
-        secure=SECURE
+        secure=SECURE,
+        expires=REFRESH_TOKEN_EXPIRE_MINUTES
     )
 
     return {"message": "Logged in successfully"}
