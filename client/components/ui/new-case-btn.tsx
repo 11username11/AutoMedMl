@@ -16,7 +16,7 @@ type NewCaseButtonProps = Omit<React.ComponentProps<typeof Link>, "href"> &{
 export default function NewCaseBtn({ variant = "default", href="/new-case", className, ...props }: NewCaseButtonProps) {
   return (
     <Link {...props} href={href} className={cn(variants[variant], "flex justify-center gap-3 items-center whitespace-nowrap py-2.5 px-16 rounded-md text-sm duration-200 cursor-pointer h-10 group", className)}>
-      <FaPlus className="shrink-0"/> <span className={cn("max-w-full group-data-[minimized=true]:w-[67.5px] group-data-[minimized=true]:overflow-hidden duration-200 group-data-[minimized=true]:w-0")}>New Case</span>
+      <FaPlus className="shrink-0"/> <span className={cn("max-w-full group-data-[minimized=false]:w-[67.5px] group-data-[minimized=true]:overflow-hidden duration-200 group-data-[minimized=true]:w-0 group-data-[minimized=true]:opacity-0 opacity-100")}>New Case</span>
     </Link>
   )
 }
