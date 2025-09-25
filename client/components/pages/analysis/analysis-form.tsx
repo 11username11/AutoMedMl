@@ -46,7 +46,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
 
   function osSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData()
-    console.log(data)
+
     formData.append("patient", data.patient)
     formData.append("image", data.image[0])
 
@@ -58,20 +58,20 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
   }
 
   return (
-    <div className="p-2 rounded-md shrink-0 w-fit">
+    <div className="p-2 rounded-md shrink-0 h-full">
       <Form {...form} >
-        <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col xl:flex-row gap-4 h-full">
+        <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col lg:flex-row gap-4 h-full">
           <FormField
             control={form.control}
             name={"image"}
             render={({ field }) => (
-              <FormItem className="flex flex-col p-4 bg-primary rounded-md shadow-sm h-full ">
+              <FormItem className="flex flex-col p-4 bg-primary rounded-md shadow-sm w-full">
                 <FormLabel className="flex gap-2 items-center font-semibold text-xl">
                   <Image></Image> Upload Medical Image
                 </FormLabel>
                 <FormControl>
                   <Dropzone
-                    className="px-20 py-8 h-full shrink"
+                    className="py-8 h-full shrink"
                     accept={{ 'image/*': [] }}
                     maxFiles={1}
                     multiple={false}
@@ -115,7 +115,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               </FormItem>
             )}
           />
-          <div className="space-y-4 shrink-0">
+          <div className="flex flex-col gap-4 shrink-0 h-full">
             <FormField
               control={form.control}
               name="patient"
@@ -160,7 +160,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               )}
             />
 
-            <div className="flex flex-col gap-4 p-4 bg-primary rounded-md shadow-sm">
+            <div className="flex flex-col gap-4 p-4 bg-primary rounded-md shadow-sm h-full">
               <div className="text-xl font-semibold">Analysis Details</div>
               <div className="text-sm space-y-2">
                 <div className="flex">
@@ -188,7 +188,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2 w-min min-w-full rounded-md p-2 bg-secondary/20 text-secondary font-light text-xs">
+              <div className="flex gap-2 w-min min-w-full rounded-md p-2 bg-secondary/20 text-secondary font-light text-xs mt-auto">
                 <Info className="shrink-0" size={16}></Info>
                 AI analysis results are for reference only and should be reviewed by qualified medical professionals.
               </div>

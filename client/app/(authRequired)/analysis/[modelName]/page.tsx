@@ -7,7 +7,7 @@ export default async function Model({ params }: { params: Promise<{ modelName: s
   const [model, patients] = await Promise.all([getModel(modelName), getPatients()])
 
   return (
-    <div className="flex flex-col p-6 mx-auto">
+    <div className="flex flex-col p-6">
       <div className="p-4">
         <div className="text-3xl font-bold">{model?.title}</div>
         <div className="text-muted">Upload medical images for AI-powered analysis</div>
