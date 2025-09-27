@@ -6,8 +6,8 @@ export default async function Analysis() {
   const models = await getModels()
 
   return (
-    <div className="flex flex-col p-6 gap-8">
-      <div className="p-4">
+    <div className="flex flex-col p-10 gap-8">
+      <div>
         <div className="text-3xl font-bold">Medical Analysis</div>
         <div className="text-muted">Choose from our advanced AI models to analyze medical images and scans</div>
       </div>

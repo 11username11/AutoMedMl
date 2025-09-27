@@ -51,7 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
                     <div className="flex flex-col w-full h-full bg-background/60">
                       <Header user={user}></Header>
-                      {cloneElement(children as any, { user })}
+                      {children}
                     </div>
                   </div>
 

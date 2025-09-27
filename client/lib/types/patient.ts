@@ -8,7 +8,8 @@ export interface Patient {
   phone: string;
   age: number;
   gender: string;
-  last_visit: Date;
+  last_visit: string;
   status: typeof STATUS[number];
   avatar?: string;
+  medical_history?: string;
 }

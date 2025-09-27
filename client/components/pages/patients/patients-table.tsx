@@ -8,20 +8,9 @@ import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import { Patient } from "@/lib/types/patient";
-import { STATUS } from "@/lib/constants";
-import { Badge } from "@/components/ui/badge";
 import NewCaseBtn from "@/components/ui/new-case-btn";
-
-const getStatusBadge = (status: Patient["status"]) => {
-  const statusConfig: Record<typeof STATUS[number], { className: string }> = {
-    "Active Treatment": { className: "bg-success text-accent-foreground" },
-    "Recovered": { className: "bg-secondary text-accent-foreground" },
-    "Deceased": { className: "bg-primary-foreground text-foreground" },
-  };
-
-  const config = statusConfig[status];
-  return <Badge className={config?.className}>{status}</Badge>;
-};
+import Link from "next/link";
+import StatusBadge from "@/components/ui/status-badge";
 
 export default function PatientsTable({ patients }: { patients: Patient[] }) {
   const [searchTerm, setSearchTerm] = useState("")
@@ -31,7 +20,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
   );
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <div>
           <div className="flex gap-4">
@@ -40,10 +29,11 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             ></SearchInput>
-            <div className="flex justify-center items-center gap-1 text-sm bg-primary border rounded-md px-4 h-10 hover:bg-primary-foreground text-foreground cursor-pointer duration-200">
+            
+            <Button variant={"outline"} size={"lg"} className="bg-primary">
               <CiFilter strokeWidth={1.5} size={16} />
               Filter
-            </div>
+            </Button>
           </div>
           <div>
           </div>
@@ -81,13 +71,13 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
                 <TableCell>
                   <div className="space-y-1">
                     <div className="text-sm ">{patient.email}</div>
-                    <div className="text-sm text-muted-foreground ">{patient.phone}</div>
+                    <div className="text-sm text-muted-foreground ">{patient.phone.match(/.{1,3}/g)?.join(" ") ?? ""}</div>
                   </div>
                 </TableCell>
                 <TableCell>{patient.age}</TableCell>
                 <TableCell>{patient.gender}</TableCell>
                 <TableCell>{new Date(patient.last_visit).toLocaleDateString()}</TableCell>
-                <TableCell>{getStatusBadge(patient.status)}</TableCell>
+                <TableCell>{StatusBadge(patient.status)}</TableCell>
 
                 <TableCell>
                   <DropdownMenu>
@@ -97,10 +87,12 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-popover border border-border">
-                      <DropdownMenuItem className="gap-2">
-                        <Eye className="h-4 w-4" />
-                        View Details
-                      </DropdownMenuItem>
+                      <Link href={"/patients/" + patient.patient_id}>
+                        <DropdownMenuItem className="gap-2">
+                          <Eye className="h-4 w-4" />
+                          View Details
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuItem className="gap-2">
                         <Edit className="h-4 w-4" />
                         Edit Patient

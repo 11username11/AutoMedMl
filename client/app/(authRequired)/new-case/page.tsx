@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { InputField } from "@/components/ui/input-field"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
@@ -33,7 +32,7 @@ export const FormSchema = z.object({
     .string()
     .trim()
     .optional()
-    .refine((val) => !val || z.string().email().safeParse(val).success, {
+    .refine((val) => !val || z.email().safeParse(val).success, {
       message: "Please enter a valid email address",
     }),
 
@@ -70,7 +69,7 @@ export const FormSchema = z.object({
 export default function NewCase() {
   const router = useRouter()
 
-  const { mutateAsync, isError, isPending, error, } = useMutation(
+  const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: z.infer<typeof FormSchema>) => api.post("/add_patient", data),
       onSuccess: (data) => {
