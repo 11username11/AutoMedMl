@@ -53,7 +53,7 @@ export default function Login() {
     }
   })
 
-  function osSubmit(data: z.infer<typeof RegisterSchema>) {
+  function onSubmit(data: z.infer<typeof RegisterSchema>) {
     const formData = new FormData()
 
     formData.append("name", data.name)
@@ -77,7 +77,7 @@ export default function Login() {
           <div className="font-medium">Create your account</div>
           <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link></div>
           <Form {...form} >
-            <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col gap-4 mt-3">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-3">
               <div className="flex gap-4 items-start">
                 <InputField
                   control={form.control}

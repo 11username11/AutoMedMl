@@ -4,14 +4,12 @@ import { Select, SelectGroup, SelectValue, SelectContent, SelectItem, SelectTrig
 import { LuPalette, LuShield } from "react-icons/lu";
 import { GoSignOut } from "react-icons/go";
 import { Separator } from "@/components/ui/separator";
-import { FaRegTrashCan } from "react-icons/fa6";
 import { useTheme } from "next-themes";
-import { logout } from "@/lib/data/client/user";
-import { useRouter } from "next/navigation";
 import LogoutButton from "@/components/ui/logout-btn";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export default function Settigs() {
-  const router = useRouter();
   const { setTheme, theme } = useTheme()
 
   const handleThemeChange = (value: string) => setTheme(value)
@@ -82,10 +80,10 @@ export default function Settigs() {
                 <div className="text-sm text-muted">Permanently delete your account and all associated data</div>
               </div>
 
-              <div className="flex items-center gap-2 font-semibold text-accent-foreground text-sm p-2 bg-destructive/80 rounded-md hover:bg-destructive duration-200 cursor-pointer">
-                <FaRegTrashCan />
+              <Button size={"lg"} variant={"destructive"}>
+                <Trash2 size={20}/>
                 Delete Account
-              </div>
+              </Button>
             </div>
           </div>
         </div>

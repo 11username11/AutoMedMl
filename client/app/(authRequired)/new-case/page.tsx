@@ -14,88 +14,40 @@ import toast from "react-hot-toast";
 import api from "@/lib/axios";
 import SubmitButton from "@/components/ui/submit-btn";
 import { GENDER, STATUS } from "@/lib/constants";
-
-export const FormSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, { message: "Name must be at least 2 characters long" })
-    .regex(/^\p{L}+$/u, { message: "Name can only contain letters" }),
-
-  surname: z
-    .string()
-    .trim()
-    .min(2, { message: "Surname must be at least 2 characters long" })
-    .regex(/^\p{L}+$/u, { message: "Surname can only contain letters" }),
-
-  email: z
-    .string()
-    .trim()
-    .optional()
-    .refine((val) => !val || z.email().safeParse(val).success, {
-      message: "Please enter a valid email address",
-    }),
-
-  phone: z
-    .string()
-    .trim()
-    .transform((val) => val.replace(/\s+/g, ""))
-    .optional()
-    .refine(
-      (val) => !val || /^\+?\d{10,15}$/.test(val),
-      { message: "Phone number must be 10–15 digits (with optional +)" }
-    ),
-
-  age: z
-    .string()
-    .trim()
-    .min(1, { message: "Age is required" })
-    .refine((val) => {
-      const num = Number(val)
-      return !isNaN(num) && num >= 0 && num <= 150
-    }, { message: "Age must be a number between 0 and 150" }),
-
-  gender: z.enum(GENDER, {
-    message: "Please select a gender",
-
-  }),
-  status: z.enum(STATUS, {
-    message: "Please select a status",
-  }),
-
-  medical_history: z.string().optional(),
-})
+import { PatientSchema } from "@/lib/schemas/patient";
 
 export default function NewCase() {
   const router = useRouter()
 
   const { mutateAsync, isPending } = useMutation(
     {
-      mutationFn: (data: z.infer<typeof FormSchema>) => api.post("/add_patient", data),
+      mutationFn: (data: z.infer<typeof PatientSchema>) => api.post("/add_patient", data),
       onSuccess: (data) => {
-        toast.success("You have created a new patient!")
-
         router.push("/patients")
       },
     }
   )
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof PatientSchema>>({
+    resolver: zodResolver(PatientSchema),
     defaultValues: {
       name: "",
       surname: "",
       email: "",
       phone: "",
-      age: "",
+      age: undefined,
       gender: "Female",
       status: "Active Treatment",
       medical_history: ""
     }
   })
 
-  function osSubmit(data: z.infer<typeof FormSchema>) {
-    mutateAsync(data)
+  function osSubmit(data: z.infer<typeof PatientSchema>) {
+    toast.promise(mutateAsync(data), {
+      loading: "Verifying your data",
+      error: (error) => "Something went wrong",
+      success: (success) => "You have created a new patient!"
+    })
   }
 
   function handleCancel(e: React.MouseEvent<HTMLButtonElement>) {
@@ -165,7 +117,7 @@ export default function NewCase() {
                       <FormControl>
                         <Select defaultValue={GENDER[0]} onValueChange={field.onChange}>
                           <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                            <SelectValue ></SelectValue>
+                            <SelectValue>{field.value}</SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
@@ -188,7 +140,7 @@ export default function NewCase() {
                       <FormControl>
                         <Select defaultValue={STATUS[0]} onValueChange={field.onChange}>
                           <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                            <SelectValue></SelectValue>
+                            <SelectValue>{field.value}</SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
@@ -204,23 +156,16 @@ export default function NewCase() {
               </div>
             </div>
 
-            <FormField
+            <InputField
               control={form.control}
               name="medical_history"
-              render={({ field }) => (
-                <FormItem className="flex-1 h-full flex flex-col">
-                  <FormLabel>Medical History</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter relevant medical history, allergies, medications, etc."
-                      className="resize-none h-full bg-primary"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}>
-            </FormField>
+              label="Medical History"
+              textarea={true}
+              placeholder="Enter relevant medical history, allergies, medications, etc."
+              className="resize-none h-full bg-primary"
+              formItemClassName="flex-1 h-full flex flex-col">
+            </InputField>
+
           </div>
 
           <div className="flex gap-4 text-sm font-semibold ">

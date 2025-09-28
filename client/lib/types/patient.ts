@@ -1,4 +1,4 @@
-import { STATUS } from "../constants";
+import { GENDER, STATUS } from "../constants";
 
 export interface Patient {
   patient_id: string;
@@ -7,7 +7,7 @@ export interface Patient {
   email: string;
   phone: string;
   age: number;
-  gender: string;
+  gender: typeof GENDER[number];
   last_visit: string;
   status: typeof STATUS[number];
   avatar?: string;

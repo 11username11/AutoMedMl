@@ -1,7 +1,11 @@
+'use client'
+
+import EditableField from "@/components/ui/editable-field";
 import { Patient } from "@/lib/types/patient";
+import { cn } from "@/lib/utils";
 import { Phone, User } from "lucide-react";
 
-export default function GeneralInformation({ patient }: { patient: Patient }) {
+export default function GeneralInformation({ patient, isEditing }: { patient: Patient, isEditing: boolean }) {
   return (
     <div className="flex gap-6">
       <div className="rounded-md p-4 border w-full space-y-6 bg-primary">
@@ -14,14 +18,21 @@ export default function GeneralInformation({ patient }: { patient: Patient }) {
         <div className="space-y-4">
           <div className="text-sm space-y-1">
             <div className="font-semibold">Full Name</div>
-            <div className="text-muted">{patient.name} {patient.surname}</div>
+            {isEditing ? (
+              <div className={"flex gap-2"}>
+                <EditableField text={patient.name} isEditing={isEditing} name="name"></EditableField>
+                <EditableField text={patient.surname} isEditing={isEditing} name="surname"></EditableField>
+              </div>
+            ) : (
+              <div className="text-muted">{patient.name} {patient.surname}</div>
+            )}
           </div>
 
           <div className="text-sm space-y-1">
             <div className="font-semibold">Gender</div>
-            <div className="text-muted">{patient.gender}</div>
+            <EditableField text={patient.gender} isEditing={isEditing} name="gender" type="select"></EditableField>
           </div>
-          
+
         </div>
       </div>
 
@@ -35,12 +46,12 @@ export default function GeneralInformation({ patient }: { patient: Patient }) {
         <div className="space-y-4">
           <div className="text-sm space-y-1">
             <div className="font-semibold">Email</div>
-            <div className="text-muted">{patient.email}</div>
+            <EditableField text={patient.email} isEditing={isEditing} name="email"></EditableField>
           </div>
 
           <div className="text-sm space-y-1">
             <div className="font-semibold">Phone</div>
-            <div className="text-muted">{patient.phone ?? "No phone was provided"}</div>
+            <EditableField text={patient.phone ?? "No phone was provided"} isEditing={isEditing} name="phone"></EditableField>
           </div>
         </div>
 

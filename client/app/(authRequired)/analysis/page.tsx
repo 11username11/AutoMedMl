@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { getModels } from "@/lib/data/server/model";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import Link from "next/link";
+
 export default async function Analysis() {
   const models = await getModels()
 

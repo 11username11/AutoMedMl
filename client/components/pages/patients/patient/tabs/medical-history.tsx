@@ -1,7 +1,8 @@
+import EditableField from "@/components/ui/editable-field";
 import { Patient } from "@/lib/types/patient";
 import { FileText, Heart, Stethoscope, User } from "lucide-react";
 
-export default function MedicalHistory({ patient }: { patient: Patient }) {
+export default function MedicalHistory({ patient, isEditing }: { patient: Patient, isEditing: boolean }) {
   return (
     <div className="space-y-6">
       <div className="rounded-md p-4 border w-full space-y-4 bg-primary">
@@ -12,7 +13,7 @@ export default function MedicalHistory({ patient }: { patient: Patient }) {
         </div>
 
         <div className="text-muted text-sm">
-          {patient?.medical_history ?? "-"}
+          <EditableField text={patient?.medical_history} isEditing={isEditing} name="medical_history" type="textarea"></EditableField>
         </div>
 
       </div>
@@ -26,7 +27,7 @@ export default function MedicalHistory({ patient }: { patient: Patient }) {
           </div>
 
           <div className="text-muted text-sm">
-            {patient?.medical_history ?? "-"}
+            <EditableField text={patient?.medical_history} isEditing={isEditing} name="allergies" type="textarea"></EditableField>
           </div>
 
         </div>
@@ -39,7 +40,7 @@ export default function MedicalHistory({ patient }: { patient: Patient }) {
           </div>
 
           <div className="text-muted text-sm">
-            {patient?.medical_history ?? "-"}
+            <EditableField text={patient?.medical_history} isEditing={isEditing} name="medications" type="textarea"></EditableField>
           </div>
 
         </div>

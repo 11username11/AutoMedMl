@@ -10,8 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function PatientTabs({ patient }: { patient: Patient }) {
   const router = useRouter()
+
   const searchParams = useSearchParams()
   const currentTab = searchParams.get("tab") ?? "general"
+  const isEditing = searchParams.get("mode") == "edit"
 
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -21,27 +23,30 @@ export function PatientTabs({ patient }: { patient: Patient }) {
 
   return (
     <Tabs defaultValue={currentTab} onValueChange={handleChange} className="w-full gap-4">
-      <TabsList className="">
-        <TabsTrigger value="general" className="px-4 py-2">
-          General Information
-        </TabsTrigger>
-        <TabsTrigger value="history" className="px-4 py-2">
-          Medical History
-        </TabsTrigger>
-        <TabsTrigger value="scans" className="px-4 py-2">
-          Scans & Images
-        </TabsTrigger>
-        <TabsTrigger value="analysis" className="px-4 py-2">
-          Analysis Results
-        </TabsTrigger>
-      </TabsList>
+      <div className="flex gap-4 items-center">
+        <TabsList className="">
+          <TabsTrigger value="general" className="px-4 py-2">
+            General Information
+          </TabsTrigger>
+          <TabsTrigger value="history" className="px-4 py-2">
+            Medical History
+          </TabsTrigger>
+          <TabsTrigger value="scans" className="px-4 py-2">
+            Scans & Images
+          </TabsTrigger>
+          <TabsTrigger value="analysis" className="px-4 py-2">
+            Analysis Results
+          </TabsTrigger>
+
+        </TabsList>
+      </div>
 
       <TabsContent value="general">
-        <GeneralInformation patient={patient} />
+        <GeneralInformation patient={patient} isEditing={isEditing} />
       </TabsContent>
 
       <TabsContent value="history">
-        <MedicalHistory patient={patient} />
+        <MedicalHistory patient={patient} isEditing={isEditing} />
       </TabsContent>
 
       <TabsContent value="scans">
