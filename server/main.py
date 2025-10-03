@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from pymongo import MongoClient
 from pymongo.synchronous.collection import ObjectId
 
-from classes import UserLogin, Patient, MessageInput
+from classes import UserLogin, Patient, MessageInput, DeletePatientData, UpdatePatient
 from functions import create_access_token, is_valid_email, verify_password, is_valid_password, hash_password
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -336,7 +336,7 @@ async def send_data_model(response: Response, model_name: str, current_user: dic
     except Exception as e:
         raise HTTPException(status_code=500, detail=fr"{e}")
 
-    return "Success!"
+    return {"message": "Success"}
 
 
 @app.post("/registration")
@@ -522,3 +522,44 @@ async def delete_account(
     response.delete_cookie("refresh_token")
 
     return {"message": "Account successfully deleted"}
+
+
+@app.get("/delete_patient")
+async def delete_patient(patient_id: DeletePatientData,
+                         response: Response,
+                         current_user: dict = Depends(get_optional_user)):
+    user_id = current_user["id"]
+    result = users_collection.find_one({"_id": ObjectId(user_id)})
+
+    if not result:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    result_patients_id = patients_collection.find_one({"medic_id": user_id})
+    if not result_patients_id:
+        raise HTTPException(status_code=404, detail="No Patients")
+
+    update_result = patients_collection.update_one(
+        {"medic_id": user_id},
+        {"$pull": {"patients_list": {"patient_id": patient_id.patient_id}}}
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    #
+    # update_chat_result = chats_collection.update_one(
+    #     {"medic_id": user_id},
+    #     {"$pull": {"patients_list": {"patient_id": patient_id.patient_id}}}
+    # )
+
+    return {"message": "Success"}
+
+
+@app.post("/UpdatePatient")
+async def delete_patient(update_patient: UpdatePatient,
+                         response: Response,
+                         current_user: dict = Depends(get_optional_user)):
+    user_id = current_user["id"]
+    result = users_collection.find_one({"_id": ObjectId(user_id)})
+
+    if not result:
+        raise HTTPException(status_code=404, detail="User not found")
