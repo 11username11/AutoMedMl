@@ -237,7 +237,7 @@ async def add_patient(
             "last_visit": datetime.now(),
             "status": patient.status,
             "gender": patient.gender,
-            "age": patient.age
+            "date_of_birth": patient.date_of_birth
         }
 
         result = patients_collection.update_one(
