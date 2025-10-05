@@ -559,7 +559,6 @@ async def update_patient(update_patient_: UpdatePatient,
                          current_user: dict = Depends(get_optional_user)):
     user_id = current_user["id"]
     result = users_collection.find_one({"_id": ObjectId(user_id)})
-
     if not result:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -587,11 +586,11 @@ async def update_patient(update_patient_: UpdatePatient,
     chats_collection.update_one(
         {
             "medic_id": user_id,
-            "chats.chat_id": update_patient.patient_id
+            "chats.chat_id": update_patient_.patient_id
         },
         {
             "$set": {
-                "chats.$.name": f"Chat with {update_patient.name} {update_patient.surname}"
+                "chats.$.name": f"Chat with {update_patient_.name} {update_patient_.surname}"
             }
         }
     )
