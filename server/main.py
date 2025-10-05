@@ -545,17 +545,17 @@ async def delete_patient(patient_id: DeletePatientData,
 
     if update_result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Patient not found")
-    #
-    # update_chat_result = chats_collection.update_one(
-    #     {"medic_id": user_id},
-    #     {"$pull": {"patients_list": {"patient_id": patient_id.patient_id}}}
-    # )
 
-    return {"message": "Success"}
+    chats_collection.update_one(
+        {"medic_id": user_id},
+        {"$pull": {"chats": {"chat_id": patient_id.patient_id}}}
+    )
+
+    return {"message": "Patient and related chat deleted successfully"}
 
 
-@app.post("/UpdatePatient")
-async def delete_patient(update_patient: UpdatePatient,
+@app.post("/update_patient")
+async def update_patient(update_patient_: UpdatePatient,
                          response: Response,
                          current_user: dict = Depends(get_optional_user)):
     user_id = current_user["id"]
@@ -563,3 +563,38 @@ async def delete_patient(update_patient: UpdatePatient,
 
     if not result:
         raise HTTPException(status_code=404, detail="User not found")
+
+    update_result = patients_collection.update_one(
+        {
+            "medic_id": user_id,
+            "patients_list.patient_id": update_patient_.patient_id
+        },
+        {
+            "$set": {
+                "patients_list.$.name": update_patient_.name,
+                "patients_list.$.surname": update_patient_.surname,
+                "patients_list.$.email": update_patient_.email,
+                "patients_list.$.phone": update_patient_.phone,
+                "patients_list.$.status": update_patient_.status,
+                "patients_list.$.gender": update_patient_.gender,
+                "patients_list.$.date_of_birth": update_patient_.date_of_birth
+            }
+        }
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Patient not found or no changes applied")
+
+    chats_collection.update_one(
+        {
+            "medic_id": user_id,
+            "chats.chat_id": update_patient.patient_id
+        },
+        {
+            "$set": {
+                "chats.$.name": f"Chat with {update_patient.name} {update_patient.surname}"
+            }
+        }
+    )
+
+    return {"message": "Patient updated successfully"}
