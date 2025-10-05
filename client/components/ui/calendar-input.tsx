@@ -15,7 +15,6 @@ import { ControllerRenderProps, FieldValues } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import { parse } from "date-fns"
 import InputMask from "@mona-health/react-input-mask";
-import { enGB } from "date-fns/locale"
 
 function isValidDate(date: Date | undefined) {
   if (!date) {
@@ -109,7 +108,6 @@ export function CalendarInput({ field, className, ...props }: CalendarInput) {
             selected={date}
             captionLayout="dropdown"
             month={month}
-            locale={enGB}
             onMonthChange={setMonth}
           />
         </PopoverContent>
