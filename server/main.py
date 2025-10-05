@@ -581,7 +581,7 @@ async def update_patient(update_patient_: UpdatePatient,
     )
 
     if update_result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="Patient not found or no changes applied")
+        raise HTTPException(status_code=228, detail="Patient not found or no changes applied")
 
     chats_collection.update_one(
         {
