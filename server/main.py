@@ -234,7 +234,6 @@ async def add_patient(
             "surname": patient.surname,
             "email": patient.email,
             "phone": patient.phone,
-            "last_visit": datetime.now(),
             "status": patient.status,
             "gender": patient.gender,
             "date_of_birth": patient.date_of_birth
@@ -616,12 +615,6 @@ async def get_patient_info(patient_id: str, current_user: dict = Depends(get_opt
         raise HTTPException(status_code=404, detail="Patient not found or does not belong to this medic")
 
     patient_info = doc["patients_list"][0]
-
-    last_visit = patient_info.get("last_visit")
-    if isinstance(last_visit, dict) and "$date" in last_visit:
-        patient_info["last_visit"] = last_visit["$date"]
-    elif isinstance(last_visit, datetime):
-        patient_info["last_visit"] = last_visit.isoformat()
 
     return {
         "medic_id": user_id,
