@@ -600,7 +600,7 @@ async def update_patient(update_patient_: UpdatePatient,
     return {"message": "Patient updated successfully"}
 
 
-@app.get("/patient_info/{patient_id}")
+@app.get("/patientS/{patient_id}")
 async def get_patient_info(patient_id: str, current_user: dict = Depends(get_optional_user)):
     if not current_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
