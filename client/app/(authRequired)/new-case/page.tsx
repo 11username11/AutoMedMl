@@ -6,7 +6,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { InputField } from "@/components/ui/input-field"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
@@ -35,14 +34,14 @@ export default function NewCase() {
       surname: "",
       email: "",
       phone: "",
-      age: undefined,
+      date_of_birth: "",
       gender: "Female",
       status: "Active Treatment",
       medical_history: ""
     }
   })
 
-  function osSubmit(data: z.infer<typeof PatientSchema>) {
+  function onSubmit(data: z.infer<typeof PatientSchema>) {
     toast.promise(mutateAsync(data), {
       loading: "Verifying your data",
       error: (error) => "Something went wrong",
@@ -64,7 +63,7 @@ export default function NewCase() {
       </div>
 
       <Form {...form} >
-        <form onSubmit={form.handleSubmit(osSubmit)} className="p-4 rounded-md flex flex-col gap-4 w-full">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 rounded-md flex flex-col gap-4 w-full">
           <div className="flex gap-4 items-start">
             <div className="space-y-4 flex-1">
               <InputField
@@ -99,20 +98,21 @@ export default function NewCase() {
                 placeholder="Enter phone number"
               />
 
-              <div className="flex gap-4 items-start">
+              <div className="flex gap-4 items-start flex-wrap">
                 <InputField
                   control={form.control}
-                  name="age"
-                  label="Age *"
-                  type="number"
-                  placeholder="Age"
+                  name="date_of_birth"
+                  label="Date of birth *"
+                  placeholder="DD.MM.YYYY"
+                  inputType="calendar"
+                  formItemClassName="min-w-fit"
                 />
 
                 <FormField
                   control={form.control}
                   name="gender"
                   render={({ field }) => (
-                    <FormItem className="w-full flex flex-col">
+                    <FormItem className="flex-1">
                       <FormLabel>Gender *</FormLabel>
                       <FormControl>
                         <Select defaultValue={GENDER[0]} onValueChange={field.onChange}>
@@ -135,7 +135,7 @@ export default function NewCase() {
                   control={form.control}
                   name="status"
                   render={({ field }) => (
-                    <FormItem className="w-full flex flex-col">
+                    <FormItem className="flex-1">
                       <FormLabel>Status *</FormLabel>
                       <FormControl>
                         <Select defaultValue={STATUS[0]} onValueChange={field.onChange}>
@@ -160,7 +160,7 @@ export default function NewCase() {
               control={form.control}
               name="medical_history"
               label="Medical History"
-              textarea={true}
+              inputType="textarea"
               placeholder="Enter relevant medical history, allergies, medications, etc."
               className="resize-none h-full bg-primary"
               formItemClassName="flex-1 h-full flex flex-col">

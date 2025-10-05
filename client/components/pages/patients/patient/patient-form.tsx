@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { differenceInYears, parse } from "date-fns";
 
 export default function PatientForm({ patient }: { patient: Patient }) {
   const router = useRouter()
@@ -68,7 +69,7 @@ export default function PatientForm({ patient }: { patient: Patient }) {
                 <div className="flex gap-12">
                   <div className="flex gap-2 items-center text-sm">
                     <User className="text-secondary" size={20}></User>
-                    {patient.age} years old
+                    {differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))} years old
                   </div>
                   <div className="flex gap-2 items-center text-sm">
                     <Clock className="text-secondary" size={20}></Clock>

@@ -6,7 +6,7 @@ export interface Patient {
   surname: string;
   email: string;
   phone: string;
-  age: number;
+  date_of_birth: string;
   gender: typeof GENDER[number];
   last_visit: string;
   status: typeof STATUS[number];

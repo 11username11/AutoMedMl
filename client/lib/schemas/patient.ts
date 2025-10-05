@@ -1,5 +1,6 @@
 import z from "zod"
 import { GENDER, STATUS } from "../constants"
+import { parse } from "date-fns"
 
 export const PatientSchema = z.object({
   name: z
@@ -32,14 +33,16 @@ export const PatientSchema = z.object({
       { message: "Phone number must be 10–15 digits (with optional +)" }
     ),
 
-  age: z
-    .number()
-    .min(1, { message: "Age is required" })
-    .refine((val) => {
-      const num = Number(val)
-      return !isNaN(num) && num >= 0 && num <= 150
-    }, { message: "Age must be a number between 0 and 150" }),
+  date_of_birth: z.string().refine((val) => {
+    const parsed = parse(val, "dd.MM.yyyy", new Date())
+    if (isNaN(parsed.getTime())) return false
 
+    const currentYear = new Date().getFullYear()
+    return parsed.getFullYear() <= currentYear && parsed.getFullYear() >= 1925
+  }, {
+    message: "Invalid date",
+  }),
+    
   gender: z.enum(GENDER, {
     message: "Please select a gender",
 

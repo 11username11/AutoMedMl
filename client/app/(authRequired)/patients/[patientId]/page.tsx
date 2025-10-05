@@ -11,7 +11,7 @@ const patient: Patient = {
   "last_visit": "2025-09-26T01:14:54.004Z",
   "status": "Recovered",
   "gender": "Female",
-  "age": 34
+  "date_of_birth": "15.08.1998"
 }
 
 export default async function PatientPage({ params }: { params: Promise<{ patientId: Patient["patient_id"] }> }) {

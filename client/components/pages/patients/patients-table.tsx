@@ -11,9 +11,11 @@ import { Patient } from "@/lib/types/patient";
 import NewCaseBtn from "@/components/ui/new-case-btn";
 import Link from "next/link";
 import StatusBadge from "@/components/ui/status-badge";
+import { differenceInYears, parse } from "date-fns";
 
 export default function PatientsTable({ patients }: { patients: Patient[] }) {
   const [searchTerm, setSearchTerm] = useState("")
+
   const filteredPatients = patients.filter((patient) =>
     Object.values(patient).some((value) => String(value).toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -29,7 +31,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             ></SearchInput>
-            
+
             <Button variant={"outline"} size={"lg"} className="bg-primary">
               <CiFilter strokeWidth={1.5} size={16} />
               Filter
@@ -74,7 +76,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
                     <div className="text-sm text-muted-foreground ">{patient.phone.match(/.{1,3}/g)?.join(" ") ?? ""}</div>
                   </div>
                 </TableCell>
-                <TableCell>{patient.age}</TableCell>
+                <TableCell className="px-6">{differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))}</TableCell>
                 <TableCell>{patient.gender}</TableCell>
                 <TableCell>{new Date(patient.last_visit).toLocaleDateString()}</TableCell>
                 <TableCell>{StatusBadge(patient.status)}</TableCell>

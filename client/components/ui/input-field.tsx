@@ -2,6 +2,9 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { Textarea } from "./textarea"
+import { CalendarInput } from "./calendar-input"
+
+type inputType = "input" | "textarea" | "calendar" | "select"
 
 interface InputFieldProps {
   control: any
@@ -11,26 +14,29 @@ interface InputFieldProps {
   placeholder?: string,
   className?: React.ComponentProps<"input">["className"],
   formItemClassName?: React.ComponentProps<"div">["className"],
-  textarea?: boolean
+  inputType?: inputType
 }
 
-export function InputField({ control, name, label, type = "text", placeholder, className, formItemClassName, textarea = false }: InputFieldProps) {
+export function InputField({ control, name, label, type = "text", placeholder, className, formItemClassName, inputType = "input" }: InputFieldProps) {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("w-full", formItemClassName)}>
+        <FormItem className={cn(" flex-1 shrink-0 ", formItemClassName)}>
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
-            {textarea ? (
-              <Textarea
-                placeholder={placeholder}
-                className={className}
-                {...field}
-              />
-            ) : <Input className={cn("h-10", className)} type={type} placeholder={placeholder} {...field} />}
-            
+            {
+              inputType === "input" ?
+                <Input className={cn("h-10", className)} type={type} placeholder={placeholder} {...field} /> :
+                inputType === "textarea" ?
+                  <Textarea
+                    placeholder={placeholder}
+                    className={className}
+                    {...field}
+                  /> :
+                  <CalendarInput className={cn("h-10", className)} type={type} placeholder={placeholder} field={field} />
+            }
           </FormControl>
           <FormMessage />
         </FormItem>

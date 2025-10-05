@@ -2,7 +2,6 @@
 
 import EditableField from "@/components/ui/editable-field";
 import { Patient } from "@/lib/types/patient";
-import { cn } from "@/lib/utils";
 import { Phone, User } from "lucide-react";
 
 export default function GeneralInformation({ patient, isEditing }: { patient: Patient, isEditing: boolean }) {
@@ -31,6 +30,11 @@ export default function GeneralInformation({ patient, isEditing }: { patient: Pa
           <div className="text-sm space-y-1">
             <div className="font-semibold">Gender</div>
             <EditableField text={patient.gender} isEditing={isEditing} name="gender" type="select"></EditableField>
+          </div>
+
+          <div className="text-sm space-y-1">
+            <div className="font-semibold">Birth Date</div>
+            <EditableField text={patient.date_of_birth} isEditing={isEditing} name="date_of_birth" type="calendar"></EditableField>
           </div>
 
         </div>

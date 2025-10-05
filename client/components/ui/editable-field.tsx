@@ -11,7 +11,7 @@ interface EditableFieldProps {
   name: string,
   isEditing: boolean,
   text: string | undefined,
-  type?: "select" | "input" | "textarea"
+  type?: "select" | "input" | "textarea" | "calendar"
 }
 
 export default function EditableField({ name, isEditing, text, type = "input" }: EditableFieldProps) {
@@ -44,6 +44,6 @@ export default function EditableField({ name, isEditing, text, type = "input" }:
   }
 
   return isEditing
-    ? <InputField control={control} name={name} textarea={type === "textarea"}></InputField>
+    ? <InputField control={control} name={name} inputType={type}></InputField>
     : <div className="text-muted">{text ?? "-"}</div>
 }
