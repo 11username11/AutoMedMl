@@ -616,7 +616,4 @@ async def get_patient_info(patient_id: str, current_user: dict = Depends(get_opt
 
     patient_info = doc["patients_list"][0]
 
-    return {
-        "medic_id": user_id,
-        "patient": patient_info
-    }
+    return patient_info
