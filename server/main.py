@@ -598,3 +598,32 @@ async def update_patient(update_patient_: UpdatePatient,
     )
 
     return {"message": "Patient updated successfully"}
+
+
+@app.get("/patient_info/{patient_id}")
+async def get_patient_info(patient_id: str, current_user: dict = Depends(get_optional_user)):
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    user_id = current_user["id"]
+
+    doc = patients_collection.find_one(
+        {"medic_id": user_id, "patients_list.patient_id": patient_id},
+        {"patients_list": {"$elemMatch": {"patient_id": patient_id}}}
+    )
+
+    if not doc or not doc.get("patients_list"):
+        raise HTTPException(status_code=404, detail="Patient not found or does not belong to this medic")
+
+    patient_info = doc["patients_list"][0]
+
+    last_visit = patient_info.get("last_visit")
+    if isinstance(last_visit, dict) and "$date" in last_visit:
+        patient_info["last_visit"] = last_visit["$date"]
+    elif isinstance(last_visit, datetime):
+        patient_info["last_visit"] = last_visit.isoformat()
+
+    return {
+        "medic_id": user_id,
+        "patient": patient_info
+    }
