@@ -21,7 +21,10 @@ export default function PatientForm({ patient }: { patient: Patient }) {
 
   const { mutateAsync, isPending } = useMutation(
     {
-      mutationFn: (data: z.infer<typeof PatientSchema>) => api.post("/update_patient", data),
+      mutationFn: (data: z.infer<typeof PatientSchema>) => api.post("/update_patient", {
+        patient_id: patient.patient_id,
+        ...data
+      }),
       onSuccess: (data) => {
         router.refresh()
       },
