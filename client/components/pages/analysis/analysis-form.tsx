@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation"
 import { AnalysisModel } from "@/lib/types/model"
 import { Badge } from "@/components/ui/badge"
 import { Patient } from "@/lib/types/patient"
-import { MouseEvent, useState } from "react"
 import SubmitButton from "@/components/ui/submit-btn"
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxItem, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox"
 import NewCaseBtn from "@/components/ui/new-case-btn"
@@ -25,14 +24,9 @@ const FormSchema = z.object({
 });
 
 export default function AnalysisForm({ model, patients }: { model: AnalysisModel | undefined, patients: Patient[] }) {
-  const router = useRouter()
-
   const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: FormData) => api.post(`/model/${model?.technical_name}/send_data`, data),
-      onSuccess: async (response) => {
-        // router.back()
-      }
     }
   )
 
