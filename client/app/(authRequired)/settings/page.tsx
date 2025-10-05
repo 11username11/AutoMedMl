@@ -8,11 +8,32 @@ import { useTheme } from "next-themes";
 import LogoutButton from "@/components/ui/logout-btn";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useMutation } from "@tanstack/react-query";
+import api from "@/lib/axios";
+import SubmitButton from "@/components/ui/submit-btn";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 export default function Settigs() {
   const { setTheme, theme } = useTheme()
+  const [open, setOpen] = useState(false)
+
+  const closeDialog = () => setOpen(false)
 
   const handleThemeChange = (value: string) => setTheme(value)
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: () => api.get("/delete_account"),
+    onSuccess: () => {
+      window.location.reload()
+    },
+    onError: () => {
+      toast.error("Something went wrong")
+    }
+  })
+
+  const handleDelete = () => mutateAsync()
 
   return (
     <div className="flex flex-col items-center gap-8 p-6 h-full w-full">
@@ -80,10 +101,41 @@ export default function Settigs() {
                 <div className="text-sm text-muted">Permanently delete your account and all associated data</div>
               </div>
 
-              <Button size={"lg"} variant={"destructive"}>
-                <Trash2 size={20}/>
-                Delete Account
-              </Button>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild >
+                  <Button size={"lg"} variant={"destructive"}>
+                    <Trash2 size={20} />
+                    Delete Account
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="pb-4">
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription className="space-y-4" asChild>
+                      <div>
+                        <div>
+                          This action cannot be undone. This will permanently delete your account
+                          and remove your data from our servers.
+                          <ul className="list-disc list-inside mt-2 space-y-1">
+                            <li>All medical analyses and results</li>
+                            <li>Patient records and associations</li>
+                            <li>Account settings and preferences</li>
+                            <li>Chat history and conversations</li>
+                          </ul>
+                        </div>
+
+                        <div className="ml-auto flex w-fit gap-2">
+                          <Button onClick={closeDialog} size={"lg"} variant={"outline"}>Cancel</Button>
+                          <SubmitButton isPending={isPending} onClick={handleDelete} size={"lg"} variant={"destructive"}>
+                            Yes, delete my account
+                          </SubmitButton>
+                        </div>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+
             </div>
           </div>
         </div>

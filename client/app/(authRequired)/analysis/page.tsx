@@ -1,7 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { getModels } from "@/lib/data/server/model";
-import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import Link from "next/link";
+import DynamicIcon from "@/components/ui/dynamic-icon";
+import { iconKeys } from "@/components/ui/dynamic-icon";
 
 export default async function Analysis() {
   const models = await getModels()
@@ -18,7 +19,7 @@ export default async function Analysis() {
           <Link href={"/analysis/" + model.technical_name} key={model.title + index} className="flex flex-col gap-4 p-6 bg-primary max-w-xl shadow-sm rounded-md hover:bg-secondary/5 duration-200 cursor-pointer">
             <div className="flex gap-3 items-center">
               <div className="text-secondary bg-secondary/10 p-2 h-10 w-10 rounded-md">
-                <DynamicIcon name={model.icon.toLowerCase() as IconName}></DynamicIcon>
+                <DynamicIcon name={model.icon.toLowerCase() as iconKeys}></DynamicIcon>
               </div>
 
               <Badge className="bg-secondary/10 text-foreground">{model.category}</Badge>

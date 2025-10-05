@@ -15,10 +15,12 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { differenceInYears, parse } from "date-fns";
+import { isEqual } from "lodash-es"
+import { useEditMode } from "@/hooks/use-edit-mode";
 
 export default function PatientForm({ patient }: { patient: Patient }) {
   const router = useRouter()
-
+  const { cancelEdit } = useEditMode()
   const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: z.infer<typeof PatientSchema>) => api.post("/update_patient", {
@@ -37,11 +39,19 @@ export default function PatientForm({ patient }: { patient: Patient }) {
   })
 
   function onSubmit(data: z.infer<typeof PatientSchema>) {
-    toast.promise(mutateAsync(data), {
-      loading: "Verifying your data",
-      error: (error) => "Something went wrong",
-      success: (success) => "You have successfully update a patient!"
-    })
+    if (isEqual(patient, {
+      patient_id: patient.patient_id,
+      ...data
+    }))
+      toast.success("No changes made")
+    else
+      toast.promise(mutateAsync(data), {
+        loading: "Verifying your data",
+        error: (error) => "Something went wrong",
+        success: (success) => "You have update a patient!"
+      })
+
+    cancelEdit()
   }
 
   return (
@@ -74,9 +84,6 @@ export default function PatientForm({ patient }: { patient: Patient }) {
                     <User className="text-secondary" size={20}></User>
                     {differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))} years old
                   </div>
-                  <div className="flex gap-2 items-center text-sm">
-                    <Clock className="text-secondary" size={20}></Clock>
-                    Last visit: {new Date(patient.last_visit).toLocaleDateString()}</div>
                   <div className="flex gap-2 items-center text-sm">
                     <Activity className="text-secondary" size={20}></Activity>
                     {patient.gender}

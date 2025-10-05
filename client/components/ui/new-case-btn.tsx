@@ -2,21 +2,22 @@ import { cn } from "@/lib/utils";
 import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa6";
+import { Button } from "./button";
 
-const variants = {
-  default: "text-accent-foreground bg-secondary hover:bg-secondary-foreground",
-  secondary: "bg-primary border hover:bg-primary-foreground",
-}
-
-type NewCaseButtonProps = Omit<React.ComponentProps<typeof Link>, "href"> &{
-  variant?: "default" | "secondary",
+type NewCaseButtonProps = Omit<React.ComponentProps<typeof Link>, "href"> & {
+  variant?: React.ComponentProps<typeof Button>["variant"],
   href?: Url
 };
 
-export default function NewCaseBtn({ variant = "default", href="/new-case", className, ...props }: NewCaseButtonProps) {
+export default function NewCaseBtn({ variant = "secondary", href = "/new-case", className, ...props }: NewCaseButtonProps) {
   return (
-    <Link {...props} href={href} className={cn(variants[variant], "flex justify-center gap-3 items-center whitespace-nowrap py-2.5 px-16 rounded-md text-sm duration-200 cursor-pointer h-10 group", className)}>
-      <FaPlus className="shrink-0"/> <span className={cn("max-w-full group-data-[minimized=false]:w-[67.5px] group-data-[minimized=true]:overflow-hidden duration-200 group-data-[minimized=true]:w-0 group-data-[minimized=true]:opacity-0 opacity-100")}>New Case</span>
+    <Link className={cn("group  duration-200", className)} href={href} {...props}>
+      <Button size={"lg"} variant={variant} className={cn("px-16 max-w-full group duration-200", className, "group-data-[minimized=true]:px-4")} >
+        <FaPlus className="shrink-0" />
+        <span className={cn("max-w-full group-data-[minimized=true]:overflow-hidden duration-200  group-data-[minimized=true]:opacity-0 opacity-100")}>
+          New Case
+        </span>
+      </Button>
     </Link>
   )
 }

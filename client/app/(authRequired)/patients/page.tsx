@@ -12,7 +12,6 @@ export default async function Patients() {
           <div className="text-muted ">Manage and view patient information</div>
         </div>
       </div>
-
       <PatientsTable patients={patients}></PatientsTable>
     </div>
   );

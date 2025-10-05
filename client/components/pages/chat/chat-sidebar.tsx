@@ -82,8 +82,8 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     >
       <div className="flex gap-2 items-center w-full">
         <NewCaseBtn
-          variant="secondary"
-          className="w-full group-data-[minimized=true]:h-9 group-data-[minimized=true]:px-0 group-data-[minimized=true]:gap-0 group-data-[minimized=true]:w-9"
+          variant="outline"
+          className="w-full group-data-[minimized=true]:h-9 group-data-[minimized=true]:px-0 group-data-[minimized=true]:gap-0 group-data-[minimized=true]:min-w-4"
         />
         <Button
           onClick={toggleSidebar}

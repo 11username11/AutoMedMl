@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { JSX } from 'react';
 import { Button } from './button';
 
-type SubmitButtonProps = JSX.IntrinsicElements['button'] & {
+interface SubmitButtonProps extends React.ComponentProps<typeof Button> {
   isPending: boolean;
 };
 
@@ -12,8 +12,8 @@ export default function SubmitButton({ isPending, children, className, ...props 
     <Button
       {...props}
       size={"lg"}
-      variant={"secondary"}
-      className={cn(isPending && "bg-secondary/60 cursor-default hover:bg-secondary/60", className)}
+      variant={props.variant || "secondary"}
+      className={cn(isPending && "cursor-default", className)}
     >
       {isPending && <CircularProgress className='absolute left-1/2 top-1/2 -translate-1/2' size={20} color="inherit" />}
       <div className={cn("flex gap-2 items-center", isPending ? "text-transparent duration-200" : "")}>

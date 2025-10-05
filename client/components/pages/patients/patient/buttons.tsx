@@ -2,27 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submit-btn";
+import { useEditMode } from "@/hooks/use-edit-mode";
 import { Edit, Save, Trash2, X } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Buttons({ isPending }: { isPending: boolean }) {
-  const router = useRouter()
-
-  const searchParams = useSearchParams()
-
-  const isEditing = searchParams.get("mode") == "edit"
-
-  const enableEdit = () => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("mode", "edit")
-    router.replace(`?${params.toString()}`)
-  }
-
-  const cancelEdit = () => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete("mode")
-    router.replace(`?${params.toString()}`)
-  }
+  const { isEditing, enableEdit, cancelEdit } = useEditMode()
 
   return (
     <div className="space-x-4">
@@ -32,7 +16,7 @@ export default function Buttons({ isPending }: { isPending: boolean }) {
             <Save size={20}></Save>
             Save
           </SubmitButton>
-          <Button type="button" onClick={cancelEdit} className="box-content" size={"lg"} variant={"outline"}>
+          <Button type="button" onClick={cancelEdit} size={"lg"} variant={"outline"}>
             <X size={20}></X>
             Cancel Edit
           </Button>

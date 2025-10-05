@@ -1,8 +1,15 @@
-import dynamic from "next/dynamic";
+import { Eye, Heart, Activity, Hand } from "lucide-react"
 
-const DynamicIcon = ({ name }: { name: string }) => {
-  const LucideIcon = dynamic(() =>
-    import("lucide-react").then((mod) => (mod as any)[name])
-  );
-  return <LucideIcon />;
-};
+const icons = {
+  eye: Eye,
+  heart: Heart,
+  activity: Activity,
+  hand: Hand,
+}
+
+export type iconKeys = keyof typeof icons
+
+export default function DynamicIcon({ name }: { name: iconKeys }) {
+  const Icon = icons[name]
+  return <Icon />
+}
