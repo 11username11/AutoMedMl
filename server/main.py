@@ -156,7 +156,6 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
 @app.get("/patients")
 async def patients(current_user: dict = Depends(get_optional_user)):
     result = patients_collection.find_one({"medic_id": current_user["id"]})
-    print(result["patients_list"])
     return result["patients_list"]
 
 
@@ -199,7 +198,7 @@ async def send_message(
         response_text = f"Simulated response to: {text}\n"
         for chunk in response_text.split():
             yield chunk + " "
-            await asyncio.sleep(0.2)
+            await asyncio.sleep(0.4)
 
         chats_collection.update_one(
             {"medic_id": current_user["id"], "chats.chat_id": chat_id},
