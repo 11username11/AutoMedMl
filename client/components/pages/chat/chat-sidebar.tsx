@@ -75,7 +75,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     <div
       data-minimized={effectiveMinimized}
       className={cn(
-        "flex flex-col gap-3 h-full w-96 shrink-0 duration-200 overflow-hidden group",
+        "flex flex-col gap-3 w-96 shrink-0 duration-200 overflow-hidden group",
         "data-[minimized=true]:w-[calc(var(--chat-sidebar-width-icon)+(--spacing(5.5*2)))]"
       )}
       style={{ "--chat-sidebar-width-icon": ICON_SIZE } as React.CSSProperties}

@@ -29,9 +29,9 @@ export default function Chat() {
 
     setIsStreaming(false)
   };
-
+ 
   return (
-    <div className="w-full flex flex-col h-full">
+    <div className="w-full flex max-h-full flex-col overflow-hidden">
       <div className="text-2xl font-bold mb-2">Medical AI Chat</div>
       <div className="text-muted mb-4">
         Get instant medical information and guidance from our AI assistant

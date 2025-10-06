@@ -5,14 +5,13 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { LogIn, LogOut, User as UserIcon, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { logout } from "@/lib/data/client/user";
 import LogoutButton from "../ui/logout-btn";
 import { User } from "@/lib/types/user";
 import Avatar from "../ui/avatar";
 
 export default function Header({ user }: { user: User | null }) {
   return (
-    <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border bg-sidebar">
+    <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border bg-sidebar sticky top-0">
       {user ? (
         <>
           <SidebarTrigger className="cursor-pointer p-4"></SidebarTrigger>

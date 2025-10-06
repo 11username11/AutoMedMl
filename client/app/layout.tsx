@@ -49,7 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <div className="flex h-screen w-full">
                     {user && <LayoutSidebar></LayoutSidebar>}
 
-                    <div className="flex flex-col w-full h-full bg-background/60">
+                    <div className="flex flex-col w-full min-h-screen bg-background/60">
                       <Header user={user}></Header>
                       {children}
                     </div>

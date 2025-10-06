@@ -10,7 +10,7 @@ export default async function Home() {
   const defaultIsMinimized = cookieStore.get(CHAT_SIDEBAR_COOKIE_NAME)?.value === "true"
 
   return (
-    <div className={cn("flex gap-8 p-6 h-full overflow-hidden")}>
+    <div className={cn("flex flex-1 gap-8 p-6 overflow-hidden")}>
       <ChatSidebar chats={chats} defaultIsMinimized={defaultIsMinimized}></ChatSidebar>
 
       <Chat></Chat>
