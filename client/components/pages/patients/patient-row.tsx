@@ -14,7 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 
-export default function PatientRow({ patient }: { patient: Patient }) {
+export default function PatientRow({ patient, ...props }: { patient: Patient } & React.HTMLAttributes<HTMLTableRowElement>) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -34,7 +34,7 @@ export default function PatientRow({ patient }: { patient: Patient }) {
   const handleDelete = (patient_id: string) => mutateAsync(patient_id)
 
   return (
-    <TableRow key={patient.patient_id}>
+    <TableRow {...props}>
       <TableCell>
         <div className="flex items-center gap-3 my-1">
           <div className="rounded-full text-accent-foreground shrink-0 flex items-center justify-center bg-secondary-foreground w-10 h-10">

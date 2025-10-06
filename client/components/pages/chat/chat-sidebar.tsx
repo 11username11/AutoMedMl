@@ -4,8 +4,8 @@ import SearchInput from "@/components/ui/search-input";
 import { Separator } from "@/components/ui/separator";
 import { RiRobot2Line } from "react-icons/ri";
 import NewCaseBtn from "@/components/ui/new-case-btn";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { cn, filterBySearch } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import { create } from "zustand";
@@ -14,6 +14,7 @@ import { useChat } from "@/hooks/useChat";
 import { CHAT_SIDEBAR_COOKIE_NAME, ICON_SIZE } from "@/lib/constants";
 import { Chats } from "@/lib/types/chat";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 interface chatSidebarState {
   isMinimized: boolean,
@@ -52,11 +53,21 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     ? defaultIsMinimized
     : isMinimized;
 
+  const parentRef = useRef<HTMLDivElement>(null)
+
   const [searchTerm, setSearchTerm] = useState("")
-  const filteredChats = chats.filter((chat) =>
-    searchTerm.split(" ").every((term) => [chat.name, chat.surname].some((value) => String(value).toLowerCase().includes(term.toLowerCase()))
-    )
-  );
+
+  const filteredChats = useMemo(
+    () => filterBySearch(chats, searchTerm, ["name", "surname"]),
+    [chats, searchTerm]
+  )
+
+  const rowVirtualizer = useVirtualizer({
+    count: filteredChats.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 60,
+    overscan: 5,
+  })
 
   const handleChatChange = (id: string) => {
     setChatId(id)
@@ -74,10 +85,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
   return (
     <div
       data-minimized={effectiveMinimized}
-      className={cn(
-        "flex flex-col gap-3 w-96 shrink-0 duration-200 overflow-hidden group",
-        "data-[minimized=true]:w-[calc(var(--chat-sidebar-width-icon)+(--spacing(5.5*2)))]"
-      )}
+      className={"flex flex-col gap-3 w-96 shrink-0 duration-200 overflow-hidden group data-[minimized=true]:w-[calc(var(--chat-sidebar-width-icon)+(--spacing(5.5*2)))]"}
       style={{ "--chat-sidebar-width-icon": ICON_SIZE } as React.CSSProperties}
     >
       <div className="flex gap-2 items-center w-full">
@@ -125,22 +133,43 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          <div className="flex flex-col gap-2 overflow-y-auto scrollbar-thin group-data-[minimized=true]:overflow-x-hidden group-data-[minimized=true]:scrollbar-hidden data-[minimized=false]:pr-2">
-            {filteredChats.map((chat) => (
-              <div
-                key={chat.patient_id}
-                onClick={() => handleChatChange(chat.patient_id)}
-                data-active={chatId == chat.patient_id}
-                className="flex gap-2.5 rounded-md whitespace-nowrap hover:bg-primary-foreground/40 duration-200 cursor-pointer p-2.5 items-center box-content data-[active=true]:text-accent-foreground data-[active=true]:bg-secondary"
-              >
-                <Avatar className="h-9 w-9 group-data-[minimized=true]:text-xs" letters={chat.name[0] + chat.surname[0]} />
-                <div className="overflow-hidden max-w-full w-96 duration-200 group-data-[minimized=true]:w-0">
-                  <div className="font-medium text-[15px] truncate">
-                    {chat.name} {chat.surname}
+          <div ref={parentRef} className="flex flex-col gap-2 overflow-y-auto scrollbar-thin group-data-[minimized=true]:overflow-x-hidden group-data-[minimized=true]:scrollbar-hidden group-data-[minimized=false]pr-2">
+            <div
+            className="w-full"
+              style={{
+                height: rowVirtualizer.getTotalSize(),
+                position: "relative",
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const chat = filteredChats[virtualRow.index]
+                return (
+                  <div
+                    key={chat.patient_id}
+                    onClick={() => handleChatChange(chat.patient_id)}
+                    data-active={chatId == chat.patient_id}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      marginBottom: 4,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    className="flex gap-2.5 rounded-md whitespace-nowrap hover:bg-primary-foreground/40 duration-200 cursor-pointer p-2.5 items-center w-full data-[active=true]:text-accent-foreground data-[active=true]:bg-secondary"
+                  >
+                    <Avatar
+                      className="h-9 w-9 group-data-[minimized=true]:text-xs"
+                      letters={chat.name[0] + chat.surname[0]}
+                    />
+                    <div className="overflow-hidden max-w-full w-96 duration-200 group-data-[minimized=true]:w-0">
+                      <div className="font-medium text-[15px] truncate">
+                        {chat.name} {chat.surname}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>

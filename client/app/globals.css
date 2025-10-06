@@ -144,16 +144,14 @@
   }
 }
 
-@layer utilities {
-  .scrollbar-thin {
+  @utility scrollbar-thin {
     scrollbar-color: rgba(var(--color-foreground), 0.2) transparent;
     scrollbar-width: thin;
   }
 
-  .scrollbar-hidden {
+  @utility scrollbar-hidden {
     scrollbar-width: none;
   }
-}
 
 
 @keyframes float {

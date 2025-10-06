@@ -1,7 +1,6 @@
 'use client'
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { Dropzone, DropzoneContent, DropzoneEmptyState, renderBytes } from "@/components/ui/shadcn-io/dropzone"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown, Image, Info, Upload, User } from "lucide-react"
@@ -10,14 +9,16 @@ import z from "zod"
 import toast from "react-hot-toast"
 import { useMutation } from "@tanstack/react-query"
 import api from "@/lib/axios"
-import { useRouter } from "next/navigation"
 import { AnalysisModel } from "@/lib/types/model"
 import { Badge } from "@/components/ui/badge"
 import { Patient } from "@/lib/types/patient"
 import SubmitButton from "@/components/ui/submit-btn"
-import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxItem, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox"
-import NewCaseBtn from "@/components/ui/new-case-btn"
+import { Combobox, ComboboxTrigger, ComboboxValue, ComboboxContent } from "@/components/ui/combobox"
 import { differenceInYears, parse } from "date-fns"
+import { useVirtualizer } from "@tanstack/react-virtual"
+import { useRef } from "react"
+import NewCaseBtn from "@/components/ui/new-case-btn"
+import { PopoverContent } from "@/components/ui/popover"
 
 const FormSchema = z.object({
   patient: z.string(),
@@ -25,6 +26,15 @@ const FormSchema = z.object({
 });
 
 export default function AnalysisForm({ model, patients }: { model: AnalysisModel | undefined, patients: Patient[] }) {
+  const parentRef = useRef<HTMLDivElement>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: patients.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 56,
+    overscan: 5,
+  })
+
   const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: FormData) => api.post(`/model/${model?.technical_name}/send_data`, data),
@@ -126,29 +136,34 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                           role="combobox"
                           className="flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm"
                         >
-                          <ComboboxValue placeholder="Select a patient"/>
+                          <ComboboxValue placeholder="Select a patient" />
                           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
                         </button>
-                      </ComboboxTrigger >
-                      <ComboboxContent>
-                        {patients.length > 0 ? (
-                          <ComboboxGroup>
-                            <ComboboxEmpty></ComboboxEmpty>
+                      </ComboboxTrigger>
 
-                            {patients.map((p) => (
-                              <ComboboxItem className="flex-col items-start gap-0.5" key={p.patient_id} search={`${p.patient_id} ${p.name} ${p.surname} ${p.email} ${p.phone}`} value={p.patient_id}>
-                                <span>{p.name} {p.surname}</span> <span className="text-muted text-xs">{differenceInYears(new Date(), parse(p.date_of_birth, "dd.MM.yyyy", new Date()))} years old</span>
-                              </ComboboxItem>
-                            ))
-                            }
-                          </ComboboxGroup>
-                        ) : (
+                      {patients.length === 0 ? (
+                        <PopoverContent forceMount className="w-[var(--radix-popover-trigger-width)] p-0">
                           <div className="px-4 py-2 space-y-2 text-center">
                             <div className="text-sm text-muted">You have no patients yet.</div>
-                            <NewCaseBtn className="h-8 px-0 w-full text-xs"></NewCaseBtn>
+                            <NewCaseBtn className="h-8 px-0 w-full text-xs" />
                           </div>
-                        )}
-                      </ComboboxContent>
+                        </PopoverContent>
+                      ) : (
+                        <ComboboxContent
+                          items={patients}
+                          getKey={(p) => p.patient_id}
+                          getSearchKeys={() => ["name", "surname"]}
+                          estimateSize={56}
+                          getLabel={(p) => p.name + " " + p.surname}
+                          overscan={8}
+                          renderItem={(p) => (
+                            <div className="flex flex-col items-start gap-0.5">
+                              <span>{p.name} {p.surname}</span>
+                              <span className="text-muted text-xs">{differenceInYears(new Date(), parse(p.date_of_birth, "dd.MM.yyyy", new Date()))} years old</span>
+                            </div>
+                          )}
+                        />
+                      )}
                     </Combobox>
                   </FormControl>
                 </FormItem>

@@ -18,3 +18,21 @@ export function scrollDown(ref: React.RefObject<HTMLDivElement | null>, behavior
     behavior,
   });
 }
+
+export function filterBySearch<T>(
+  items: T[],
+  searchTerm: string,
+  fields: (keyof T)[]
+): T[] {
+  if (!searchTerm.trim()) return items
+
+  const terms = searchTerm.toLowerCase().split(" ").filter(Boolean)
+
+  return items.filter((item) => {
+    const haystack = fields
+      .map((field) => String(item[field] ?? "").toLowerCase())
+      .join(" ")
+
+    return terms.every((t) => haystack.includes(t))
+  })
+}

@@ -6,20 +6,15 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
-import { Command as CommandPrimitive } from "cmdk"
+import { useVirtualizer } from "@tanstack/react-virtual"
+import { cn, filterBySearch } from "@/lib/utils"
+import { Input } from "./input"
 
 type Option = {
   value: string
   label: string
+  search?: string
 }
 
 type ComboboxContextType = {
@@ -30,7 +25,6 @@ type ComboboxContextType = {
   placeholder?: string
   options: Option[]
   registerOption: (option: Option) => void
-  unregisterOption: (value: string) => void
 }
 
 const ComboboxContext = React.createContext<ComboboxContextType | null>(null)
@@ -43,7 +37,6 @@ export function Combobox({
 }: {
   value?: string
   onChange: (val: string) => void
-
   placeholder?: string
   children: React.ReactNode
 }) {
@@ -57,13 +50,9 @@ export function Combobox({
     })
   }, [])
 
-  const unregisterOption = React.useCallback((value: string) => {
-    setOptions((prev) => prev.filter((p) => p.value !== value))
-  }, [])
-
   return (
     <ComboboxContext.Provider
-      value={{ value, onChange, open, setOpen, placeholder, options, registerOption, unregisterOption }}
+      value={{ value, onChange, open, setOpen, placeholder, options, registerOption }}
     >
       <Popover open={open} onOpenChange={setOpen}>
         {children}
@@ -72,94 +61,140 @@ export function Combobox({
   )
 }
 
-export function ComboboxTrigger({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-
-  return (
-    <PopoverTrigger asChild {...props}>
-    </PopoverTrigger>
-  )
+export function ComboboxTrigger(
+  props: React.ComponentProps<typeof PopoverPrimitive.Trigger>
+) {
+  return <PopoverTrigger asChild {...props} />
 }
 
-export function ComboboxContent({
-  children
-}: { children: React.ReactNode }) {
+export function ComboboxValue({ placeholder }: { placeholder: string }) {
+  const ctx = React.useContext(ComboboxContext)!
+  const label = ctx.options.find(o => o.value === ctx.value)?.label
+  return <span>{label ?? placeholder}</span>
+}
+
+export function ComboboxContent<T>({
+  items,
+  getKey,
+  getLabel,
+  getSearchKeys,
+  renderItem,
+  estimateSize = 56,
+  overscan = 6,
+}: {
+  items: T[]
+  getKey: (item: T) => string
+  getLabel: (item: T) => string
+  getSearchKeys: (item: T) => (keyof T)[]
+  renderItem: (item: T) => React.ReactNode
+  estimateSize?: number
+  overscan?: number
+}) {
+  const [query, setQuery] = React.useState("")
+  const listRef = React.useRef<HTMLDivElement>(null)
+
+  const filtered = React.useMemo(
+    () => filterBySearch(items, query, getSearchKeys(items[0])),
+    [items, query, getSearchKeys]
+  )
+
+  const virtualizer = useVirtualizer({
+    count: filtered.length,
+    getScrollElement: () => listRef.current,
+    estimateSize: () => estimateSize,
+    overscan,
+  })
+
+  const ctx = React.useContext(ComboboxContext)!
+
+  React.useEffect(() => {
+    if (ctx.open) {
+      requestAnimationFrame(() => {
+        virtualizer.measure()
+        virtualizer.scrollToIndex(0)
+      })
+    }
+  }, [ctx.open])
+
   return (
-    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-      <Command>
-        <CommandInput placeholder="Search..." />
-        <CommandList>
-          {children}
-        </CommandList>
-      </Command>
+    <PopoverContent forceMount className="w-[var(--radix-popover-trigger-width)] p-0">
+      <div className="p-2">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search..."
+          className="placeholder:text-muted-foreground flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50 ring-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+        />
+      </div>
+      <div
+        ref={listRef}
+        style={{ maxHeight: 320, height: "100%", overflowY: "auto" }}
+        className="px-1 scrollbar-thin"
+      >
+        <div
+          style={{
+            position: "relative",
+            height: virtualizer.getTotalSize(),
+          }}
+        >
+          {virtualizer.getVirtualItems().map((row) => {
+            const item = filtered[row.index]
+            const key = getKey(item)
+
+            return (
+              <div
+                key={key}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  transform: `translateY(${row.start}px)`,
+                  height: row.size,
+                }}
+              >
+                <ComboboxItem
+                  value={key}
+                  label={getLabel(item)}
+                >
+                  {renderItem(item)}
+                </ComboboxItem>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </PopoverContent>
   )
 }
 
-export function ComboboxGroup({
-  children
-}: { children: React.ReactNode }) {
-  return (
-    <CommandGroup>
-      {children}
-    </CommandGroup>
-  )
-}
-
-function childrenToString(children: React.ReactNode): string {
-  return React.Children.toArray(children)
-    .map(child => {
-      if (typeof child === "string" || typeof child === "number") {
-        return child.toString()
-      }
-      return ""
-    })
-    .join("")
-}
 
 export function ComboboxItem({
   value,
-  children,
+  label,
   search,
+  children,
   ...props
-}: { value: string, children: React.ReactNode, search?: string } & React.ComponentProps<typeof CommandPrimitive.Item>) {
+}: {
+  value: string
+  label: string
+  search?: string
+  children: React.ReactNode
+} & React.HTMLAttributes<HTMLDivElement>) {
   const ctx = React.useContext(ComboboxContext)!
-
-  const label = childrenToString(children)
-
   React.useEffect(() => {
-    ctx.registerOption({ value, label })
-  }, [value, label])
+    ctx.registerOption({ value, label, search })
+  }, [value, label, search])
 
   return (
-    <CommandItem
-      className="cursor-pointer duration-200"
-      value={search}
-      onSelect={() => {
-        ctx.setOpen(false)
+    <div
+      onClick={() => {
         ctx.onChange(value)
+        ctx.setOpen(false)
       }}
-      {...props}
+      className={cn("text-sm cursor-pointer px-3 py-2 hover:bg-accent rounded-sm duration-200", props.className)}
     >
       {children}
-    </CommandItem>
+    </div>
   )
-}
-
-export function ComboboxEmpty({
-  children,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive.Empty>) {
-  return (
-    <CommandEmpty {...props}>{children ? children : "No results."}</CommandEmpty>
-  )
-}
-
-export function ComboboxValue({ placeholder }: { placeholder: string }) {
-  const ctx = React.useContext(ComboboxContext)
-  if (!ctx) return null
-
-  const label = ctx.options?.find(o => o.value === ctx.value)?.label
-  return <span>{label ?? ctx.placeholder ?? placeholder}</span>
 }
