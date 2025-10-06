@@ -17,6 +17,7 @@ import { Patient } from "@/lib/types/patient"
 import SubmitButton from "@/components/ui/submit-btn"
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxItem, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox"
 import NewCaseBtn from "@/components/ui/new-case-btn"
+import { differenceInYears, parse } from "date-fns"
 
 const FormSchema = z.object({
   patient: z.string(),
@@ -135,8 +136,8 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                             <ComboboxEmpty></ComboboxEmpty>
 
                             {patients.map((p) => (
-                              <ComboboxItem key={p.patient_id} search={`${p.patient_id} ${p.name} ${p.surname} ${p.email} ${p.phone}`} value={p.patient_id}>
-                                {p.name} {p.surname}
+                              <ComboboxItem className="flex-col items-start gap-0.5" key={p.patient_id} search={`${p.patient_id} ${p.name} ${p.surname} ${p.email} ${p.phone}`} value={p.patient_id}>
+                                <span>{p.name} {p.surname}</span> <span className="text-muted text-xs">{differenceInYears(new Date(), parse(p.date_of_birth, "dd.MM.yyyy", new Date()))} years old</span>
                               </ComboboxItem>
                             ))
                             }

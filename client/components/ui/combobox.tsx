@@ -122,7 +122,8 @@ export function ComboboxItem({
   value,
   children,
   search,
-}: { value: string, children: React.ReactNode, search?: string }) {
+  ...props
+}: { value: string, children: React.ReactNode, search?: string } & React.ComponentProps<typeof CommandPrimitive.Item>) {
   const ctx = React.useContext(ComboboxContext)!
 
   const label = childrenToString(children)
@@ -133,12 +134,13 @@ export function ComboboxItem({
 
   return (
     <CommandItem
-      className="cursor-pointer"
+      className="cursor-pointer duration-200"
       value={search}
       onSelect={() => {
         ctx.setOpen(false)
         ctx.onChange(value)
       }}
+      {...props}
     >
       {children}
     </CommandItem>
