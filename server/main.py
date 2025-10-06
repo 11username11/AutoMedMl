@@ -523,7 +523,7 @@ async def delete_account(
     return {"message": "Account successfully deleted"}
 
 
-@app.get("/delete_patient")
+@app.post("/delete_patient")
 async def delete_patient(patient_id: DeletePatientData,
                          response: Response,
                          current_user: dict = Depends(get_optional_user)):
