@@ -52,7 +52,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
   }
 
   return (
-    <div className="p-2 rounded-md shrink-0 h-full">
+    <div className="rounded-md shrink-0 h-full">
       <Form {...form} >
         <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col lg:flex-row gap-4 h-full">
           <FormField

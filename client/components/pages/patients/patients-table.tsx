@@ -7,13 +7,13 @@ import { useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import { Patient } from "@/lib/types/patient";
 import NewCaseBtn from "@/components/ui/new-case-btn";
-import PatientRow from "./patient/patient-row";
+import PatientRow from "./patient-row";
 
 export default function PatientsTable({ patients }: { patients: Patient[] }) {
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredPatients = patients.filter((patient) =>
-    Object.values(patient).some((value) => String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    searchTerm.split(" ").every((term) => Object.values(patient).some((value) => String(value).toLowerCase().includes(term.toLowerCase()))
     )
   );
 

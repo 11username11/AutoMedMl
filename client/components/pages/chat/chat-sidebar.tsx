@@ -54,7 +54,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
 
   const [searchTerm, setSearchTerm] = useState("")
   const filteredChats = chats.filter((chat) =>
-    Object.values(chat).some((value) => String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    searchTerm.split(" ").every((term) => [chat.name, chat.surname].some((value) => String(value).toLowerCase().includes(term.toLowerCase()))
     )
   );
 
