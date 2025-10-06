@@ -199,7 +199,7 @@ async def send_message(
         response_text = f"Simulated response to: {text}\n"
         for chunk in response_text.split():
             yield chunk + " "
-            await asyncio.sleep(0.2)
+            await asyncio.sleep(0.4)
 
         chats_collection.update_one(
             {"medic_id": current_user["id"], "chats.chat_id": chat_id},
