@@ -178,13 +178,23 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  const { isMobile, setOpen, state, openMobile, setOpenMobile } = useSidebar()
 
-  const handleClick = (e : React.MouseEvent<HTMLDivElement>) => {
+  const handleMobileTouch = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = e.target as HTMLElement
 
     if (findParentWithDataset(el, "slot", "sidebar-menu-item")) setOpenMobile(false)
-  } 
+  }
+
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    
+    const el = e.target as HTMLElement
+    console.log(e.target, el.dataset, findParentWithDataset(el, "slot", "sidebar-group"))
+    if (!findParentWithDataset(el, "slot", "sidebar-group")) {
+      setOpen(true)
+    }
+  }
 
   if (collapsible === "none") {
     return (
@@ -220,7 +230,7 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col" onClick={handleClick}>{children}</div>
+          <div className="flex h-full w-full flex-col" onClick={handleMobileTouch}>{children}</div>
         </SheetContent>
       </Sheet>
     )
@@ -233,6 +243,7 @@ function Sidebar({
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
+      onClick={handleClick}
       data-slot="sidebar"
     >
       {/* This is what handles the sidebar gap on desktop */}

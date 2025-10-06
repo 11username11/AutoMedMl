@@ -50,7 +50,7 @@ export default function LayoutSidebar() {
         </SidebarGroup>
       </SidebarHeader>
       <SidebarContent className="mt-10">
-        <SidebarGroup className="flex flex-col gap-2.5">
+        <SidebarGroup className="flex flex-col gap-2.5 group-data-[collapsible=icon]:gap-0 duration-200">
           <SidebarGroupLabel className="text-muted-foreground px-3 font-semibold text-sm">Navigation</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col gap-1 font-semibold">
             <SidebarMenu>
