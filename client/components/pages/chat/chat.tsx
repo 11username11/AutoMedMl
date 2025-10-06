@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuSend } from "react-icons/lu";
 import { useChatSidebar } from "./chat-sidebar";
 import ChatWindow from "./chat-window";
@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function Chat() {
   const params = useSearchParams()
+  const textareaRef = useRef<null | HTMLTextAreaElement>(null);
 
   const minimizeChatSidebar = useChatSidebar((state) => state.minimizeChatSidebar);
   const chatId = params.get("chat") || "main"
@@ -29,7 +30,20 @@ export default function Chat() {
 
     setIsStreaming(false)
   };
- 
+
+  useEffect(() => {
+    if (!isStreaming) {
+      textareaRef.current?.focus()
+    }
+  }, [isStreaming])
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="w-full flex max-h-full flex-col overflow-hidden">
       <div className="text-2xl font-bold mb-2">Medical AI Chat</div>
@@ -42,9 +56,11 @@ export default function Chat() {
         <div className="invisible min-h-16 p-2 box-content"></div>
         <div className="absolute bottom-0 flex gap-2 items-end w-full p-2">
           <Textarea
+            ref={textareaRef}
             className="bg-primary dark:bg-primary max-h-52 resize-none"
             placeholder="Type your medical question here"
             value={text}
+            onKeyDown={handleEnter}
             onChange={(e) => setText(e.target.value)}
             disabled={isStreaming}></Textarea>
           <button
