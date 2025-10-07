@@ -1,6 +1,5 @@
 import { CircularProgress } from '@mui/material';
 import { cn } from '@/lib/utils';
-import { JSX } from 'react';
 import { Button } from './button';
 
 interface SubmitButtonProps extends React.ComponentProps<typeof Button> {

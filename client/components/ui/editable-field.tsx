@@ -2,22 +2,33 @@
 
 import { useFormContext } from "react-hook-form"
 import { InputField } from "./input-field"
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form"
+import { FormControl, FormField, FormItem, FormMessage } from "./form"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./select"
-import { GENDER } from "@/lib/constants"
-import { Textarea } from "./textarea"
 
-interface EditableFieldProps {
-  name: string,
-  isEditing: boolean,
-  text: string | undefined,
-  type?: "select" | "input" | "textarea" | "calendar"
+interface BaseEditableFieldProps {
+  name: string
+  isEditing: boolean
+  text: string | undefined
 }
 
-export default function EditableField({ name, isEditing, text, type = "input" }: EditableFieldProps) {
+interface SelectFieldProps extends BaseEditableFieldProps {
+  type: "select"
+  selectItems: string[]
+}
+
+interface InputFieldProps extends BaseEditableFieldProps {
+  type?: "input" | "textarea" | "calendar"
+  selectItems?: never
+}
+
+type EditableFieldProps = SelectFieldProps | InputFieldProps
+
+export default function EditableField({ name, isEditing, text, ...props }: EditableFieldProps) {
   const { control } = useFormContext()
 
-  if (type == "select" && isEditing) {
+  if (props.type == "select" && isEditing) {
+    const label = name.charAt(0).toUpperCase() + name.slice(1)
+
     return (
       <FormField
         control={control}
@@ -31,7 +42,7 @@ export default function EditableField({ name, isEditing, text, type = "input" }:
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {GENDER.map((gender) => <SelectItem key={gender} value={gender}>{gender}</SelectItem>)}
+                    {props.selectItems.map((item) => <SelectItem key={item} value={item}>{label}</SelectItem>)}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -44,6 +55,6 @@ export default function EditableField({ name, isEditing, text, type = "input" }:
   }
 
   return isEditing
-    ? <InputField control={control} name={name} inputType={type}></InputField>
+    ? <InputField control={control} name={name} inputType={props.type}></InputField>
     : <div className="text-muted">{text ?? "-"}</div>
 }

@@ -5,7 +5,7 @@ export default async function Patients() {
   const patients = await getPatients()
 
   return (
-    <div className="flex flex-col p-10 gap-8">
+    <div className="flex flex-col p-10 gap-8 flex-1 overflow-hidden">
       <div className="flex justify-between items-start">
         <div>
           <div className="text-3xl font-bold">Patients</div>

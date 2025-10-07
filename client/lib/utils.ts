@@ -12,7 +12,7 @@ export function formatToHHMM(date: Date) {
   return `${hours}:${minutes}`;
 }
 
-export function scrollDown(ref: React.RefObject<HTMLDivElement | null>, behavior : ScrollBehavior = "smooth") {
+export function scrollDown(ref: React.RefObject<HTMLDivElement | null>, behavior: ScrollBehavior = "smooth") {
   ref.current?.scrollTo({
     top: ref.current.scrollHeight,
     behavior,
@@ -22,10 +22,9 @@ export function scrollDown(ref: React.RefObject<HTMLDivElement | null>, behavior
 export function filterBySearch<T>(
   items: T[],
   searchTerm: string,
-  fields: (keyof T)[]
+  fields: (keyof T)[],
+  options?: Partial<Record<keyof T, string>>
 ): T[] {
-  if (!searchTerm.trim()) return items
-
   const terms = searchTerm.toLowerCase().split(" ").filter(Boolean)
 
   return items.filter((item) => {
@@ -33,6 +32,20 @@ export function filterBySearch<T>(
       .map((field) => String(item[field] ?? "").toLowerCase())
       .join(" ")
 
-    return terms.every((t) => haystack.includes(t))
+    const matchesSearch = terms.length === 0
+      ? true
+      : terms.every((term) => haystack.includes(term))
+
+    const matchesOptions = options
+      ? Object.entries(options).every(([key, value]) => {
+        if (value === undefined) return true;
+
+        const fieldValue = item[key as keyof T]
+
+        return String(fieldValue).toLowerCase() === String(value).toLowerCase()
+      })
+      : true
+
+    return matchesSearch && matchesOptions
   })
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import EditableField from "@/components/ui/editable-field";
+import { GENDER } from "@/lib/constants";
 import { Patient } from "@/lib/types/patient";
 import { Phone, User } from "lucide-react";
 
@@ -29,7 +30,7 @@ export default function GeneralInformation({ patient, isEditing }: { patient: Pa
 
           <div className="text-sm space-y-1">
             <div className="font-semibold">Gender</div>
-            <EditableField text={patient.gender} isEditing={isEditing} name="gender" type="select"></EditableField>
+            <EditableField text={patient.gender} isEditing={isEditing} name="gender" type="select" selectItems={[...GENDER]}></EditableField>
           </div>
 
           <div className="text-sm space-y-1">
