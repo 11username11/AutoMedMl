@@ -56,7 +56,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
                 Filter
               </Button>
             </PopoverTrigger>
-            <PopoverContent forceMount className="w-80 p-4 space-y-4">
+            <PopoverContent align="start" className="w-80 p-4 space-y-4">
               <div>
                 Filters
               </div>
@@ -114,9 +114,9 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
         <NewCaseBtn className=" w-full lg:w-auto" />
       </div>
 
-      <div className="rounded-lg border bg-primary overflow-hidden max-h-full h-fit">
-        <div ref={parentRef} className="max-h-full h-fit overflow-auto">
-          <Table className="w-full ">
+      <div className="rounded-lg border bg-primary overflow-hidden">
+        <div ref={parentRef} className="h-full">
+          <Table className="w-full">
             <TableHeader>
               <TableRow className="secondary-foreground/50">
                 <TableHead>Patient</TableHead>
