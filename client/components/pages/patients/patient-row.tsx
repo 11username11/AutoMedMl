@@ -52,9 +52,9 @@ export default function PatientRow({ patient, ...props }: { patient: Patient } &
           <div className="text-sm text-muted-foreground ">{patient.phone.match(/.{1,3}/g)?.join(" ") ?? ""}</div>
         </div>
       </TableCell>
-      <TableCell className="">{differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))}</TableCell>
+      <TableCell>{differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))}</TableCell>
       <TableCell>{patient.gender}</TableCell>
-      <TableCell>{StatusBadge(patient.status)}</TableCell>
+      <TableCell><StatusBadge status={patient.status} /></TableCell>
 
       <TableCell>
         <DropdownMenu>

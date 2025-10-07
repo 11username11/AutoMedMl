@@ -36,7 +36,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
   const rowVirtualizer = useVirtualizer({
     count: filteredPatients.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 64,
+    estimateSize: () => 65,
     overscan: 10,
   })
 
@@ -115,59 +115,57 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
       </div>
 
       <div className="rounded-lg border bg-primary overflow-hidden">
-        <div ref={parentRef} className="h-full">
-          <Table className="w-full">
-            <TableHeader>
-              <TableRow className="secondary-foreground/50">
-                <TableHead>Patient</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Age</TableHead>
-                <TableHead>Gender</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody
-              className="[&_tr:nth-last-child(2)]:border-0"
-              style={{
-                height: rowVirtualizer.getTotalSize(),
-                position: "relative",
-              }}
-            >
-              {rowVirtualizer.getVirtualItems().length > 0 && (
-                <tr style={{ height: rowVirtualizer.getVirtualItems()[0].start }}>
-                  <td colSpan={6} />
-                </tr>
-              )}
-              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                const patient = filteredPatients[virtualRow.index]
-                return (
-                  <PatientRow key={patient.patient_id}
-                    style={{ height: virtualRow.size }} patient={patient} />
-                )
-              })}
-              {rowVirtualizer.getVirtualItems().length > 0 && (
-                <tr
-                  style={{
-                    height:
-                      rowVirtualizer.getTotalSize() -
-                      rowVirtualizer.getVirtualItems().at(-1)!.end,
-                  }}
-                >
-                  <td colSpan={6} />
-                </tr>
-              )}
+        <Table containerRef={parentRef} className="w-full">
+          <TableHeader>
+            <TableRow className="secondary-foreground/50">
+              <TableHead>Patient</TableHead>
+              <TableHead>Contact</TableHead>
+              <TableHead>Age</TableHead>
+              <TableHead>Gender</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead />
+            </TableRow>
+          </TableHeader>
+          <TableBody
+            className="[&_tr:nth-last-child(2)]:border-0"
+            style={{
+              height: rowVirtualizer.getTotalSize(),
+              position: "relative",
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().length > 0 && (
+              <tr style={{ height: rowVirtualizer.getVirtualItems()[0].start }}>
+                <td colSpan={6} />
+              </tr>
+            )}
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const patient = filteredPatients[virtualRow.index]
+              return (
+                <PatientRow key={patient.patient_id}
+                  style={{ height: virtualRow.size }} patient={patient} />
+              )
+            })}
+            {rowVirtualizer.getVirtualItems().length > 0 && (
+              <tr
+                style={{
+                  height:
+                    rowVirtualizer.getTotalSize() -
+                    rowVirtualizer.getVirtualItems().at(-1)!.end,
+                }}
+              >
+                <td colSpan={6} />
+              </tr>
+            )}
 
-              {filteredPatients.length === 0 && (
-                <TableRow>
-                  <TableCell className="text-center py-8 text-muted text-base" colSpan={6}>
-                    No patients found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+            {filteredPatients.length === 0 && (
+              <TableRow>
+                <TableCell className="text-center py-8 text-muted text-base" colSpan={6}>
+                  No patients found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

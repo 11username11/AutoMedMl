@@ -4,9 +4,10 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function Table({ className, containerRef, ...props }: React.ComponentProps<"table"> & { containerRef: React.RefObject<HTMLDivElement | null> }) {
   return (
     <div
+    ref={containerRef}
       data-slot="table-container"
       className="relative w-full overflow-auto h-full"
     >

@@ -77,7 +77,7 @@ export default function PatientForm({ patient }: { patient: Patient }) {
                     <div className="text-xl font-semibold">{`${patient.name} ${patient.surname}`}</div>
                     <div className="text-muted text-sm">Patient ID: {patient.patient_id}</div>
                   </div>
-                  {StatusBadge(patient.status)}
+                  {<StatusBadge status={patient.status} />}
                 </div>
                 <div className="flex gap-12">
                   <div className="flex gap-2 items-center text-sm">
