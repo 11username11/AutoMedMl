@@ -32,12 +32,12 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
     }),
     [patients, searchTerm, selectedGender, selectedStatus]
   )
-console.log(selectedGender, selectedStatus)
+
   const rowVirtualizer = useVirtualizer({
     count: filteredPatients.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 64,
-    overscan: 5,
+    overscan: 10,
   })
 
   return (

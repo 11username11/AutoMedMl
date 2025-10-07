@@ -133,7 +133,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          <div ref={parentRef} className="flex flex-col gap-2 overflow-y-auto scrollbar-thin group-data-[minimized=true]:overflow-x-hidden group-data-[minimized=true]:scrollbar-hidden group-data-[minimized=false]pr-2">
+          <div ref={parentRef} className="overflow-y-auto scrollbar-thin group-data-[minimized=true]:overflow-x-hidden group-data-[minimized=true]:scrollbar-hidden group-data-[minimized=false]pr-2">
             <div
             className="w-full"
               style={{
@@ -155,7 +155,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
                       marginBottom: 4,
                       transform: `translateY(${virtualRow.start}px)`,
                     }}
-                    className="flex gap-2.5 rounded-md whitespace-nowrap hover:bg-primary-foreground/40 duration-200 cursor-pointer p-2.5 items-center w-full data-[active=true]:text-accent-foreground data-[active=true]:bg-secondary"
+                    className="flex gap-2.5 rounded-md whitespace-nowrap hover:bg-primary-foreground/40 transition-colors duration-200 cursor-pointer p-2.5 items-center w-full data-[active=true]:text-accent-foreground data-[active=true]:bg-secondary"
                   >
                     <Avatar
                       className="h-9 w-9 group-data-[minimized=true]:text-xs"
