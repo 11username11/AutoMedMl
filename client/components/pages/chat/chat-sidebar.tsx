@@ -4,7 +4,7 @@ import SearchInput from "@/components/ui/search-input";
 import { Separator } from "@/components/ui/separator";
 import { RiRobot2Line } from "react-icons/ri";
 import NewCaseBtn from "@/components/ui/new-case-btn";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { cn, filterBySearch } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button"
@@ -31,9 +31,7 @@ export const useChatSidebar = create<chatSidebarState>((set) => ({
   openOverride: undefined,
   setOpenOverride: (openOverride) => set((state) => ({ openOverride })),
   toggleSidebar: () => set((state) => ({ isMinimized: !state.isMinimized })),
-  setIsMinimized: (isMinimized) => {
-    set(() => ({ openOverride: true, isMinimized }))
-  },
+  setIsMinimized: (isMinimized) => set({ openOverride: true, isMinimized }),
   minimizeChatSidebar: () => set(() => ({ isMinimized: true })),
   maximizeChatSidebar: () => set(() => ({ isMinimized: false }))
 }))
@@ -44,7 +42,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
 
   const openOverride = useChatSidebar(state => state.openOverride);
   const isMinimized = useChatSidebar(state => state.isMinimized);
-  const chatId = params.get("chat") || "main"
+  const chatId = useChat((state) => state.chatId) ?? params.get("chat") ?? "main"
   const toggleSidebar = useChatSidebar(state => state.toggleSidebar)
   const setIsMinimized = useChatSidebar(state => state.setIsMinimized)
   const setChatId = useChat((state) => state.setChatId)
@@ -52,6 +50,11 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
   const effectiveMinimized = openOverride === undefined
     ? defaultIsMinimized
     : isMinimized;
+
+  useLayoutEffect(() => {
+    const initialChatId = params.get("chat") || "main"
+    setChatId(initialChatId)
+  }, [])
 
   const parentRef = useRef<HTMLDivElement>(null)
 
@@ -67,6 +70,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     getScrollElement: () => parentRef.current,
     estimateSize: () => 60,
     overscan: 5,
+    initialRect: { height: 1200, width: 0 }
   })
 
   const handleChatChange = (id: string) => {
@@ -133,9 +137,9 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          <div ref={parentRef} className="overflow-y-auto scrollbar-thin group-data-[minimized=true]:overflow-x-hidden group-data-[minimized=true]:scrollbar-hidden group-data-[minimized=false]pr-2">
+          <div ref={parentRef} className="overflow-y-auto scrollbar-thin scrollbar-custom group-data-[minimized=true]:overflow-x-hidden group-data-[minimized=true]:scrollbar-hidden w-full">
             <div
-            className="w-full"
+              className="w-full"
               style={{
                 height: rowVirtualizer.getTotalSize(),
                 position: "relative",

@@ -8,30 +8,28 @@ import { useAuthStore } from "@/providers/AuthProvider";
 import { formatToHHMM, scrollDown } from "@/lib/utils";
 import { useChat } from "@/hooks/useChat";
 import { Chat } from "@/lib/types/chat";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
-import { useSearchParams } from "next/navigation";
 
 export default function ChatWindow() {
-  const params = useSearchParams()
 
   const user = useAuthStore((state) => state.user)
   const setMessages = useChat((state) => state.setMessages)
   const messages = useChat((state) => state.messages)
-  const chatId = params.get("chat") || "main"
+  const chatId = useChat((state) => state.chatId)
 
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [showSkeleton, setShowSkeleton] = useState(true);
 
-  const { data: chat, isLoading, isError, error } = useQuery<Chat>({
+  const { data: chat, isLoading } = useQuery<Chat>({
     queryKey: ["chat", chatId],
     queryFn: () => getChat(chatId || "main"),
     staleTime: Infinity
   });
 
   useLayoutEffect(() => {
-    if (!chat) return;
+    if (!chat || !chatId) return;
 
     setMessages(chatId, chat.messages);
   }, [chat, chatId]);
@@ -53,13 +51,13 @@ export default function ChatWindow() {
     <div className="flex relative h-full overflow-hidden items-start">
       {showSkeleton && (
         <div className={`absolute inset-0 transition-opacity bg-background duration-300 ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
-          <ChatWindowSkeleton/>
+          <ChatWindowSkeleton />
         </div>
       )}
-      <div ref={containerRef} className="flex flex-col gap-4 h-full rounded-md overflow-y-auto pb-4 pr-4">
+      <div ref={containerRef} className="flex flex-col gap-4 h-full rounded-md overflow-y-auto scrollbar-thin pb-4 pr-4">
         <div className="flex flex-col items-start gap-4">
           {
-            !isLoading && user &&  (messages[chatId] || []).map((message, index) => (
+            !isLoading && user && chatId && (messages[chatId] || []).map((message, index) => (
               <div key={new Date(message.timestamp).getTime() + index} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
                 {
                   message.sender == "system" ?

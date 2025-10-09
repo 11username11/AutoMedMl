@@ -20,7 +20,9 @@ import { useEditMode } from "@/hooks/use-edit-mode";
 
 export default function PatientForm({ patient }: { patient: Patient }) {
   const router = useRouter()
+
   const { cancelEdit } = useEditMode()
+
   const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: z.infer<typeof PatientSchema>) => api.post("/update_patient", {
@@ -66,7 +68,7 @@ export default function PatientForm({ patient }: { patient: Patient }) {
                 <div className="text-muted">Comprehensive patient information and records</div>
               </div>
 
-              <Buttons isPending={isPending}></Buttons>
+              <Buttons patient={patient} isPending={isPending}></Buttons>
             </div>
 
             <div className="flex gap-4 p-4 rounded-md bg-primary items-center border">

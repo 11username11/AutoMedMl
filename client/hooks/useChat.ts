@@ -1,10 +1,10 @@
-import { Chat, Chats, Message } from "@/lib/types/chat"
+import { Chats, Message } from "@/lib/types/chat"
 import { create } from "zustand"
 
 interface chatState {
   text: string,
   setText: (text: string) => void,
-  chatId: string,
+  chatId: string | undefined,
   setChatId: (chatId: string) => void,
   chats: Chats,
   messages: Record<string, Message[]>,
@@ -16,7 +16,7 @@ interface chatState {
 export const useChat = create<chatState>((set) => ({
   text: "",
   setText: (text: string) => set({ text }),
-  chatId: "main",
+  chatId: undefined,
   setChatId: (chatId: string) => set({ chatId }),
   chats: [],
   messages: {},

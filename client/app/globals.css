@@ -144,58 +144,74 @@
   }
 }
 
-  @utility scrollbar-thin {
-    scrollbar-color: rgba(var(--color-foreground), 0.2) transparent;
-    scrollbar-width: thin;
-  }
+@utility scrollbar-thin {
+  scrollbar-color: #9ca3af transparent;
+  scrollbar-width: thin;
+}
 
-  @utility scrollbar-hidden {
-    scrollbar-width: none;
-  }
-
+@utility scrollbar-hidden {
+  scrollbar-width: none;
+}
 
 @keyframes float {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg); 
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
     opacity: 0.4;
   }
-  25% { 
-    transform: translateY(-20px) rotate(90deg); 
+
+  25% {
+    transform: translateY(-20px) rotate(90deg);
     opacity: 0.8;
   }
-  50% { 
-    transform: translateY(-10px) rotate(180deg); 
+
+  50% {
+    transform: translateY(-10px) rotate(180deg);
     opacity: 1;
   }
-  75% { 
-    transform: translateY(-30px) rotate(270deg); 
+
+  75% {
+    transform: translateY(-30px) rotate(270deg);
     opacity: 0.6;
   }
 }
 
 @keyframes gradient {
-  0%, 100% { 
-    background-position: 0% 50%; 
+
+  0%,
+  100% {
+    background-position: 0% 50%;
   }
-  50% { 
-    background-position: 100% 50%; 
+
+  50% {
+    background-position: 100% 50%;
   }
 }
 
 @keyframes glitch {
-  0%, 90%, 100% {
+
+  0%,
+  90%,
+  100% {
     opacity: 0;
     transform: translateX(0);
   }
-  91%, 94% {
+
+  91%,
+  94% {
     opacity: 0.8;
     transform: translateX(-2px);
   }
-  92%, 93% {
+
+  92%,
+  93% {
     opacity: 1;
     transform: translateX(2px);
   }
-  95%, 99% {
+
+  95%,
+  99% {
     opacity: 0.9;
     transform: translateX(-1px);
   }

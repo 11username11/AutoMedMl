@@ -25,13 +25,8 @@ export const PatientSchema = z.object({
 
   phone: z
     .string()
-    .trim()
     .transform((val) => val.replace(/\s+/g, ""))
-    .optional()
-    .refine(
-      (val) => !val || /^\+?\d{10,15}$/.test(val),
-      { message: "Phone number must be 10–15 digits (with optional +)" }
-    ),
+    .optional(),
 
   date_of_birth: z.string().refine((val) => {
     const parsed = parse(val, "dd.MM.yyyy", new Date())

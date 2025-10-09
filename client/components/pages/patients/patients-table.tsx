@@ -38,6 +38,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
     getScrollElement: () => parentRef.current,
     estimateSize: () => 65,
     overscan: 10,
+    initialRect: { height: 1200, width: 0 }
   })
 
   return (

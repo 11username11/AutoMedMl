@@ -25,13 +25,14 @@ export default function PatientRow({ patient, ...props }: { patient: Patient } &
     mutationFn: (patient_id: string) => api.post("/delete_patient", { patient_id }),
     onSuccess: () => {
       router.refresh()
-    },
-    onError: () => {
-      toast.error("Something went wrong")
     }
   })
 
-  const handleDelete = (patient_id: string) => mutateAsync(patient_id)
+  const handleDelete = (patient_id: string) => toast.promise(mutateAsync(patient_id), {
+    loading: "Deleting the patient...",
+    error: "Something went wrong",
+    success: "The patient was successfully deleted"
+  })
 
   return (
     <TableRow {...props}>
