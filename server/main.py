@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from pymongo import MongoClient
 from pymongo.synchronous.collection import ObjectId
 
-from classes import UserLogin, Patient, MessageInput, DeletePatientData, UpdatePatient
+from classes import UserLogin, Patient, MessageInput, DeletePatientData, UpdatePatient, UpdateUser
 from functions import create_access_token, is_valid_email, verify_password, is_valid_password, hash_password
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -123,17 +123,30 @@ async def home():
 @app.get("/user_info")
 async def user_info(current_user: dict = Depends(get_optional_user)):
     if not current_user:
-        return None
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
     user_id = current_user["id"]
-    result = users_collection.find_one({"_id": ObjectId(user_id)})
+    user_doc = users_collection.find_one({"_id": ObjectId(user_id)})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
 
-    if not result:
-        return None
-    return {"name": result["name"],
-            "surname": result["surname"],
-            "email": result["email"],
-            "verify": result["verify"]}
+    patients_doc = patients_collection.find_one({"medic_id": user_id})
+    num_of_patients = len(patients_doc.get("patients_list", [])) if patients_doc else 0
+
+    registration_date = user_doc.get("registration_date")
+    if isinstance(registration_date, datetime):
+        registration_date = registration_date.strftime("%d-%m-%Y")
+    elif not registration_date:
+        registration_date = "Unknown"
+
+    return {
+        "name": user_doc.get("name"),
+        "surname": user_doc.get("surname"),
+        "email": user_doc.get("email"),
+        "verify": user_doc.get("verify", False),
+        "num_of_patient": num_of_patients,
+        "registration_date": registration_date
+    }
 
 
 @app.get("/chat_history/{chat}")
@@ -368,7 +381,8 @@ async def registration(
         "password": hashed_password,
         "code": code,
         "doc": file_location,
-        "verify": verify
+        "verify": verify,
+        "registration_date": str(datetime.now()),
     })
     id_ = str(result.inserted_id)
 
@@ -420,7 +434,7 @@ async def registration(
             httponly=True,
             samesite=SAMESITE,
             secure=SECURE,
-            expires=ACCESS_TOKEN_EXPIRE_MINUTES
+            expires=ACCESS_TOKEN_EXPIRE_MINUTES * 60
         )
         response.set_cookie(
             key="refresh_token",
@@ -428,7 +442,7 @@ async def registration(
             httponly=True,
             samesite=SAMESITE,
             secure=SECURE,
-            expires=REFRESH_TOKEN_EXPIRE_MINUTES
+            expires=REFRESH_TOKEN_EXPIRE_MINUTES * 60
         )
 
     return {"message": "User successfully registered", "verify": verify}
@@ -472,7 +486,7 @@ async def login(user: UserLogin, response: Response):
         httponly=True,
         samesite=SAMESITE,
         secure=SECURE,
-        expires=ACCESS_TOKEN_EXPIRE_MINUTES
+        expires=ACCESS_TOKEN_EXPIRE_MINUTES * 60
     )
     response.set_cookie(
         key="refresh_token",
@@ -480,7 +494,7 @@ async def login(user: UserLogin, response: Response):
         httponly=True,
         samesite=SAMESITE,
         secure=SECURE,
-        expires=REFRESH_TOKEN_EXPIRE_MINUTES
+        expires=REFRESH_TOKEN_EXPIRE_MINUTES * 60
     )
 
     return {"message": "Logged in successfully"}
@@ -615,3 +629,48 @@ async def get_patient_info(patient_id: str, current_user: dict = Depends(get_opt
     patient_info = doc["patients_list"][0]
 
     return patient_info
+
+@app.post("/change_user")
+async def change_user(update_user_data: UpdateUser,
+                      response: Response,
+                      current_user: dict = Depends(get_optional_user)):
+
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    user_id = current_user["id"]
+    existing_user = users_collection.find_one({"_id": ObjectId(user_id)})
+    if not existing_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    update_fields = {}
+
+    if update_user_data.name is not None:
+        update_fields["name"] = update_user_data.name
+
+    if update_user_data.surname is not None:
+        update_fields["surname"] = update_user_data.surname
+
+    if update_user_data.email is not None:
+        if not is_valid_email(update_user_data.email):
+            raise HTTPException(status_code=400, detail="Invalid email format")
+        update_fields["email"] = update_user_data.email
+
+    if update_user_data.password is not None:
+        if not is_valid_password(update_user_data.password):
+            raise HTTPException(status_code=400, detail="Weak password")
+        update_fields["password"] = hash_password(update_user_data.password)
+
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="No data to update")
+
+    update_result = users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": update_fields}
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=304, detail="No changes were applied")
+
+    return {"message": "User data updated successfully"}
+
