@@ -57,7 +57,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-
   --animate-float: float 6s ease-in-out infinite;
   --animate-gradient: gradient 3s ease-in-out infinite;
   --animate-glitch: glitch 4s infinite;
@@ -115,7 +114,7 @@
   --muted-foreground: hsl(215 20.2% 65.1%);
   --accent: #27272A;
   --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(59.285% 0.16044 22.441);
+  --destructive: oklch(0.43 0.17 29.2);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.551 0.027 264.364);
@@ -152,6 +151,16 @@
 @utility scrollbar-hidden {
   scrollbar-width: none;
 }
+
+@utility bg-gradient-card {
+  background-image: linear-gradient(145deg, var(--background), var(--primary));
+
+  @variant dark {
+    background-image: linear-gradient(145deg, var(--background), var(--primary));
+  }
+}
+
+
 
 @keyframes float {
 

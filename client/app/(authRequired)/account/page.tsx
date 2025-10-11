@@ -11,11 +11,12 @@ import { useAuthStore } from "@/providers/AuthProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { isEqual } from "lodash-es"
-import { Calendar, Edit, Mail, Save, User, X } from "lucide-react"
+import { Calendar, Edit, Mail, Save, Trash2, User, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import z from "zod"
+import DangerZone from "@/components/pages/account/danger-zone"
 
 const UserSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -87,9 +88,8 @@ export default function Account() {
             </div>
           </div>
 
-
           <div>
-            <div className="flex justify-center flex-col p-6 rounded-md gap-4 items-center bg-primary shadow-sm">
+            <div className="flex justify-center flex-col p-6 rounded-md gap-4 items-center bg-gradient-card shadow-sm">
               <Avatar className="w-24 h-24 text-2xl" letters={user.name[0] + user.surname[0]}></Avatar>
               <div className="font-semibold text-lg">{user.name} {user.surname}</div>
               <div className="text-muted flex items-center gap-2 text-sm">
@@ -99,7 +99,7 @@ export default function Account() {
             </div>
           </div>
 
-          <div className="rounded-md p-4 space-y-6 bg-primary shadow-sm">
+          <div className="rounded-md p-4 space-y-6 bg-gradient-card shadow-sm">
 
             <div className="flex gap-2 items-center text-xl font-semibold">
               <User size={20} className="text-secondary"></User>
@@ -130,7 +130,10 @@ export default function Account() {
                 )}
               </div>
             </div>
+
           </div>
+
+          <DangerZone></DangerZone>
         </div>
       </form>
     </Form>
