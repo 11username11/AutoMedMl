@@ -4,13 +4,12 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import LayoutSidebar from "@/components/layout/layout-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import Header from "@/components/layout/header";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { getCurrentUser } from "@/lib/data/server/user";
 import { Toaster } from 'react-hot-toast';
 import QueryProvider from "@/providers/QueryProvider";
-import { cloneElement } from "react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,7 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head />
-      <body className="bg-background antialiased">
+      <body className="bg-background antialiased overflow-hidden">
         <QueryProvider>
           <ThemeProvider
             attribute="class"

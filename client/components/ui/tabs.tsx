@@ -26,7 +26,7 @@ function TabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "bg-primary p-2 text-muted-foreground inline-flex gap-2 w-fit items-center justify-center rounded-lg border",
+        "bg-primary p-2 text-muted-foreground inline-flex gap-2 w-fit flex-wrap items-center justify-start rounded-md shadow-sm",
         className
       )}
       {...props}
@@ -42,7 +42,7 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "text-muted focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:bg-input/30  inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1 text-sm font-medium whitespace-nowrap focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer data-[state=active]:cursor-default data-[state=active]:text-foreground data-[state=active]:bg-primary-foreground/50 dark:data-[state=active]:border-border border border-transparent p-2 [&_svg]:pointer-events-none duration-200 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-primary-foreground/50 hover:text-foreground",
+        "text-muted focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:bg-input/30  inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1 text-sm font-medium whitespace-nowrap focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer data-[state=active]:cursor-default data-[state=active]:text-foreground data-[state=active]:bg-primary-foreground/50 p-2 [&_svg]:pointer-events-none duration-200 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-primary-foreground/50 hover:text-foreground",
         className
       )}
       {...props}

@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 import { User } from '@/lib/types/user';
 
@@ -29,10 +29,15 @@ const StoreContext = createContext<StoreApi<authState> | null>(null);
 
 export const AuthProvider = ({ user, children }: { user: User | null; children: ReactNode }) => {
   const storeRef = useRef<StoreApi<authState> | null>(null);
-  
+
   if (!authStore) {
     authStore = createAuthStore({ user: user ?? null });
   }
+
+  useEffect(() => {
+    authStore?.setState({ user: user ?? null });
+  }, [user]);
+
   storeRef.current = authStore;
   return <StoreContext.Provider value={storeRef.current}>{children}</StoreContext.Provider>;
 };

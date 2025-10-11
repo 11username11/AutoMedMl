@@ -6,7 +6,6 @@ import { CiFilter } from "react-icons/ci"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FILTERS, useFilter } from "@/hooks/use-filter"
-import { GENDER, STATUS } from "@/lib/constants"
 import { X } from "lucide-react"
 
 export default function PatientsFilter() {
@@ -43,7 +42,7 @@ export default function PatientsFilter() {
 
           <div className="text-sm space-y-4">
             {FILTERS.map((filter) => (
-              <div className="space-y-2">
+              <div key={filter.key} className="space-y-2">
                 <div>{filter.label}</div>
                 <Select
                   defaultValue={filters[filter.key] ?? filter.options[0]}
@@ -70,59 +69,6 @@ export default function PatientsFilter() {
           </div>
 
         </PopoverContent>
-        {/* <PopoverContent align="start" className="w-80 p-4 space-y-4">
-          <div>
-            Filters
-          </div>
-
-          <div className="text-sm space-y-4">
-            <div className="space-y-2">
-              <div>Gender</div>
-              <Select
-                defaultValue={selectedGender ?? genderValues[0]}
-                onValueChange={(value) =>
-                  setSelectedGender(value === genderValues[0] ? undefined : value)
-                }
-              >
-                <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                  <SelectValue>{selectedGender ?? genderValues[0]}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {genderValues.map((gender) => (
-                      <SelectItem key={gender} value={gender}>
-                        {gender}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <div>Status</div>
-              <Select
-                defaultValue={selectedStatus ?? statusValues[0]}
-                onValueChange={(value) =>
-                  setSelectedStatus(value === statusValues[0] ? undefined : value)
-                }
-              >
-                <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                  <SelectValue>{selectedStatus ?? statusValues[0]}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {statusValues.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </PopoverContent> */}
       </Popover>
       {Object.values(filters).some(value => value != undefined) && <Button onClick={reset} variant={"ghost"} size={"lg"} className="text-muted px-4"><X size={18}></X> Clear</Button>}
     </div >

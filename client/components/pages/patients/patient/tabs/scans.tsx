@@ -11,7 +11,7 @@ const scansMock = [{
 export default function Scans({ patient }: { patient: Patient }) {
   return (
     <div className="flex gap-8">
-      <div className="rounded-md p-4 border w-full space-y-4 bg-primary">
+      <div className="rounded-md p-4 shadow-sm w-full space-y-4 bg-primary">
 
         <div className="flex gap-2 items-center text-xl font-semibold">
           <Image size={20} className="text-secondary"></Image>
@@ -19,8 +19,8 @@ export default function Scans({ patient }: { patient: Patient }) {
         </div>
 
         <div className="space-y-2">
-          {scansMock.map((scan, index) => (
-            <div key={scan.name + index} className="flex border p-4 rounded-md items-center justify-between bg-background">
+          {scansMock.map((scan) => (
+            <div key={scan.name} className="flex not-dark:border p-4 rounded-md items-center justify-between bg-background">
               <div className="space-y-1">
                 <div className="font-semibold">{scan.name}</div>
                 <div className="text-muted text-sm">{scan.description}</div>

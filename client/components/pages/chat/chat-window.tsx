@@ -57,8 +57,8 @@ export default function ChatWindow() {
       <div ref={containerRef} className="flex flex-col gap-4 h-full rounded-md overflow-y-auto scrollbar-thin pb-4 pr-4">
         <div className="flex flex-col items-start gap-4">
           {
-            !isLoading && user && chatId && (messages[chatId] || []).map((message, index) => (
-              <div key={new Date(message.timestamp).getTime() + index} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
+            !isLoading && user && chatId && (messages[chatId] || []).map((message) => (
+              <div key={new Date(message.timestamp).getTime()} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
                 {
                   message.sender == "system" ?
                     (

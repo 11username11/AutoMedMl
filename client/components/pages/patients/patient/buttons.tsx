@@ -35,20 +35,20 @@ export default function Buttons({ isPending, patient }: { isPending: boolean, pa
   })
 
   return (
-    <div className="space-x-4">
+    <div className="flex gap-4 flex-wrap">
       {isEditing ? (
         <>
-          <SubmitButton isPending={isPending} onClick={enableEdit}>
+          <SubmitButton className="flex-1" isPending={isPending}>
             <Save size={20}></Save>
             Save
           </SubmitButton>
-          <Button type="button" onClick={cancelEdit} size={"lg"} variant={"outline"}>
+          <Button className="flex-1" onClick={cancelEdit} size={"lg"} variant={"outline"}>
             <X size={20}></X>
             Cancel Edit
           </Button>
         </>
       ) : (
-        <Button type="button" onClick={enableEdit} size={"lg"} variant={"secondary"}>
+        <Button onClick={enableEdit} size={"lg"} variant={"secondary"}>
           <Edit size={20}></Edit>
           Edit Patient
         </Button>
@@ -56,7 +56,7 @@ export default function Buttons({ isPending, patient }: { isPending: boolean, pa
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button type="button" size={"lg"} variant={"destructive"}>
+          <Button size={"lg"} variant={"destructive"} className="flex-1">
             <Trash2 size={20}></Trash2>
             Delete Patient
           </Button>

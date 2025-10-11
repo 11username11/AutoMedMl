@@ -27,8 +27,6 @@ export default function EditableField({ name, isEditing, text, ...props }: Edita
   const { control } = useFormContext()
 
   if (props.type == "select" && isEditing) {
-    const label = name.charAt(0).toUpperCase() + name.slice(1)
-
     return (
       <FormField
         control={control}
@@ -42,7 +40,9 @@ export default function EditableField({ name, isEditing, text, ...props }: Edita
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {props.selectItems.map((item) => <SelectItem key={item} value={item}>{label}</SelectItem>)}
+                    {props.selectItems.map((item) => <SelectItem key={item} value={item}>
+                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                    </SelectItem>)}
                   </SelectGroup>
                 </SelectContent>
               </Select>

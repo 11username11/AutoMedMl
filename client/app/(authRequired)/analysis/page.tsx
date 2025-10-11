@@ -15,8 +15,8 @@ export default async function Analysis() {
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-6">
-        {models.map((model, index) => (
-          <Link href={"/analysis/" + model.technical_name} key={model.title + index} className="flex flex-col gap-4 p-6 bg-primary shadow-sm rounded-md hover:bg-secondary/5 duration-200 cursor-pointer">
+        {models.map((model) => (
+          <Link href={"/analysis/" + model.technical_name} key={model.title} className="flex flex-col gap-4 p-6 bg-primary shadow-sm rounded-md hover:bg-secondary/5 duration-200 cursor-pointer">
             <div className="flex gap-3 items-center">
               <div className="text-secondary bg-secondary/10 p-2 h-10 w-10 rounded-md">
                 <DynamicIcon name={model.icon.toLowerCase() as iconKeys}></DynamicIcon>
@@ -43,8 +43,8 @@ export default async function Analysis() {
             <div className="text-sm text-muted flex flex-col gap-1">
               <div>Supported formats:</div>
               <div className="flex gap-2">
-                {model.supported_formats.map((format, index) => (
-                  <Badge key={format + index} className="text-foreground border border-border font-semibold">{format}</Badge>
+                {model.supported_formats.map((format) => (
+                  <Badge key={format} className="text-foreground border border-border font-semibold">{format}</Badge>
                 ))}
               </div>
             </div>

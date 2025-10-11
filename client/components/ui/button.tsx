@@ -49,6 +49,7 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }), "select-none")}
       {...props}
+      type={props.type ?? "button"}
     />
   )
 }

@@ -7,8 +7,8 @@ import { Phone, User } from "lucide-react";
 
 export default function GeneralInformation({ patient, isEditing }: { patient: Patient, isEditing: boolean }) {
   return (
-    <div className="flex gap-6">
-      <div className="rounded-md p-4 border w-full space-y-6 bg-primary">
+    <div className="flex gap-6 flex-wrap lg:flex-nowrap">
+      <div className="rounded-md p-4 shadow-sm w-full space-y-6 bg-primary">
 
         <div className="flex gap-2 items-center text-xl font-semibold">
           <User size={20} className="text-secondary"></User>
@@ -41,7 +41,7 @@ export default function GeneralInformation({ patient, isEditing }: { patient: Pa
         </div>
       </div>
 
-      <div className="rounded-md p-4 border w-full space-y-6 bg-primary">
+      <div className="rounded-md p-4 shadow-sm w-full space-y-6 bg-primary">
 
         <div className="flex gap-2 items-center text-xl font-semibold">
           <Phone size={20} className="text-secondary"></Phone>

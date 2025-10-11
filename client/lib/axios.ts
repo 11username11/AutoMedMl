@@ -1,6 +1,9 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export const baseURL = "http://localhost:8000"
+
+export type ApiResponse = AxiosResponse<{ message: string }>
+export type ApiError = AxiosError<{ detail: string }>
 
 const api = axios.create({
   baseURL,
