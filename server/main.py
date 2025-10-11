@@ -169,7 +169,7 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
 @app.get("/patients")
 async def patients(current_user: dict = Depends(get_optional_user)):
     result = patients_collection.find_one({"medic_id": current_user["id"]})
-    return result["patients_list"]
+    return result["patients_list"][::-1]
 
 
 @app.get("/patients_names")
@@ -186,7 +186,7 @@ async def patients_names(current_user: dict = Depends(get_optional_user)):
             "surname": patient.get("surname")
         })
 
-    return all_patient_name_surname
+    return all_patient_name_surname[::-1]
 
 
 @app.post("/send_message")
@@ -382,7 +382,7 @@ async def registration(
         "code": code,
         "doc": file_location,
         "verify": verify,
-        "registration_date": str(datetime.now()),
+        "registration_date": datetime.now(),
     })
     id_ = str(result.inserted_id)
 
