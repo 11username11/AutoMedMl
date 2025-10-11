@@ -10,7 +10,7 @@ import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import { create } from "zustand";
 import Avatar from "@/components/ui/avatar";
-import { useChat } from "@/hooks/useChat";
+import { useChat } from "@/hooks/use-chat";
 import { CHAT_SIDEBAR_COOKIE_NAME, ICON_SIZE } from "@/lib/constants";
 import { Chats } from "@/lib/types/chat";
 import { useRouter, useSearchParams } from "next/navigation";

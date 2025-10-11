@@ -1,4 +1,4 @@
-import { useChat } from "@/hooks/useChat"
+import { useChat } from "@/hooks/use-chat"
 import api, { baseURL } from "@/lib/axios"
 import { queryClient } from "@/lib/react-query"
 import { Chat, Chats, Message } from "@/lib/types/chat"

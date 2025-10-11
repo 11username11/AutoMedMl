@@ -188,9 +188,8 @@ function Sidebar({
 
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    
     const el = e.target as HTMLElement
-    console.log(e.target, el.dataset, findParentWithDataset(el, "slot", "sidebar-group"))
+    
     if (!findParentWithDataset(el, "slot", "sidebar-group")) {
       setOpen(true)
     }

@@ -6,7 +6,7 @@ import { RiRobot2Line } from "react-icons/ri";
 import Avatar from "@/components/ui/avatar";
 import { useAuthStore } from "@/providers/AuthProvider";
 import { formatToHHMM, scrollDown } from "@/lib/utils";
-import { useChat } from "@/hooks/useChat";
+import { useChat } from "@/hooks/use-chat";
 import { Chat } from "@/lib/types/chat";
 import { useLayoutEffect, useRef, useState } from "react";
 import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
