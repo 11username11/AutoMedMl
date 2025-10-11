@@ -364,7 +364,6 @@ async def registration(
 ):
     allowed_extensions = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"}
 
-    # Проверка расширения
     _, ext = os.path.splitext(doc.filename.lower())
     if ext not in allowed_extensions:
         raise HTTPException(
