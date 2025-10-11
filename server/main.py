@@ -44,6 +44,8 @@ SAMESITE = secrets['samesite']
 CODE = secrets['code']
 MONGO_LINK = secrets["mongo_link"]
 
+MAX_DOC_SIZE_MB = 25
+
 client = MongoClient(MONGO_LINK)
 
 if not os.path.exists(UPLOAD_DIR):
@@ -360,9 +362,33 @@ async def registration(
         code: str = Form(...),
         doc: UploadFile = Form(...)
 ):
+    allowed_extensions = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"}
+
+    # Проверка расширения
+    _, ext = os.path.splitext(doc.filename.lower())
+    if ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type. Allowed: {', '.join(allowed_extensions)}"
+        )
+
+    if not doc.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid MIME type: {doc.content_type}. Must be an image."
+        )
+
+    content = await doc.read()
+    size_mb = len(content) / (1024 * 1024)
+    if size_mb > MAX_DOC_SIZE_MB:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File too large ({size_mb:.2f} MB). Limit is {MAX_DOC_SIZE_MB} MB."
+        )
+
     file_location = f"{UPLOAD_DIR}/{name}_{surname}_{doc.filename}"
     with open(file_location, "wb") as f:
-        f.write(await doc.read())
+        f.write(content)
 
     verify = code == CODE
 
@@ -415,8 +441,7 @@ async def registration(
                             decisions, and patient care.\n\n
                             Use this chat for general consultation or discussions not 
                             linked to a specific patient. For individual patients, 
-                            dedicated chats will be created."""
-                        ,
+                            dedicated chats will be created.""",
                         "timestamp": datetime.now()
                     }
                 ]
@@ -630,11 +655,11 @@ async def get_patient_info(patient_id: str, current_user: dict = Depends(get_opt
 
     return patient_info
 
+
 @app.post("/change_user")
 async def change_user(update_user_data: UpdateUser,
                       response: Response,
                       current_user: dict = Depends(get_optional_user)):
-
     if not current_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
@@ -673,4 +698,3 @@ async def change_user(update_user_data: UpdateUser,
         raise HTTPException(status_code=304, detail="No changes were applied")
 
     return {"message": "User data updated successfully"}
-
