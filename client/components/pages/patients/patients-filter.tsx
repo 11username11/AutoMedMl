@@ -20,6 +20,7 @@ export default function PatientsFilter() {
   return (
     <div className="flex gap-4 flex-col lg:flex-row">
       <SearchInput
+        placeholder={"Search patients"}
         className="bg-primary w-full lg:w-auto max-w-full"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

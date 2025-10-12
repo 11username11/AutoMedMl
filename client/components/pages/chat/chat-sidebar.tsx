@@ -133,6 +133,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
             Patients
           </div>
           <SearchInput
+            placeholder={"Search patients"}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
