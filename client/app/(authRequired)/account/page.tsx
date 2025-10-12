@@ -64,7 +64,14 @@ export default function Account() {
   )
 
   function onSubmit(data: z.infer<typeof UserSchema>) {
-    if (isEqual(user, data))
+    const currentData = {
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      password: undefined
+    }
+
+    if (isEqual(currentData, data))
       toast.success("No changes made")
     else
       toast.promise(mutateAsync(data), {
