@@ -3,6 +3,6 @@ export interface User {
   surname: string,
   email: string,
   verify: boolean,
-  registration_date: Date,
+  registration_date: string,
   num_of_patient: number
 }

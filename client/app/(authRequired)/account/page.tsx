@@ -11,7 +11,7 @@ import { useAuthStore } from "@/providers/AuthProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { isEqual } from "lodash-es"
-import { Calendar, Edit, Key, Mail, Save, Trash2, User, X } from "lucide-react"
+import { Calendar, Edit, Key, Mail, Save, User, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
@@ -113,7 +113,9 @@ export default function Account() {
               <div className="font-semibold text-lg">{user.name} {user.surname}</div>
               <div className="text-muted flex items-center gap-2 text-sm">
                 <Calendar size={16}></Calendar>
-                Member since {new Date(user.registration_date).toLocaleDateString()}
+                <div>
+                  Member since <span className="font-semibold">{user.registration_date}</span>
+                </div>
               </div>
             </div>
           </div>
