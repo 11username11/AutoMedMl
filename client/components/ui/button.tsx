@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90",
+          "bg-primary text-foreground shadow-sm hover:bg-primary-foreground",
         destructive:
           "bg-destructive/80 text-accent-foreground hover:bg-destructive focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 ",
         outline: "border bg-primary hover:bg-primary-foreground",
@@ -31,7 +31,7 @@ const buttonVariants = cva(
     },
   }
 )
-
+// bg-gradient-to-br from-background to-primary 
 function Button({
   className,
   variant,

@@ -16,6 +16,14 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    const status = error?.response?.status;
+
+    if (status >= 300 && status < 400 && !error.response?.data) {
+      error.response.data = {
+        detail: error.response.statusText,
+      };
+    }
+
     return Promise.reject(error);
   }
 );

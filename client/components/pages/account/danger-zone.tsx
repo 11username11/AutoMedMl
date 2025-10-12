@@ -26,7 +26,7 @@ export default function DangerZone() {
   const handleDelete = () => mutateAsync()
 
   return (
-    <div className="rounded-md p-4 space-y-6 shadow-sm bg-gradient-card">
+    <div className="rounded-md p-4 space-y-6 shadow-sm bg-primary border">
       <div>
         <div className="text-2xl font-semibold text-destructive">Danger Zone</div>
         <div className="text-muted text-sm font-light">Irreversible and destructive actions</div>

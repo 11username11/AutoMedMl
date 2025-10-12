@@ -80,7 +80,7 @@ export default function Settigs() {
           <div className="text-muted text-sm">Manage your account and security settings</div>
 
           <div className="flex flex-col gap-3 mt-3">
-            <div className="flex justify-between items-center p-3 bg-background rounded-md">
+            <div className="flex justify-between items-center p-3 bg-background rounded-md not-dark:border">
               <div>
                 <div className="font-semibold">Log Out</div>
                 <div className="text-sm text-muted">Log out of your account on this device</div>

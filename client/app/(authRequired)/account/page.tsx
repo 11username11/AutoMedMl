@@ -11,7 +11,7 @@ import { useAuthStore } from "@/providers/AuthProvider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { isEqual } from "lodash-es"
-import { Calendar, Edit, Mail, Save, Trash2, User, X } from "lucide-react"
+import { Calendar, Edit, Key, Mail, Save, Trash2, User, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
@@ -21,7 +21,25 @@ import DangerZone from "@/components/pages/account/danger-zone"
 const UserSchema = z.object({
   name: z.string().min(1, "Name is required"),
   surname: z.string().min(1, "Surname is required"),
-  email: z.email("Invalid email")
+  email: z.email("Invalid email"),
+  password: z
+    .string()
+    .optional()
+    .refine((val) => !val || val.length >= 8, {
+      message: "Password must be at least 8 characters",
+    })
+    .refine((val) => !val || /[A-Z]/.test(val), {
+      message: "Password must contain an uppercase letter",
+    })
+    .refine((val) => !val || /[a-z]/.test(val), {
+      message: "Password must contain a lowercase letter",
+    })
+    .refine((val) => !val || /\d/.test(val), {
+      message: "Password must contain a digit",
+    })
+    .refine((val) => !val || /[!@#$%^&*?_+-]/.test(val), {
+      message: "Password must contain a special character (!@#$%^&*?_+-)",
+    })
 })
 
 export default function Account() {
@@ -30,19 +48,20 @@ export default function Account() {
 
   const { isEditing, enableEdit, cancelEdit } = useEditMode()
 
+  const form = useForm<z.infer<typeof UserSchema>>({
+    resolver: zodResolver(UserSchema),
+    defaultValues: user,
+  })
+
   const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: z.infer<typeof UserSchema>) => api.post("/change_user", data),
       onSuccess: (data) => {
         router.refresh()
+        form.resetField('password')
       },
     }
   )
-
-  const form = useForm<z.infer<typeof UserSchema>>({
-    resolver: zodResolver(UserSchema),
-    defaultValues: user,
-  })
 
   function onSubmit(data: z.infer<typeof UserSchema>) {
     if (isEqual(user, data))
@@ -89,7 +108,7 @@ export default function Account() {
           </div>
 
           <div>
-            <div className="flex justify-center flex-col p-6 rounded-md gap-4 items-center bg-gradient-card shadow-sm">
+            <div className="flex justify-center flex-col p-6 rounded-md gap-4 items-center bg-primary border shadow-sm">
               <Avatar className="w-24 h-24 text-2xl" letters={user.name[0] + user.surname[0]}></Avatar>
               <div className="font-semibold text-lg">{user.name} {user.surname}</div>
               <div className="text-muted flex items-center gap-2 text-sm">
@@ -99,7 +118,7 @@ export default function Account() {
             </div>
           </div>
 
-          <div className="rounded-md p-4 space-y-6 bg-gradient-card shadow-sm">
+          <div className="rounded-md p-4 space-y-6 bg-primary border shadow-sm">
 
             <div className="flex gap-2 items-center text-xl font-semibold">
               <User size={20} className="text-secondary"></User>
@@ -127,6 +146,17 @@ export default function Account() {
                   </div>
                 ) : (
                   <div className="text-muted">{user.email}</div>
+                )}
+              </div>
+
+              <div className="text-sm space-y-1">
+                <div className="font-semibold flex gap-2 items-center"><Key size={16}></Key> Password</div>
+                {isEditing ? (
+                  <div className={"flex gap-2"}>
+                    <EditableField text={""} isEditing={isEditing} name="password"></EditableField>
+                  </div>
+                ) : (
+                  <div className="text-muted font-extralight">••••••••</div>
                 )}
               </div>
             </div>
