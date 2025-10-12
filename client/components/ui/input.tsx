@@ -7,7 +7,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   const [isHidden, setIsHidden] = React.useState(true)
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <input
         type={type === "password" ? isHidden ? "password" : "text" : type}
         data-slot="input"

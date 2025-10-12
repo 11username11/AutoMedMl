@@ -61,7 +61,7 @@ export default function PatientForm({ patient }: { patient: Patient }) {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col p-10 gap-4 h-full">
 
-          <div className="flex justify-between flex-col gap-4 xl:flex-row">
+          <div className="flex justify-between flex-col gap-4 lg:flex-row">
             <div>
               <div className="text-3xl font-bold">Patient Details</div>
               <div className="text-muted">Comprehensive patient information and records</div>
@@ -70,13 +70,13 @@ export default function PatientForm({ patient }: { patient: Patient }) {
             <Buttons patient={patient} isPending={isPending}></Buttons>
           </div>
 
-          <div className="flex gap-4 p-4 rounded-md bg-primary items-center shadow-sm">
+          <div className="flex gap-4 p-4 rounded-md bg-primary items-center shadow-sm ">
             <Avatar className="h-full aspect-square w-auto text-2xl" letters={patient.name[0] + patient.surname[0]} />
-            <div className="flex flex-col gap-4 w-full">
-              <div className="flex justify-between items-start lg:flex-row flex-col gap-4 w-full">
-                <div className="space-y-1">
+            <div className="flex flex-col gap-4 w-full overflow-hidden">
+              <div className="flex justify-between overflow-hidden items-start lg:flex-row flex-col gap-4">
+                <div className="space-y-1 overflow-hidden w-full">
                   <div className="text-xl font-semibold">{`${patient.name} ${patient.surname}`}</div>
-                  <div className="text-muted text-sm">Patient ID: {patient.patient_id}</div>
+                  <div className="text-muted text-sm text-nowrap overflow-hidden text-ellipsis">Patient ID: {patient.patient_id}</div>
                 </div>
                 {<StatusBadge status={patient.status} />}
               </div>

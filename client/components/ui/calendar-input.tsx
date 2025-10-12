@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { ControllerRenderProps, FieldValues } from "react-hook-form"
+import { ControllerRenderProps, FieldValues, Path } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import { parse } from "date-fns"
 import InputMask from "@mona-health/react-input-mask";
@@ -23,11 +23,11 @@ function isValidDate(date: Date | undefined) {
   return !isNaN(date.getTime())
 }
 
-interface CalendarInput extends React.ComponentProps<typeof Input> {
-  field: ControllerRenderProps<FieldValues, string>
+interface CalendarInput<T extends FieldValues>  extends React.ComponentProps<typeof Input> {
+  field: ControllerRenderProps<T, Path<T>>
 }
 
-export function CalendarInput({ field, className, ...props }: CalendarInput) {
+export function CalendarInput<T extends FieldValues> ({ field, className, ...props }: CalendarInput<T>) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [month, setMonth] = React.useState<Date | undefined>(date)
@@ -59,7 +59,7 @@ export function CalendarInput({ field, className, ...props }: CalendarInput) {
         onChange={handleChange}
         onFocus={() => setOpen(true)}
         value={field.value}
-        className={cn(className)}
+        className={cn("w-full", className)}
         {...props}
       >
         <Input></Input>

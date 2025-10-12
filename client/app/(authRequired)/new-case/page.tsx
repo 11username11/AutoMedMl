@@ -63,8 +63,8 @@ export default function NewCase() {
       </div>
 
       <Form {...form} >
-        <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 rounded-md flex flex-col gap-4 w-full">
-          <div className="flex gap-4 items-start">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 rounded-md flex flex-col gap-4 w-full bg-primary">
+          <div className="flex gap-4 lg:items-start lg:flex-row flex-col w-full">
             <div className="space-y-4 flex-1">
               <InputField
                 control={form.control}
@@ -108,51 +108,25 @@ export default function NewCase() {
                   formItemClassName="min-w-fit"
                 />
 
-                <FormField
+                <InputField
                   control={form.control}
                   name="gender"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Gender *</FormLabel>
-                      <FormControl>
-                        <Select defaultValue={GENDER[0]} onValueChange={field.onChange}>
-                          <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                            <SelectValue>{field.value}</SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {GENDER.map((gender) => <SelectItem key={gender} value={gender}>{gender}</SelectItem>)}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}>
-                </FormField>
+                  label="Gender *"
+                  inputType="select"
+                  className="w-full cursor-pointer bg-primary"
+                  formItemClassName="flex-1"
+                  selectItems={[...GENDER]}>
+                </InputField>
 
-                <FormField
+                <InputField
                   control={form.control}
                   name="status"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Status *</FormLabel>
-                      <FormControl>
-                        <Select defaultValue={STATUS[0]} onValueChange={field.onChange}>
-                          <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                            <SelectValue>{field.value}</SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {STATUS.map((status) => <SelectItem key={status} value={status}>{status}</SelectItem>)}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}>
-                </FormField>
+                  label="Status *"
+                  inputType="select"
+                  className="w-full cursor-pointer bg-primary"
+                  formItemClassName="flex-1"
+                  selectItems={[...STATUS]}>
+                </InputField>
               </div>
             </div>
 
@@ -162,7 +136,7 @@ export default function NewCase() {
               label="Medical History"
               inputType="textarea"
               placeholder="Enter relevant medical history, allergies, medications, etc."
-              className="resize-none h-full bg-primary"
+              className="resize-none h-full bg-primary min-h-80"
               formItemClassName="flex-1 h-full flex flex-col">
             </InputField>
 

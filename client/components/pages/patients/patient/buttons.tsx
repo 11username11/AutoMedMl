@@ -48,7 +48,7 @@ export default function Buttons({ isPending, patient }: { isPending: boolean, pa
           </Button>
         </>
       ) : (
-        <Button onClick={enableEdit} size={"lg"} variant={"secondary"}>
+        <Button onClick={enableEdit} className="flex-1" size={"lg"} variant={"secondary"}>
           <Edit size={20}></Edit>
           Edit Patient
         </Button>
