@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import LogoutButton from "../ui/logout-btn";
 import { User } from "@/lib/types/user";
 import Avatar from "../ui/avatar";
+import { Button } from "../ui/button";
 
 export default function Header({ user }: { user: User | null }) {
   return (
@@ -68,13 +69,17 @@ export default function Header({ user }: { user: User | null }) {
         </>
       ) : (
         <div className="flex gap-2 font-semibold text-sm ml-auto">
-          <Link href={"/login"} className="flex gap-2 items-center group cursor-pointer p-2 px-3 hover:bg-primary-foreground rounded-md duration-200">
-            <LogIn className="group-hover:translate-x-0.5 duration-200 will-change-transform" size={18} />
-            Login
+          <Link href={"/login"}>
+            <Button variant={"ghost"}>
+              <LogIn className="group-hover:translate-x-0.5 duration-200 will-change-transform" size={18} />
+              Login
+            </Button>
           </Link>
-          <Link href={"/register"} className="flex items-center gap-2 p-2 px-3 bg-secondary text-accent-foreground hover:bg-secondary-foreground duration-200 rounded-sm">
-            <UserPlus size={18}></UserPlus>
-            Register
+          <Link href={"/register"}>
+            <Button variant={"secondary"}>
+              <UserPlus size={18}></UserPlus>
+              Register
+            </Button>
           </Link>
         </div >
       )}
