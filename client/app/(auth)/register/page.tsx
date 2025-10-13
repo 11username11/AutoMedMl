@@ -71,91 +71,90 @@ export default function Login() {
   }
 
   return (
-    <div className="flex justify-center p-6 h-full">
-      <div className="flex flex-col items-center gap-8 justify-center  max-w-md w-full p-6 ">
-        <div className="flex flex-col gap-2 rounded-md w-full">
-          <div className="font-medium">Create your account</div>
-          <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link></div>
-          <Form {...form} >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-3">
-              <div className="flex gap-4 items-start">
-                <InputField
-                  control={form.control}
-                  name="name"
-                  label="First name"
-                  type="text"
-                  placeholder="John"
-                  className="p-3 shadow-none h-12"
-                />
-                <InputField
-                  control={form.control}
-                  name="surname"
-                  label="Last name"
-                  type="text"
-                  placeholder="Doe"
-                  className="p-3 shadow-none h-12"
-                />
-              </div>
+    <div className="flex flex-col gap-2 rounded-md w-full">
+      <div className="font-medium">Create your account</div>
+      <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link></div>
+      <Form {...form} >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-3">
+          <div className="flex gap-4 items-start">
+            <InputField
+              control={form.control}
+              name="name"
+              label="First name"
+              type="text"
+              placeholder="John"
+              className="p-3 shadow-none h-12"
+            />
+            <InputField
+              control={form.control}
+              name="surname"
+              label="Last name"
+              type="text"
+              placeholder="Doe"
+              className="p-3 shadow-none h-12"
+            />
+          </div>
 
-              <InputField
-                control={form.control}
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="doctor@hospital.com"
-                className="p-3 shadow-none h-12"
-              />
+          <InputField
+            control={form.control}
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="doctor@hospital.com"
+            className="p-3 shadow-none h-12"
+          />
 
-              <InputField
-                control={form.control}
-                name="password"
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                className="p-3 shadow-none h-12"
-              />
+          <InputField
+            control={form.control}
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+            className="p-3 shadow-none h-12"
+          />
 
-              <InputField
-                control={form.control}
-                name="code"
-                label="Invitation code"
-                type="text"
-                placeholder="Enter code"
-                className="p-3 shadow-none h-12"
-              />
+          <InputField
+            control={form.control}
+            name="code"
+            label="Invitation code"
+            type="text"
+            placeholder="Enter code"
+            className="p-3 shadow-none h-12"
+          />
 
-              <FormField
-                control={form.control}
-                name={"verification"}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Identify verification</FormLabel>
-                    <FormControl>
-                      <Dropzone
-                        accept={{ 'image/*': [] }}
-                        maxFiles={1}
-                        multiple={false}
-                        maxSize={1024 * 1024 * 10}
-                        onDrop={field.onChange}
-                        onError={console.error}
-                        src={field.value}
-                      >
-                        <DropzoneEmptyState />
-                        <DropzoneContent />
-                      </Dropzone>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+          <FormField
+            control={form.control}
+            name={"verification"}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Identify verification</FormLabel>
+                <FormControl>
+                  <Dropzone
+                    accept={{ 'image/*': [] }}
+                    maxFiles={1}
+                    multiple={false}
+                    maxSize={1024 * 1024 * 10}
+                    onDrop={field.onChange}
+                    onError={console.error}
+                    src={field.value}
+                  >
+                    <DropzoneEmptyState />
+                    <DropzoneContent />
+                  </Dropzone>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
 
 
-              <SubmitButton isPending={isPending}>
-                Sign Up
-              </SubmitButton>
-            </form>
-          </Form>
-        </div>
+          <SubmitButton isPending={isPending}>
+            Sign Up
+          </SubmitButton>
+        </form>
+      </Form>
+      <div className="text-muted text-sm text-center mt-2">
+        Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link>
       </div>
-    </div >
+    </div>
   )
 }

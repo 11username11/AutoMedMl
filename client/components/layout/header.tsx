@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 
 export default function Header({ user }: { user: User | null }) {
   return (
-    <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border bg-sidebar sticky top-0 z-10">
+    <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border bg-sidebar sticky top-0 z-20">
       {user ? (
         <>
           <SidebarTrigger className="cursor-pointer p-4"></SidebarTrigger>

@@ -2,6 +2,8 @@ import { getCurrentUser } from '@/lib/data/server/user';
 import { CheckCircle, CircleCheck } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import medicalHeroBg from "@/public/medical-hero-bg.jpg"
+import Image from 'next/image';
+import { Separator } from '@/components/ui/separator';
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
@@ -9,9 +11,25 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   if (user) redirect("/")
 
   return (
-    <div className='flex w-full h-full'>
-      <div className='w-full'>
-        {children}
+    <div className='flex w-full min-h-fit h-full'>
+      <div className='w-full min-h-fit h-full'>
+        <div className="flex flex-col mx-auto gap-8 justify-center p-6 min-h-fit h-full max-w-md">
+          <div className='flex flex-col items-center'>
+            <Image
+              src={"/logo.svg"}
+              width={64}
+              height={64}
+              alt="logo"
+              className="block mb-6"
+            />
+            <div className='font-bold text-xl'>Medical AI</div>
+            <div className='text-muted'>AI-powered medical analysis platform</div>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-8 w-full">
+            {children}
+          </div>
+        </div>
+
       </div>
       <div
         className="hidden lg:flex shrink-0 w-5/12 p-8 bg-gradient-to-br from-secondary-foreground/90 to-secondary-foreground text-accent-foreground relative overflow-hidden"

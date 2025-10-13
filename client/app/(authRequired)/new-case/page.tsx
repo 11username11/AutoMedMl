@@ -56,14 +56,14 @@ export default function NewCase() {
   }
 
   return (
-    <div className="flex flex-col p-6 gap-8">
-      <div className="p-4">
+    <div className="flex flex-col p-10 gap-8">
+      <div>
         <div className="text-3xl font-bold">Create New Patient</div>
         <div className="text-muted">Add a new patient to the system</div>
       </div>
 
       <Form {...form} >
-        <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 rounded-md flex flex-col gap-4 w-full bg-primary">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="rounded-md flex flex-col gap-4 w-full">
           <div className="flex gap-4 lg:items-start lg:flex-row flex-col w-full">
             <div className="space-y-4 flex-1">
               <InputField

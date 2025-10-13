@@ -12,10 +12,10 @@ type NewCaseButtonProps = Omit<React.ComponentProps<typeof Link>, "href"> & {
 export default function NewCaseBtn({ variant = "secondary", href = "/new-case", className, ...props }: NewCaseButtonProps) {
   return (
     <Link className={cn("group  duration-200", className)} href={href} {...props}>
-      <Button size={"lg"} variant={variant} className={cn("px-16 max-w-full group duration-200", className, "group-data-[minimized=true]:px-4")} >
+      <Button size={"lg"} variant={variant} className={cn("max-w-full group duration-200", className, "group-data-[minimized=true]:px-4")} >
         <FaPlus className="shrink-0" />
         <span className={cn("max-w-full group-data-[minimized=true]:overflow-hidden duration-200  group-data-[minimized=true]:opacity-0 opacity-100")}>
-          New Case
+          Add Patient
         </span>
       </Button>
     </Link>

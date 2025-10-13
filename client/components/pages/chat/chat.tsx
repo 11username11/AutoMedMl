@@ -8,13 +8,14 @@ import { type Chat } from "@/lib/types/chat";
 import { useSearchParams } from "next/navigation";
 import { streamMessage } from "@/lib/data/client/chat";
 import { Textarea } from "@/components/ui/textarea";
+import { useChat } from "@/hooks/use-chat";
 
 export default function Chat() {
   const params = useSearchParams()
   const textareaRef = useRef<null | HTMLTextAreaElement>(null);
 
   const minimizeChatSidebar = useChatSidebar((state) => state.minimizeChatSidebar);
-  const chatId = params.get("chat") || "main"
+  const chatId = useChat((state) => state.chatId) ?? params.get("chat") ?? "main"
 
   const [text, setText] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);

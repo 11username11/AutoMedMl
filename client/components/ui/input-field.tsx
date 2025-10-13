@@ -30,7 +30,7 @@ export function InputField<T extends FieldValues>({ control, name, label, type =
         if (inputType === "input") {
           inputElement = (
             <Input
-              className={cn("h-10", className, "bg-background")}
+              className={cn("h-10", className)}
               type={type}
               placeholder={placeholder}
               {...field}
@@ -40,14 +40,14 @@ export function InputField<T extends FieldValues>({ control, name, label, type =
           inputElement = (
             <Textarea
               placeholder={placeholder}
-              className={cn(className, "bg-background")}
+              className={cn(className)}
               {...field}
             />
           )
         } else if (inputType === "select" && selectItems) {
           inputElement = (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger size="large" className={cn(className, "bg-background")}>
+              <SelectTrigger size="large" className={cn(className)}>
                 <SelectValue>{field.value}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -64,7 +64,7 @@ export function InputField<T extends FieldValues>({ control, name, label, type =
         } else if (inputType === "calendar") {
           inputElement = (
             <CalendarInput
-              className={cn("h-10", className, "bg-background")}
+              className={cn("h-10", className)}
               type={type}
               placeholder={placeholder}
               field={field}

@@ -10,13 +10,15 @@ import { useChat } from "@/hooks/use-chat";
 import { Chat } from "@/lib/types/chat";
 import { useLayoutEffect, useRef, useState } from "react";
 import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
+import { useSearchParams } from "next/navigation";
 
 export default function ChatWindow() {
+  const params = useSearchParams()
 
   const user = useAuthStore((state) => state.user)
   const setMessages = useChat((state) => state.setMessages)
   const messages = useChat((state) => state.messages)
-  const chatId = useChat((state) => state.chatId)
+  const chatId = useChat((state) => state.chatId) ?? params.get("chat")
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -58,7 +60,7 @@ export default function ChatWindow() {
         <div className="flex flex-col items-start gap-4">
           {
             !isLoading && user && chatId && (messages[chatId] || []).map((message) => (
-              <div key={new Date(message.timestamp).getTime()} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
+              <div key={new Date(message.timestamp).getTime() + message.sender} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
                 {
                   message.sender == "system" ?
                     (

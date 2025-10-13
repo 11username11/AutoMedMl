@@ -48,69 +48,69 @@ export default function Login() {
   }
 
   return (
-    <div className="flex justify-center p-6 h-full">
-      <div className="flex flex-col items-center justify-center gap-8  max-w-md w-full p-6 ">
-        <div className="flex flex-col gap-2 rounded-md w-full">
-          <div className="font-medium">Welcome back</div>
-          <div className="text-muted text-sm">Don't have an account? <Link href={"/register"} className="text-foreground underline">Sign Up</Link></div>
-          <Form {...form} >
-            <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col gap-4 mt-3">
-              <div className="flex gap-4 items-start">
-                <div className="space-y-4 flex-1">
-                  <InputField
-                    control={form.control}
-                    name="email"
-                    label="Email"
-                    type="email"
-                    placeholder="doctor@hospital.com"
-                    className="p-3 shadow-none h-12"
-                  />
-                  <InputField
-                    control={form.control}
-                    name="password"
-                    label="Password"
-                    type="password"
-                    placeholder="Enter your password"
-                    className="p-3 shadow-none h-12"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <FormField
-                  control={form.control}
-                  name="remember"
-                  render={({ field }) => {
-                    return (
-                      <FormItem
-                        className="flex flex-row items-center gap-2"
-                      >
-                        <FormControl>
-                          <Checkbox />
-                        </FormControl>
-                        <FormLabel className="text-sm font-normal">
-                          Remember me
-                        </FormLabel>
-                      </FormItem>
-                    )
-                  }}
-                />
-                <div className="text-secondary hover:underline cursor-pointer">
-                  Forgot password?
-                </div>
-              </div>
-              <SubmitButton isPending={isPending}>Sign In</SubmitButton>
-            </form>
-          </Form>
-
-          {isVerifying && (
-            <div className="text-center text-sm" suppressHydrationWarning={true}>
-              <div>We are veryfing your account</div>
-              <div>It can take a while</div>
-            </div>
-          )}
-        </div>
+    <div className="flex flex-col gap-3 rounded-md w-full">
+      <div className="space-y-1">
+        <div className="font-medium text-lg">Welcome back</div>
+        <div className="text-muted text-sm">Enter your credentials to access your account</div>
       </div>
-    </div >
+      <Form {...form} >
+        <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col gap-4 mt-3">
+          <div className="flex gap-4 items-start">
+            <div className="space-y-4 flex-1">
+              <InputField
+                control={form.control}
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="doctor@hospital.com"
+                className="p-3 shadow-none h-12"
+              />
+              <InputField
+                control={form.control}
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                className="p-3 shadow-none h-12"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <FormField
+              control={form.control}
+              name="remember"
+              render={({ field }) => {
+                return (
+                  <FormItem
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <FormControl>
+                      <Checkbox />
+                    </FormControl>
+                    <FormLabel className="text-sm font-normal">
+                      Remember me
+                    </FormLabel>
+                  </FormItem>
+                )
+              }}
+            />
+            <div className="text-secondary hover:underline cursor-pointer">
+              Forgot password?
+            </div>
+          </div>
+          <SubmitButton isPending={isPending}>Sign In</SubmitButton>
+        </form>
+      </Form>
+      <div className="text-muted text-sm text-center mt-2">
+        Don't have an account? <Link href={"/register"} className="text-foreground underline underline-offset-2">Sign Up</Link>
+      </div>
+      {isVerifying && (
+        <div className="text-center text-sm" suppressHydrationWarning={true}>
+          <div>We are veryfing your account</div>
+          <div>It can take a while</div>
+        </div>
+      )}
+    </div>
   )
 }
