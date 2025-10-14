@@ -10,6 +10,8 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { cn, filterBySearch } from "@/lib/utils"
 import { Input } from "./input"
+import { Search } from "lucide-react"
+import SearchInput from "./search-input"
 
 type Option = {
   value: string
@@ -119,12 +121,13 @@ export function ComboboxContent<T>({
   return (
     <PopoverContent forceMount className="w-[var(--radix-popover-trigger-width)] p-0">
       <div className="p-2">
-        <Input
+        <SearchInput
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search..."
           className="placeholder:text-muted-foreground flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50 ring-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
-        />
+        >
+        </SearchInput>
       </div>
       <div
         ref={listRef}

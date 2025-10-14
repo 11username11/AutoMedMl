@@ -8,7 +8,8 @@ import { useAuthStore } from "@/providers/AuthProvider";
 import { formatToHHMM, scrollDown } from "@/lib/utils";
 import { useChat } from "@/hooks/use-chat";
 import { Chat } from "@/lib/types/chat";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { type Chat as ChatProps } from "@/lib/types/chat";
 import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
 import { useSearchParams } from "next/navigation";
 
@@ -17,8 +18,9 @@ export default function ChatWindow() {
 
   const user = useAuthStore((state) => state.user)
   const setMessages = useChat((state) => state.setMessages)
-  const messages = useChat((state) => state.messages)
-  const chatId = useChat((state) => state.chatId) ?? params.get("chat")
+
+  const chatId = useChat((state) => state.chatId) ?? params.get("chat") ?? "main"
+  const isStreaming = useChat((state) => state.isStreaming)
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -30,17 +32,20 @@ export default function ChatWindow() {
     staleTime: Infinity
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!chat || !chatId) return;
 
     setMessages(chatId, chat.messages);
+
+    requestAnimationFrame(() => scrollDown(containerRef, "instant"))
   }, [chat, chatId]);
 
-  useLayoutEffect(() => {
-    scrollDown(containerRef, "instant")
-  }, [messages])
+  useEffect(() => {
+    if (isStreaming)
+      scrollDown(containerRef, "instant")
+  }, [isStreaming])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setShowSkeleton(true)
 
     if (!isLoading) {
@@ -59,7 +64,7 @@ export default function ChatWindow() {
       <div ref={containerRef} className="flex flex-col gap-4 h-full rounded-md overflow-y-auto scrollbar-thin pb-4 pr-4">
         <div className="flex flex-col items-start gap-4">
           {
-            !isLoading && user && chatId && (messages[chatId] || []).map((message) => (
+            !isLoading && user && (chat?.messages || []).map((message) => (
               <div key={new Date(message.timestamp).getTime() + message.sender} data-sender={message.sender} className="flex items-start w-9/12 data-[sender=user]:flex-row-reverse data-[sender=user]:ml-auto gap-4">
                 {
                   message.sender == "system" ?

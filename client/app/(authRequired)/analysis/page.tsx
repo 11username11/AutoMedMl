@@ -16,7 +16,7 @@ export default async function Analysis() {
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-6">
         {models.map((model) => (
-          <Link href={"/analysis/" + model.technical_name} key={model.title} className="flex flex-col gap-4 p-6 bg-primary shadow-sm rounded-md hover:bg-secondary/5 duration-200 cursor-pointer">
+          <Link href={"/analysis/" + model.technical_name} key={model.title} className="flex flex-col gap-4 p-6 bg-primary border shadow-sm rounded-md hover:bg-secondary/5 duration-200 cursor-pointer">
             <div className="flex gap-3 items-center">
               <div className="text-secondary bg-secondary/10 p-2 h-10 w-10 rounded-md">
                 <DynamicIcon name={model.icon.toLowerCase() as iconKeys}></DynamicIcon>

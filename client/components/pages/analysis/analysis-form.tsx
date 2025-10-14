@@ -15,8 +15,6 @@ import { Patient } from "@/lib/types/patient"
 import SubmitButton from "@/components/ui/submit-btn"
 import { Combobox, ComboboxTrigger, ComboboxValue, ComboboxContent } from "@/components/ui/combobox"
 import { differenceInYears, parse } from "date-fns"
-import { useVirtualizer } from "@tanstack/react-virtual"
-import { useRef } from "react"
 import NewCaseBtn from "@/components/ui/new-case-btn"
 import { PopoverContent } from "@/components/ui/popover"
 
@@ -26,15 +24,6 @@ const FormSchema = z.object({
 });
 
 export default function AnalysisForm({ model, patients }: { model: AnalysisModel | undefined, patients: Patient[] }) {
-  const parentRef = useRef<HTMLDivElement>(null)
-
-  const rowVirtualizer = useVirtualizer({
-    count: patients.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 56,
-    overscan: 5,
-  })
-
   const { mutateAsync, isPending } = useMutation(
     {
       mutationFn: (data: FormData) => api.post(`/model/${model?.technical_name}/send_data`, data),
@@ -70,7 +59,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
             control={form.control}
             name={"image"}
             render={({ field }) => (
-              <FormItem className="flex flex-col p-4 bg-primary rounded-md shadow-sm w-full">
+              <FormItem className="flex flex-col p-4 bg-primary border rounded-md shadow-sm w-full">
                 <FormLabel className="flex gap-2 items-center font-semibold text-xl">
                   <Image></Image> Upload Medical Image
                 </FormLabel>
@@ -125,7 +114,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               control={form.control}
               name="patient"
               render={({ field }) => (
-                <FormItem className="p-4 bg-primary rounded-md shadow-sm">
+                <FormItem className="p-4 bg-primary border rounded-md shadow-sm">
                   <FormLabel className="flex gap-2 items-center font-semibold text-xl">
                     <User /> Patient Assignment
                   </FormLabel>
@@ -170,7 +159,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               )}
             />
 
-            <div className="flex flex-col gap-4 p-4 bg-primary rounded-md shadow-sm h-full">
+            <div className="flex flex-col gap-4 p-4 bg-primary border rounded-md shadow-sm h-full">
               <div className="text-xl font-semibold">Analysis Details</div>
               <div className="text-sm space-y-2">
                 <div className="flex">

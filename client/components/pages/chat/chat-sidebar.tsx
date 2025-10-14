@@ -4,8 +4,8 @@ import SearchInput from "@/components/ui/search-input";
 import { Separator } from "@/components/ui/separator";
 import { RiRobot2Line } from "react-icons/ri";
 import NewCaseBtn from "@/components/ui/new-case-btn";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { cn, filterBySearch } from "@/lib/utils";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { filterBySearch } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import { create } from "zustand";
@@ -51,11 +51,6 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     ? defaultIsMinimized
     : isMinimized;
 
-  useLayoutEffect(() => {
-    const initialChatId = params.get("chat") || "main"
-    setChatId(initialChatId)
-  }, [])
-
   const parentRef = useRef<HTMLDivElement>(null)
 
   const [searchTerm, setSearchTerm] = useState("")
@@ -65,10 +60,12 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     [chats, searchTerm]
   )
 
+  const itemHeight = 60
+
   const rowVirtualizer = useVirtualizer({
     count: filteredChats.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 60,
+    estimateSize: () => itemHeight,
     overscan: 5,
     initialRect: { height: 1200, width: 0 }
   })
@@ -77,6 +74,12 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
     setChatId(id)
     router.push(`/?chat=${id}`)
   }
+
+  useEffect(() => {
+    const itemIndex = chats.findIndex((chat) => chat.patient_id === chatId)
+
+    rowVirtualizer.scrollToIndex(itemIndex, { align: 'center' })
+  }, [])
 
   useEffect(() => {
     setIsMinimized(defaultIsMinimized)
