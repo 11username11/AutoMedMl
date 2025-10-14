@@ -136,8 +136,8 @@ export default function NewCase() {
               label="Medical History"
               inputType="textarea"
               placeholder="Enter relevant medical history, allergies, medications, etc."
-              className="resize-none h-full bg-primary min-h-80"
-              formItemClassName="flex-1 h-full flex flex-col">
+              className="resize-none w-full bg-primary h-60"
+              formItemClassName="flex flex-col">
             </InputField>
 
           </div>
