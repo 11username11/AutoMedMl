@@ -7,4 +7,4 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   if (!user) redirect("/login")
 
   return children;
-}
+}``

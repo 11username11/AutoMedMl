@@ -72,7 +72,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
 
   const handleChatChange = (id: string) => {
     setChatId(id)
-    router.push(`/?chat=${id}`)
+    router.push(`/?chat=${id}`, { scroll: true })
   }
 
   useEffect(() => {
