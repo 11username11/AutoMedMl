@@ -165,11 +165,6 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
     chat_data = next((c for c in result.get("chats", []) if c["chat_id"] == chat), None)
     if not chat_data:
         raise HTTPException(status_code=404, detail="Chat not found")
-    print({
-        "chat_id": chat_data["chat_id"],
-        "name": chat_data["name"],
-        "messages": chat_data["messages"]
-    })
     return {
         "chat_id": chat_data["chat_id"],
         "name": chat_data["name"],
@@ -220,9 +215,9 @@ async def send_message(
     # TODO: fake_stream потом переделать когда модели уже появятся, то что сейчас это чисто демонстрация
     async def fake_stream():
         response_text = f"Simulated response to: {text}\n"
-        for chunk in response_text.split():
-            yield chunk + " "
-            await asyncio.sleep(0.4)
+        for chunk in response_text:
+            yield chunk
+            await asyncio.sleep(0.005)
 
         chats_collection.update_one(
             {"medic_id": current_user["id"], "chats.chat_id": chat_id},
