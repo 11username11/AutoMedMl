@@ -14,8 +14,11 @@ from pymongo.synchronous.collection import ObjectId
 from classes import UserLogin, Patient, MessageInput, DeletePatientData, UpdatePatient, UpdateUser
 from functions import create_access_token, is_valid_email, verify_password, is_valid_password, hash_password
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-with open(f"{BASE_DIR}/AutoMedML/server/config.json") as config_file:
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+config_path = os.path.join(BASE_DIR, "config.json")
+
+with open(config_path, "r", encoding="utf-8") as config_file:
     config = json.load(config_file)
 
 FRONT_ADDRESS = config['front_address']
@@ -31,8 +34,10 @@ elif SECURE == "no":
 else:
     SECURE = False
 
-with open(f"{BASE_DIR}/AutoMedML/server/secrets.json") as secret_file:
-    secrets = json.load(secret_file)
+secrets_path = os.path.join(BASE_DIR, "secrets.json")
+
+with open(secrets_path, "r", encoding="utf-8") as secrets_file:
+    secrets = json.load(secrets_file)
 
 SECRET_KEY = secrets['secret_key']
 SECRET_KEY_REFRESH = secrets['secret_key_refresh']
@@ -160,7 +165,11 @@ async def chat_history(chat: str, current_user: dict = Depends(get_optional_user
     chat_data = next((c for c in result.get("chats", []) if c["chat_id"] == chat), None)
     if not chat_data:
         raise HTTPException(status_code=404, detail="Chat not found")
-
+    print({
+        "chat_id": chat_data["chat_id"],
+        "name": chat_data["name"],
+        "messages": chat_data["messages"]
+    })
     return {
         "chat_id": chat_data["chat_id"],
         "name": chat_data["name"],

@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 export const baseURL = "http://localhost:8000"
-
+//  http://backend:8000 - для докера
 export type ApiResponse = AxiosResponse<{ message: string }>
 export type ApiError = AxiosError<{ detail: string }>
 
