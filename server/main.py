@@ -7,7 +7,7 @@ from typing import *
 import httpx
 from fastapi import FastAPI, Response, Depends, Cookie, Form, UploadFile, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from jose import JWTError, jwt
 from pymongo import MongoClient
 from pymongo.synchronous.collection import ObjectId
@@ -342,8 +342,6 @@ async def current_model(model_name: str, current_user: dict = Depends(get_option
     }
 
 
-
-
 @app.post("/model/{model_name}/send_data")
 async def send_data_model(
         response: Response,
@@ -351,27 +349,29 @@ async def send_data_model(
         current_user: dict = Depends(get_optional_user),
         image: UploadFile = Form(...)
 ):
-    file_location = f"{IMAGE_DIR}/{model_name}_{image.filename}"
-    try:
-        with open(file_location, "wb") as f:
-            f.write(await image.read())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=fr"{e}")
+    image_bytes = await image.read()
 
     try:
+        file_location = f"{IMAGE_DIR}/{model_name}_{image.filename}"
+        with open(file_location, "wb") as f:
+            f.write(image_bytes)
+
         async with httpx.AsyncClient() as client_:
-            with open(file_location, "rb") as img_file:
-                files = {"image": (image.filename, img_file, image.content_type)}
-                gpu_response = await client_.post(f"{GPU_SERVER_ADDRESS}/predict/{model_name}", files=files)
+            files = {
+                "image": (image.filename, image_bytes, image.content_type)
+            }
+            gpu_response = await client_.post(
+                f"{GPU_SERVER_ADDRESS}/predict/{model_name}",
+                files=files
+            )
 
         if gpu_response.status_code != 200:
             raise HTTPException(status_code=gpu_response.status_code, detail=gpu_response.text)
 
-        print(gpu_response)
-        return gpu_response
+        return JSONResponse(content=gpu_response.json(), status_code=gpu_response.status_code)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=fr"Failed to contact GPU server: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to contact GPU server: {e}")
 
 
 @app.post("/registration")
