@@ -11,6 +11,7 @@ import { Chat } from "@/lib/types/chat";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
 import { useSearchParams } from "next/navigation";
+import { format } from "date-fns";
 
 export default forwardRef<HTMLDivElement>(function ChatWindow(props, containerRef) {
   const params = useSearchParams()
@@ -57,10 +58,10 @@ export default forwardRef<HTMLDivElement>(function ChatWindow(props, containerRe
                 }
 
                 <div className="flex flex-col gap-2 text-muted bg-primary-foreground/40 p-3 rounded-md">
-                  <div className="text-sm wrap-anywhere">
+                  <div className="text-sm wrap-anywhere min-h-[1.25rem]">
                     {message.text}
                   </div>
-                  <div className="text-xs">{formatToHHMM(new Date(message.timestamp))}</div>
+                  <div className="text-xs">{format(new Date(message.timestamp), "HH:mm")}</div>
                 </div>
               </div>
             ))

@@ -26,25 +26,29 @@ export default function Chat() {
   const setChatId = useChat((state) => state.setChatId)
   const isStreaming = useChat((state) => state.isStreaming)
   const setIsStreaming = useChat((state) => state.setIsStreaming)
+  const messages = useChat((state) => state.messages)
   const setMessages = useChat((state) => state.setMessages)
   const setIsLoading = useChat((state) => state.setIsLoading)
 
+  const [isScrollInterrupted, setIsScrollInterrupted] = useState(false);
   const [text, setText] = useState("");
 
-  const { data: chat, isLoading, isError } = useQuery<ChatType>({
+  const { data: chat, isLoading, isError, isSuccess } = useQuery<ChatType>({
     queryKey: ["chat", chatId],
     queryFn: () => getChat(chatId || "main"),
     staleTime: Infinity,
     retry: false
   });
-  console.log({isLoading, isError})
+
   useEffect(() => {
     if (!chat || !chatId) return;
 
     setMessages(chatId, chat.messages);
-
-    requestAnimationFrame(() => scrollDown(containerRef, "instant"))
   }, [chat, chatId]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => scrollDown(containerRef, "instant"))
+  }, [isSuccess])
 
   const handleSend = async () => {
     const userMessage = text.trim();
@@ -59,15 +63,27 @@ export default function Chat() {
   };
 
   useEffect(() => {
-    if (isStreaming) {
-      scrollDown(containerRef, "instant")
+    if (isStreaming && !isScrollInterrupted) {
+      scrollDown(containerRef, "smooth")
     } else
       textareaRef.current?.focus()
-  }, [isStreaming])
+  }, [messages, isStreaming, isScrollInterrupted])
 
   useEffect(() => {
     setIsLoading(isLoading)
   }, [isLoading, setIsLoading])
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      const isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+      console.log({isAtBottom}, container.scrollHeight , container.scrollTop , container.clientHeight)
+      setIsScrollInterrupted(!isAtBottom);
+    }
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -82,14 +98,13 @@ export default function Chat() {
   }
 
   if (isError) return (
-    <div onClick={minimizeChatSidebar} className="w-full flex max-h-full flex-col overflow-hidden">
-
+    <div className="w-full flex max-h-full flex-col overflow-hidden">
       <div className="relative flex flex-col h-full overflow-hidden items-center justify-center bg-primary gap-4 border rounded-md">
         <MessageCircle size={48}></MessageCircle>
         <div className="text-2xl font-bold">Chat doesn't exist</div>
         <Button onClick={handleBack} size={"lg"} variant={"secondary"}>Back to main chat</Button>
       </div>
-    </div >
+    </div>
   )
 
   return (

@@ -1,5 +1,5 @@
 import { useChat } from "@/hooks/use-chat"
-import api, { baseURL } from "@/lib/axios"
+import api, { baseURL, clientBaseURL } from "@/lib/axios"
 import { queryClient } from "@/lib/react-query"
 import { Chat, Chats, Message } from "@/lib/types/chat"
 
@@ -64,7 +64,7 @@ export async function streamMessage(chatId: string, text: string) {
     };
   });
 
-  const response = await fetch(`${baseURL}/send_message`, {
+  const response = await fetch(`${clientBaseURL}/send_message`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
