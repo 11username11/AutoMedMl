@@ -141,9 +141,7 @@ async def user_info(current_user: dict = Depends(get_optional_user)):
     num_of_patients = len(patients_doc.get("patients_list", [])) if patients_doc else 0
 
     registration_date = user_doc.get("registration_date")
-    if isinstance(registration_date, datetime):
-        registration_date = registration_date.strftime("%d-%m-%Y")
-    elif not registration_date:
+    if not registration_date:
         registration_date = "Unknown"
 
     return {
