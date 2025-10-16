@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from typing import *
 
+import httpx
 from fastapi import FastAPI, Response, Depends, Cookie, Form, UploadFile, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -22,6 +23,7 @@ with open(config_path, "r", encoding="utf-8") as config_file:
     config = json.load(config_file)
 
 FRONT_ADDRESS = config['front_address']
+GPU_SERVER_ADDRESS = config['gpu_server_address']
 SECURE = config['secure']
 UPLOAD_DIR = config["upload_dir"]
 
@@ -300,7 +302,6 @@ async def add_patient(
 @app.get("/models")
 async def models(current_user: dict = Depends(get_optional_user)):
     if not current_user:
-        print("ТЫ ОПЯТЬ ЗАБЫЛ КУКИ ОТПРАВИТЬ!!!")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
     models_cursor = models_collection.find({})
@@ -341,9 +342,15 @@ async def current_model(model_name: str, current_user: dict = Depends(get_option
     }
 
 
+
+
 @app.post("/model/{model_name}/send_data")
-async def send_data_model(response: Response, model_name: str, current_user: dict = Depends(get_optional_user),
-                          image: UploadFile = Form(...)):
+async def send_data_model(
+        response: Response,
+        model_name: str,
+        current_user: dict = Depends(get_optional_user),
+        image: UploadFile = Form(...)
+):
     file_location = f"{IMAGE_DIR}/{model_name}_{image.filename}"
     try:
         with open(file_location, "wb") as f:
@@ -351,7 +358,20 @@ async def send_data_model(response: Response, model_name: str, current_user: dic
     except Exception as e:
         raise HTTPException(status_code=500, detail=fr"{e}")
 
-    return {"message": "Success"}
+    try:
+        async with httpx.AsyncClient() as client_:
+            with open(file_location, "rb") as img_file:
+                files = {"image": (image.filename, img_file, image.content_type)}
+                gpu_response = await client_.post(f"{GPU_SERVER_ADDRESS}/predict/{model_name}", files=files)
+
+        if gpu_response.status_code != 200:
+            raise HTTPException(status_code=gpu_response.status_code, detail=gpu_response.text)
+
+        print(gpu_response)
+        return gpu_response
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=fr"Failed to contact GPU server: {e}")
 
 
 @app.post("/registration")

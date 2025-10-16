@@ -1,5 +1,6 @@
 {
   "front_address": "http://localhost:3000",
+  "gpu_server_address": "http://localhost:8050",
   "secure": "no",
   "upload_dir": "upload_docs",
   "image_dir": "image_dir",
