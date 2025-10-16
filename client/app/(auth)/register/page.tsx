@@ -1,0 +1,160 @@
+'use client'
+
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { InputField } from "@/components/ui/input-field"
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/shadcn-io/dropzone"
+import { RegisterSchema } from "@/lib/schemas/auth"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import Link from "next/link"
+import z from "zod"
+import api from "@/lib/axios"
+import SubmitButton from "@/components/ui/submit-btn"
+import toast from "react-hot-toast"
+import { useMutation } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { AxiosError, AxiosResponse } from "axios"
+
+interface ApiResponse {
+  message: string,
+  verify: boolean
+}
+
+interface ApiError {
+  detail: string
+}
+
+export default function Login() {
+  const router = useRouter()
+
+  const { mutateAsync, isPending } = useMutation(
+    {
+      mutationFn: (data: FormData) => api.post<ApiResponse>("/registration", data),
+      onSuccess: async (response) => {
+        if (response.data.verify) {
+          window.location.reload()
+        }
+        else {
+          router.push("/login?isVerifying=true")
+        }
+      }
+    }
+  )
+
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      name: "",
+      surname: "",
+      email: "",
+      password: "",
+      code: "",
+      verification: undefined
+    }
+  })
+
+  function onSubmit(data: z.infer<typeof RegisterSchema>) {
+    const formData = new FormData()
+
+    formData.append("name", data.name)
+    formData.append("surname", data.surname)
+    formData.append("email", data.email)
+    formData.append("password", data.password)
+    formData.append("code", data.code)
+    formData.append("doc", data.verification[0])
+
+    toast.promise(mutateAsync(formData), {
+      loading: "Verifying your data",
+      error: (error: AxiosError<ApiError>) => error?.response?.data.detail || "Something went wrong",
+      success: (success: AxiosResponse<ApiResponse>) => success.data.message || "You are signed up"
+    })
+  }
+
+  return (
+    <div className="flex flex-col gap-2 rounded-md w-full">
+      <div className="font-medium">Create your account</div>
+      <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link></div>
+      <Form {...form} >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-3">
+          <div className="flex gap-4 items-start">
+            <InputField
+              control={form.control}
+              name="name"
+              label="First name"
+              type="text"
+              placeholder="John"
+              className="p-3 shadow-none h-12"
+            />
+            <InputField
+              control={form.control}
+              name="surname"
+              label="Last name"
+              type="text"
+              placeholder="Doe"
+              className="p-3 shadow-none h-12"
+            />
+          </div>
+
+          <InputField
+            control={form.control}
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="doctor@hospital.com"
+            className="p-3 shadow-none h-12"
+          />
+
+          <InputField
+            control={form.control}
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+            className="p-3 shadow-none h-12"
+          />
+
+          <InputField
+            control={form.control}
+            name="code"
+            label="Invitation code"
+            type="text"
+            placeholder="Enter code"
+            className="p-3 shadow-none h-12"
+          />
+
+          <FormField
+            control={form.control}
+            name={"verification"}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Identify verification</FormLabel>
+                <FormControl>
+                  <Dropzone
+                    accept={{ 'image/*': [] }}
+                    maxFiles={1}
+                    multiple={false}
+                    maxSize={1024 * 1024 * 10}
+                    onDrop={field.onChange}
+                    onError={console.error}
+                    src={field.value}
+                  >
+                    <DropzoneEmptyState />
+                    <DropzoneContent />
+                  </Dropzone>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+
+          <SubmitButton isPending={isPending}>
+            Sign Up
+          </SubmitButton>
+        </form>
+      </Form>
+      <div className="text-muted text-sm text-center mt-2">
+        Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link>
+      </div>
+    </div>
+  )
+}
