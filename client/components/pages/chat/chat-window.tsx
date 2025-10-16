@@ -8,41 +8,20 @@ import { useAuthStore } from "@/providers/AuthProvider";
 import { formatToHHMM, scrollDown } from "@/lib/utils";
 import { useChat } from "@/hooks/use-chat";
 import { Chat } from "@/lib/types/chat";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import ChatWindowSkeleton from "./skeletons/chat-window-skeleton";
 import { useSearchParams } from "next/navigation";
 
-export default function ChatWindow() {
+export default forwardRef<HTMLDivElement>(function ChatWindow(props, containerRef) {
   const params = useSearchParams()
 
   const user = useAuthStore((state) => state.user)
-  const setMessages = useChat((state) => state.setMessages)
 
   const chatId = useChat((state) => state.chatId) ?? params.get("chat") ?? "main"
-  const isStreaming = useChat((state) => state.isStreaming)
   const messages = useChat((state) => state.messages)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const isLoading = useChat((state) => state.isLoading)
 
   const [showSkeleton, setShowSkeleton] = useState(true);
-
-  const { data: chat, isLoading } = useQuery<Chat>({
-    queryKey: ["chat", chatId],
-    queryFn: () => getChat(chatId || "main"),
-    staleTime: Infinity
-  });
-
-  useEffect(() => {
-    if (!chat || !chatId) return;
-
-    setMessages(chatId, chat.messages);
-
-    requestAnimationFrame(() => scrollDown(containerRef, "instant"))
-  }, [chat, chatId]);
-
-  useEffect(() => {
-    if (isStreaming)
-      scrollDown(containerRef, "instant")
-  }, [isStreaming])
 
   useEffect(() => {
     setShowSkeleton(true)
@@ -90,4 +69,4 @@ export default function ChatWindow() {
       </div>
     </div>
   )
-}
+})

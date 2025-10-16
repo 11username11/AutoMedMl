@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import z from "zod"
 import DangerZone from "@/components/pages/account/danger-zone"
+import { format } from "date-fns"
 
 const UserSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -121,7 +122,7 @@ export default function Account() {
               <div className="text-muted flex items-center gap-2 text-sm">
                 <Calendar size={16}></Calendar>
                 <div>
-                  Member since <span className="font-semibold">{user.registration_date}</span>
+                  Member since <span className="font-semibold">{format(user.registration_date, "dd.MM.yyyy")}</span>
                 </div>
               </div>
             </div>

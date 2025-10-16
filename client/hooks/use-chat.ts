@@ -13,6 +13,8 @@ interface chatState {
   updateMessage: (id: string, chunk: string) => void,
   isStreaming: boolean,
   setIsStreaming: (isStreaming: boolean) => void,
+  isLoading: boolean,
+  setIsLoading: (isLoading: boolean) => void,
 }
 
 export const useChat = create<chatState>((set) => ({
@@ -35,5 +37,7 @@ export const useChat = create<chatState>((set) => ({
       return { messages: { ...state.messages, [id]: updated } }
     }),
   isStreaming: false,
-  setIsStreaming: (isStreaming: boolean) => set({ isStreaming })
+  setIsStreaming: (isStreaming: boolean) => set({ isStreaming }),
+  isLoading: true,
+  setIsLoading: (isLoading: boolean) => set({ isLoading })
 }))
