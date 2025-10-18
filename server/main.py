@@ -315,7 +315,6 @@ async def models(current_user: dict = Depends(get_optional_user)):
             "accuracy": model["accuracy"],
             "processing_time": model["processing_time"],
             "supported_formats": model["supported_formats"],
-            "button_text": model["button_text"],
             "icon": model["icon"]
         })
     return models_list
@@ -337,7 +336,6 @@ async def current_model(model_name: str, current_user: dict = Depends(get_option
         "accuracy": model["accuracy"],
         "processing_time": model["processing_time"],
         "supported_formats": model["supported_formats"],
-        "button_text": model["button_text"],
         "icon": model["icon"]
     }
 
