@@ -141,7 +141,7 @@ export const DropzoneContent = ({
 }: DropzoneContentProps) => {
   const { src } = useDropzoneContext();
 
-  if (!src) {
+  if (!src || src.length === 0) {
     return null;
   }
 
@@ -177,7 +177,7 @@ export const DropzoneEmptyState = ({
 }: DropzoneEmptyStateProps) => {
   const { src, accept, maxSize, minSize, maxFiles } = useDropzoneContext();
 
-  if (src) {
+  if (src && src.length > 0) {
     return null;
   }
 

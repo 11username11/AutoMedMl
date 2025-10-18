@@ -18,8 +18,8 @@ export default async function Analysis() {
         {models.map((model) => (
           <Link href={"/analysis/" + model.technical_name} key={model.title} className="flex flex-col gap-4 p-6 bg-primary border shadow-sm rounded-md hover:bg-secondary/5 duration-200 cursor-pointer">
             <div className="flex gap-3 items-center">
-              <div className="text-secondary bg-secondary/10 p-2 h-10 w-10 rounded-md">
-                <DynamicIcon name={model.icon.toLowerCase() as iconKeys}></DynamicIcon>
+              <div className="text-secondary bg-secondary/10 p-2 h-10 w-10 rounded-md flex items-center justify-center">
+                <DynamicIcon name={model.icon as iconKeys}></DynamicIcon>
               </div>
 
               <Badge className="bg-secondary/10 text-foreground">{model.category}</Badge>

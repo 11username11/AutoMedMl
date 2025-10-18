@@ -10,3 +10,8 @@ export interface AnalysisModel {
   supported_formats: string[];
   icon: IconName;
 }
+
+export interface Result {
+  probability: number;
+  label: string;
+}

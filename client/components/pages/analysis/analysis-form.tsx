@@ -1,6 +1,6 @@
 'use client'
 
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Dropzone, DropzoneContent, DropzoneEmptyState, renderBytes } from "@/components/ui/shadcn-io/dropzone"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown, Image, Info, Upload, User } from "lucide-react"
@@ -8,8 +8,8 @@ import { useForm } from "react-hook-form"
 import z from "zod"
 import toast from "react-hot-toast"
 import { useMutation } from "@tanstack/react-query"
-import api from "@/lib/axios"
-import { AnalysisModel } from "@/lib/types/model"
+import api, { ApiError } from "@/lib/axios"
+import { AnalysisModel, Result } from "@/lib/types/model"
 import { Badge } from "@/components/ui/badge"
 import { Patient } from "@/lib/types/patient"
 import SubmitButton from "@/components/ui/submit-btn"
@@ -17,98 +17,114 @@ import { Combobox, ComboboxTrigger, ComboboxValue, ComboboxContent } from "@/com
 import { differenceInYears, parse } from "date-fns"
 import NewCaseBtn from "@/components/ui/new-case-btn"
 import { PopoverContent } from "@/components/ui/popover"
+import AnalysisResult from "./analysis-result"
+import { AnalysisResultSkeleton } from "./skeletons/analysis-result-skeleton"
 
 const FormSchema = z.object({
-  patient: z.string(),
-  image: z.file().array()
+  patient: z.string().min(1, { message: "Please select a patient" }),
+  image: z.file().array().min(1, { message: "Please upload a medical image" })
 });
 
 export default function AnalysisForm({ model, patients }: { model: AnalysisModel | undefined, patients: Patient[] }) {
-  const { mutateAsync, isPending } = useMutation(
-    {
-      mutationFn: (data: FormData) => api.post(`/model/${model?.technical_name}/send_data`, data),
-    }
-  )
+  const { mutateAsync, isPending, data: response, reset: mutationReset } = useMutation({
+    mutationFn: (data: FormData) => api.post<{ result: Result }>(`/model/${model?.technical_name}/send_data`, data),
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       patient: "",
-      image: undefined
-    }
+      image: []
+    },
+    reValidateMode: "onSubmit"
   })
 
-  function osSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData()
 
     formData.append("patient", data.patient)
     formData.append("image", data.image[0])
 
     toast.promise(mutateAsync(formData), {
-      loading: "Verifying your data",
-      error: (error) => error?.response?.data.detail || "Something went wrong",
-      success: (success) => success.data.message || "You are signed up"
+      loading: "Analyzing your data",
+      error: (error: ApiError) => error?.response?.data.detail || "Analysis error",
+      success: "Analysis completed successfully"
     })
   }
 
+  function handleReset() {
+    form.reset();
+    mutationReset();
+  }
+
   return (
-    <div className="rounded-md shrink-0 h-full">
-      <Form {...form} >
-        <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col lg:flex-row gap-4 h-full">
-          <FormField
-            control={form.control}
-            name={"image"}
-            render={({ field }) => (
-              <FormItem className="flex flex-col p-4 bg-primary border rounded-md shadow-sm w-full">
-                <FormLabel className="flex gap-2 items-center font-semibold text-xl">
-                  <Image></Image> Upload Medical Image
-                </FormLabel>
-                <FormControl>
-                  <Dropzone
-                    className="py-8 h-full shrink"
-                    accept={{ 'image/*': [] }}
-                    maxFiles={1}
-                    multiple={false}
-                    maxSize={1024 * 1024 * 10}
-                    onDrop={field.onChange}
-                    onError={console.error}
-                    src={field.value}
-                  >
-                    <DropzoneEmptyState>
-                      <div className="flex flex-col items-center gap-3">
-                        <Upload className="text-secondary bg-secondary/20 p-3 rounded-md box-content" />
-                        <div className="space-y-0.5 text-base">
-                          <div className="font-semibold">Drag and drop your medical image here</div>
-                          <div className="text-muted font-light">or click to browse files</div>
-                        </div>
-                        <div className="border rounded-sm p-2 px-3 bg-background hover:bg-accent duration-200">Browse Files</div>
-                        <div className="flex gap-2">
-                          {model?.supported_formats.map((format) => (
-                            <Badge key={format} className="border border-border text-foreground">{format}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </DropzoneEmptyState>
-                    <DropzoneContent>
-                      <div className="flex flex-col items-center gap-3">
-                        <Check className="text-primary bg-primary/20 dark:bg-foreground/20 dark:text-foreground p-3 rounded-md box-content" />
-                        {field.value && (
-                          <div className="space-y-0.5 text-base text-primary dark:text-foreground">
-                            <div className="font-semibold">{field.value[0].name}</div>
-                            <div className="text-primary/70 dark:text-foreground/70 font-light text-sm">{renderBytes(field.value[0].size)} • {field.value[0].type}</div>
+    <div className="space-y-4 rounded-md shrink-0">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col lg:flex-row gap-4 min-h-[520px]"
+          onReset={() => {
+            console.log(123)
+            form.reset();
+            mutationReset();
+            console.log(mutationReset)
+          }}>
+          <div className="space-y-4 w-full">
+            <FormField
+              control={form.control}
+              name={"image"}
+              render={({ field }) => (
+                <FormItem className="flex flex-col p-4 bg-primary border rounded-md shadow-sm w-full aspect-video">
+                  <FormLabel className="flex gap-2 items-center font-semibold text-xl">
+                    <Image></Image> Upload Medical Image
+                  </FormLabel>
+                  <FormControl>
+                    <Dropzone
+                      className="py-8 h-full shrink"
+                      accept={{ "image/*": [] }}
+                      maxFiles={1}
+                      multiple={false}
+                      maxSize={1024 * 1024 * 10}
+                      onDrop={field.onChange}
+                      src={field.value}
+                    >
+                      <DropzoneEmptyState>
+                        <div className="flex flex-col items-center gap-3">
+                          <Upload className="text-secondary bg-secondary/20 p-3 rounded-md box-content" />
+                          <div className="space-y-0.5 text-base">
+                            <div className="font-semibold">Drag and drop your medical image here</div>
+                            <div className="text-muted font-light">or click to browse files</div>
                           </div>
-                        )}
-                        <div onClick={(e) => {
-                          e.stopPropagation()
-                          field.onChange(undefined)
-                        }} className="border rounded-sm p-2 px-3 bg-background/70 backdrop-blur-xs hover:bg-accent hover:brightness-90 duration-200">Remove file</div>
-                      </div>
-                    </DropzoneContent>
-                  </Dropzone>
-                </FormControl>
-              </FormItem>
-            )}
-          />
+                          <div className="border rounded-sm p-2 px-3 bg-background hover:bg-accent duration-200">Browse Files</div>
+                          <div className="flex gap-2">
+                            {model?.supported_formats.map((format) => (
+                              <Badge key={format} className="border border-border text-foreground">{format}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </DropzoneEmptyState>
+                      <DropzoneContent>
+                        <div className="flex flex-col items-center gap-3">
+                          <Check className="text-primary bg-primary/20 dark:bg-foreground/20 dark:text-foreground p-3 rounded-md box-content" />
+                          {field.value.length > 0 && (
+                            <div className="space-y-0.5 text-base text-primary dark:text-foreground">
+                              <div className="font-semibold">{field.value[0].name}</div>
+                              <div className="text-primary/70 dark:text-foreground/70 font-light text-sm">{renderBytes(field.value[0].size)} • {field.value[0].type}</div>
+                            </div>
+                          )}
+                          <div onClick={(e) => {
+                            e.stopPropagation()
+                            field.onChange([])
+                          }} className="border rounded-sm p-2 px-3 bg-background/70 backdrop-blur-xs hover:bg-accent hover:brightness-90 duration-200">Remove file</div>
+                        </div>
+                      </DropzoneContent>
+                    </Dropzone>
+                  </FormControl>
+                  <FormMessage></FormMessage>
+                </FormItem>
+              )}
+            />
+            {isPending ? <AnalysisResultSkeleton /> : response && <AnalysisResult handleReset={handleReset} result={response.data.result} />}
+          </div>
+
           <div className="flex flex-col gap-4 shrink-0 h-full">
             <FormField
               control={form.control}
@@ -140,29 +156,30 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                       ) : (
                         <ComboboxContent
                           items={patients}
-                          getKey={(p) => p.patient_id}
+                          getKey={(patient) => patient.patient_id}
                           getSearchKeys={() => ["name", "surname"]}
                           estimateSize={56}
-                          getLabel={(p) => p.name + " " + p.surname}
+                          getLabel={(patient) => patient.name + " " + patient.surname}
                           overscan={8}
-                          renderItem={(p) => (
+                          renderItem={(patient) => (
                             <div className="flex flex-col items-start gap-0.5">
-                              <span>{p.name} {p.surname}</span>
-                              <span className="text-muted text-xs">{differenceInYears(new Date(), parse(p.date_of_birth, "dd.MM.yyyy", new Date()))} years old</span>
+                              <span>{patient.name} {patient.surname}</span>
+                              <span className="text-muted text-xs">{differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))} years old</span>
                             </div>
                           )}
                         />
                       )}
                     </Combobox>
                   </FormControl>
+                  <FormMessage></FormMessage>
                 </FormItem>
               )}
             />
 
-            <div className="flex flex-col gap-4 p-4 bg-primary border rounded-md shadow-sm h-full">
+            <div className="flex flex-col gap-4 p-4 bg-primary border rounded-md shadow-sm h-fit lg:h-full">
               <div className="text-xl font-semibold">Analysis Details</div>
               <div className="text-sm space-y-2">
-                <div className="flex">
+                <div className="flex gap-2">
                   <div className="text-muted">
                     Model:
                   </div>
@@ -170,7 +187,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                     {model?.title}
                   </div>
                 </div>
-                <div className="flex">
+                <div className="flex gap-2">
                   <div className="text-muted">
                     Expected time:
                   </div>
@@ -178,7 +195,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                     {model?.processing_time}
                   </div>
                 </div>
-                <div className="flex">
+                <div className="flex gap-2">
                   <div className="text-muted">
                     Accuracy:
                   </div>
@@ -196,6 +213,6 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
           </div>
         </form>
       </Form>
-    </div>
+    </div >
   )
 }

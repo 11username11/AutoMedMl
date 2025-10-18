@@ -1,15 +1,15 @@
-import { Eye, Heart, Activity, Hand } from "lucide-react"
+import { FaLungsVirus } from "react-icons/fa6"
 
 const icons = {
-  eye: Eye,
-  heart: Heart,
-  activity: Activity,
-  hand: Hand,
+  FaLungsVirus
 }
 
 export type iconKeys = keyof typeof icons
 
 export default function DynamicIcon({ name }: { name: iconKeys }) {
   const Icon = icons[name]
-  return <Icon />
+
+  if (!Icon) return null;
+
+  return <Icon size={20}/>
 }

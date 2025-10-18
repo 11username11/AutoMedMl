@@ -47,3 +47,4 @@ secrets.json
 __pycache__
 uvicorn.log
 start.bat
+models

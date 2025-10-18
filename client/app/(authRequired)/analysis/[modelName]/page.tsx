@@ -12,12 +12,14 @@ export default async function Model({ params }: { params: Promise<{ modelName: s
   model.technical_name = modelName
 
   return (
-    <div className="flex flex-col p-10 space-y-8">
-      <div>
-        <div className="text-3xl font-bold">{model?.title}</div>
-        <div className="text-muted">Upload medical images for AI-powered analysis</div>
+    <div className="flex flex-col p-6 items-center">
+      <div className="max-w-4xl w-full space-y-8">
+        <div>
+          <div className="text-3xl font-bold">{model?.title}</div>
+          <div className="text-muted">Upload medical images for AI-powered analysis</div>
+        </div>
+        <AnalysisForm model={model} patients={patients}></AnalysisForm>
       </div>
-      <AnalysisForm model={model} patients={patients}></AnalysisForm>
     </div>
   )
 }
