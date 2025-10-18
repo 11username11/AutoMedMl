@@ -8,6 +8,7 @@ from torchvision import transforms
 
 def get_session(onnx_path: str):
     providers = ort.get_available_providers()
+    print(providers)
     if "CUDAExecutionProvider" in providers:
         print("CUDA DETECTED")
         return ort.InferenceSession(onnx_path, providers=["CUDAExecutionProvider"])
