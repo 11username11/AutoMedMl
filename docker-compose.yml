@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   backend:
     build:
@@ -10,7 +8,8 @@ services:
       - "8000:8000"
     volumes:
       - ./server:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - PORT=8000
     depends_on:
       - server_gpu
 
@@ -23,7 +22,8 @@ services:
       - "8050:8050"
     volumes:
       - ./server-gpu:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8050 --reload
+    environment:
+      - PORT=8050
 
   frontend:
     build:

@@ -1,4 +1,5 @@
 import io
+from functools import lru_cache
 
 import numpy as np
 import onnxruntime as ort
@@ -6,6 +7,7 @@ from PIL import Image
 from torchvision import transforms
 
 
+@lru_cache()
 def get_session(onnx_path: str):
     providers = ort.get_available_providers()
     print(providers)
