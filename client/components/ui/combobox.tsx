@@ -82,6 +82,7 @@ export function ComboboxContent<T>({
   getSearchKeys,
   renderItem,
   estimateSize = 56,
+  inputClassName,
   overscan = 6,
 }: {
   items: T[]
@@ -90,6 +91,7 @@ export function ComboboxContent<T>({
   getSearchKeys: (item: T) => (keyof T)[]
   renderItem: (item: T) => React.ReactNode
   estimateSize?: number
+  inputClassName?: string
   overscan?: number
 }) {
   const [query, setQuery] = React.useState("")
@@ -125,7 +127,7 @@ export function ComboboxContent<T>({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search..."
-          className="placeholder:text-muted-foreground flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50 ring-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+          className={cn("placeholder:text-muted-foreground flex h-9 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50 ring-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 max-w-full", inputClassName)}
         >
         </SearchInput>
       </div>

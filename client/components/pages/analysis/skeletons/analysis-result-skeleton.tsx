@@ -4,7 +4,7 @@ import { Activity, Info, MessageSquare, TrendingUp } from "lucide-react";
 
 export function AnalysisResultSkeleton() {
   return (
-    <div className="bg-primary p-6 rounded-md border shadow-sm space-y-6 ">
+    <div className="bg-primary p-6 rounded-md border shadow-sm space-y-6">
       <div className="flex text-2xl items-center gap-2 font-semibold">
         <Activity></Activity>
         Analysis Result
@@ -19,8 +19,10 @@ export function AnalysisResultSkeleton() {
         </div>
         <Skeleton className="h-6 w-3/4 rounded bg-foreground/10" />
         <div className="flex items-center gap-2 text-sm text-muted">
-          <TrendingUp size={16} />
-          <Skeleton className="h-5 w-32 rounded bg-foreground/10" />
+          <Skeleton className="h-5 w-40 rounded bg-foreground/10" />
+        </div>
+        <div className="flex items-center gap-2 text-sm text-muted">
+          <Skeleton className="h-5 w-40 rounded bg-foreground/10" />
         </div>
       </div>
 

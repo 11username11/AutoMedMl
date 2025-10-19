@@ -20,7 +20,7 @@ import { PopoverContent } from "@/components/ui/popover"
 import AnalysisResult from "./analysis-result"
 import { AnalysisResultSkeleton } from "./skeletons/analysis-result-skeleton"
 
-const FormSchema = z.object({
+export const AnalysisFormSchema = z.object({
   patient: z.string().min(1, { message: "Please select a patient" }),
   image: z.file().array().min(1, { message: "Please upload a medical image" })
 });
@@ -30,8 +30,8 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
     mutationFn: (data: FormData) => api.post<{ result: Result }>(`/model/${model?.technical_name}/send_data`, data),
   })
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof AnalysisFormSchema>>({
+    resolver: zodResolver(AnalysisFormSchema),
     defaultValues: {
       patient: "",
       image: []
@@ -39,7 +39,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
     reValidateMode: "onSubmit"
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: z.infer<typeof AnalysisFormSchema>) {
     const formData = new FormData()
 
     formData.append("patient", data.patient)
@@ -62,10 +62,8 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col lg:flex-row gap-4 min-h-[520px]"
           onReset={() => {
-            console.log(123)
             form.reset();
             mutationReset();
-            console.log(mutationReset)
           }}>
           <div className="space-y-4 w-full">
             <FormField
@@ -161,6 +159,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                           estimateSize={56}
                           getLabel={(patient) => patient.name + " " + patient.surname}
                           overscan={8}
+                          inputClassName="max-w-full"
                           renderItem={(patient) => (
                             <div className="flex flex-col items-start gap-0.5">
                               <span>{patient.name} {patient.surname}</span>

@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Result } from "@/lib/types/model";
 import { Activity, Info, MessageSquare, TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { useFormContext } from "react-hook-form";
+import { AnalysisFormSchema } from "./analysis-form";
+import z from "zod";
 
 export default function AnalysisResult({ result, handleReset }: { result: Result, handleReset: () => void }) {
+  const { getValues } = useFormContext<z.infer<typeof AnalysisFormSchema>>()
+
   function getRiskLevel(probability: number): string {
     if (probability < 0.2) {
       return "Very low risk";
@@ -17,18 +23,22 @@ export default function AnalysisResult({ result, handleReset }: { result: Result
     }
   }
 
-  function getDiagnosis(probability: number): string {
+  function getDiagnosis(probability: number, label?: string): string {
+    let base: string;
+
     if (probability < 0.2) {
-      return "Normal, no pathology detected";
+      base = "Normal, no pathology detected";
     } else if (probability < 0.4) {
-      return "Mostly normal, minor deviations, no clear pathology";
+      base = "Mostly normal, minor deviations, no clear pathology";
     } else if (probability < 0.6) {
-      return "Uncertain findings, further evaluation recommended";
+      base = "Uncertain findings, further evaluation recommended";
     } else if (probability < 0.8) {
-      return "Suspicious findings, possible pathology";
+      base = "Suspicious findings, possible pathology";
     } else {
-      return "Pathology detected, high probability";
+      base = "Pathology detected, high probability";
     }
+
+    return label ? `${base} (${label})` : base;
   }
 
   return (
@@ -44,11 +54,13 @@ export default function AnalysisResult({ result, handleReset }: { result: Result
           <span className="p-1 px-3 text-xs rounded-full border flex items-center">{getRiskLevel(result.probability)}</span>
         </div>
         <div>{getDiagnosis(result.probability)}</div>
-        <div className="flex items-center gap-2 text-sm text-muted">
-          <TrendingUp size={16}></TrendingUp>
-          <div>
-            Probability: <span className="font-semibold">{(result.probability * 100).toFixed(2)}%</span>
+        {result.label && (
+          <div className="text-sm text-muted">
+            Condition: <span className="font-semibold">{result.label}</span>
           </div>
+        )}
+        <div className="text-sm text-muted">
+          Probability: <span className="font-semibold">{(result.probability * 100).toFixed(2)}%</span>
         </div>
       </div>
 
@@ -58,8 +70,12 @@ export default function AnalysisResult({ result, handleReset }: { result: Result
       </div>
 
       <div className="flex gap-2 w-full">
-        <Button onClick={handleReset} variant={"outline"} size={"lg"} className="flex-1">New Analysis</Button>
-        <Button variant={"secondary"} size={"lg"} className="flex-1"><MessageSquare size={16}></MessageSquare> Chat with patient</Button>
+        <Button onClick={handleReset} variant={"outline"} size={"lg"} className="flex-1 px-0">New Analysis</Button>
+        <Link href={`/?chat=${getValues().patient}`} className="flex-1">
+          <Button variant={"secondary"} size={"lg"} className="w-full"><MessageSquare size={16}>
+          </MessageSquare> Chat with patient
+          </Button>
+        </Link>
       </div>
     </div>
   );

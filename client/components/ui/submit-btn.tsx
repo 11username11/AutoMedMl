@@ -12,6 +12,7 @@ export default function SubmitButton({ isPending, children, className, ...props 
       {...props}
       size={"lg"}
       type='submit'
+      disabled={isPending || props.disabled}
       variant={props.variant || "secondary"}
       className={cn(isPending && "cursor-default", className)}
     >
