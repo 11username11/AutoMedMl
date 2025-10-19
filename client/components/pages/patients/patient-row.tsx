@@ -76,7 +76,7 @@ export default function PatientRow({ patient, ...props }: { patient: Patient } &
                 <Edit className="h-4 w-4" />
                 Edit Patient
               </DropdownMenuItem></Link>
-            <DropdownMenuItem onClick={openDialog} className="gap-2 text-destructive">
+            <DropdownMenuItem onClick={openDialog} className="gap-2">
               <Trash2 className="h-4 w-4" />
               Delete
             </DropdownMenuItem>

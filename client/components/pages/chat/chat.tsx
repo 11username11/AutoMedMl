@@ -48,7 +48,7 @@ export default function Chat() {
 
   useEffect(() => {
     requestAnimationFrame(() => scrollDown(containerRef, "instant"))
-  }, [isSuccess])
+  }, [isSuccess, chatId])
 
   const handleSend = async () => {
     const userMessage = text.trim();
@@ -57,6 +57,7 @@ export default function Chat() {
     setIsStreaming(true)
     setText("")
 
+    requestAnimationFrame(() => scrollDown(containerRef, "instant"))
     await streamMessage(chatId, userMessage)
 
     setIsStreaming(false)
@@ -78,7 +79,7 @@ export default function Chat() {
     if (!container) return;
     const handleScroll = () => {
       const isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
-      console.log({isAtBottom}, container.scrollHeight , container.scrollTop , container.clientHeight)
+
       setIsScrollInterrupted(!isAtBottom);
     }
     container.addEventListener("scroll", handleScroll);
