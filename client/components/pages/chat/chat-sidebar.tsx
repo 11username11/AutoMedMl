@@ -15,6 +15,7 @@ import { CHAT_SIDEBAR_COOKIE_NAME, ICON_SIZE } from "@/lib/constants";
 import { Chats } from "@/lib/types/chat";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useTranslations } from "next-intl";
 
 interface chatSidebarState {
   isMinimized: boolean,
@@ -37,6 +38,8 @@ export const useChatSidebar = create<chatSidebarState>((set) => ({
 }))
 
 export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chats, defaultIsMinimized: boolean }) {
+  const t = useTranslations('Chat.sidebar');
+
   const router = useRouter()
   const params = useSearchParams()
 
@@ -98,8 +101,7 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
       <div className="flex gap-2 items-center w-full">
         <NewCaseBtn
           variant="outline"
-          className="w-full group-data-[minimized=true]:h-9 group-data-[minimized=true]:px-0 group-data-[minimized=true]:gap-0 group-data-[minimized=true]:min-w-4"
-        />
+          className="w-full group-data-[minimized=true]:h-9 group-data-[minimized=true]:px-0 group-data-[minimized=true]:gap-0 group-data-[minimized=true]:min-w-4">{t("buttons.addPatient")}</NewCaseBtn>
         <Button
           onClick={toggleSidebar}
           variant="ghost"
@@ -122,9 +124,9 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
             <RiRobot2Line size={20} />
           </div>
           <div className="group-data-[minimized=true]:opacity-0 whitespace-nowrap max-w-full w-96 duration-200 group-data-[minimized=true]:w-0">
-            <div className="font-semibold">AI Consultation</div>
+            <div className="font-semibold">{t('mainChatHeader')}</div>
             <div className="text-xs font-light">
-              General medical assistance
+              {t('mainChatDescription')}
             </div>
           </div>
         </div>
@@ -133,10 +135,10 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
 
         <div className="flex flex-col gap-2 h-full overflow-hidden">
           <div className="text-muted text-xs font-semibold px-1">
-            Patients
+            {t("patientsLabel")}
           </div>
           <SearchInput
-            placeholder={"Search patients"}
+            placeholder={t("inputPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -182,6 +184,5 @@ export default function ChatSidebar({ chats, defaultIsMinimized }: { chats: Chat
         </div>
       </div>
     </div>
-
   )
 }

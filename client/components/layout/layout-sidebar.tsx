@@ -15,8 +15,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function LayoutSidebar() {
+  const t = useTranslations("Sidebar")
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="flex items-center px-0 mt-4">
@@ -40,7 +43,7 @@ export default function LayoutSidebar() {
                       AutoMedMl
                     </div>
                     <div className="text-xs text-muted-foreground leading-none">
-                      AI-powered analysis
+                      {t("header.description")}
                     </div>
                   </div>
                 </Link>
@@ -51,20 +54,20 @@ export default function LayoutSidebar() {
       </SidebarHeader>
       <SidebarContent className="mt-10">
         <SidebarGroup className="flex flex-col gap-2.5 group-data-[collapsible=icon]:gap-0 duration-200">
-          <SidebarGroupLabel className="text-muted-foreground px-3 font-semibold text-sm">Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground px-3 font-semibold text-sm">{t("navigation.label")}</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col gap-1 font-semibold">
             <SidebarMenu>
               <NavItem href={"/"}>
-                <FiMessageSquare strokeWidth={2} size={16} /> Chat
+                <FiMessageSquare strokeWidth={2} size={16} /> {t("navigation.items.chat")}
               </NavItem>
               <NavItem href={"/patients"}>
-                <LuUsers strokeWidth={2} size={16} /> Patients
+                <LuUsers strokeWidth={2} size={16} /> {t("navigation.items.patients")}
               </NavItem>
               <NavItem href={"/analysis"}>
-                <PiPulseBold strokeWidth={3} size={16} /> Analysis
+                <PiPulseBold strokeWidth={3} size={16} /> {t("navigation.items.analysis")}
               </NavItem>
               <NavItem href={"/settings"}>
-                <LuSettings strokeWidth={2} size={16} /> Settings
+                <LuSettings strokeWidth={2} size={16} /> {t("navigation.items.settings")}
               </NavItem>
             </SidebarMenu>
           </SidebarGroupContent>

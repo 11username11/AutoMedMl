@@ -3,10 +3,11 @@ import { CheckCircle, CircleCheck } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import medicalHeroBg from "@/public/medical-hero-bg.jpg"
 import Image from 'next/image';
-import { Separator } from '@/components/ui/separator';
+import { getTranslations } from 'next-intl/server';
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
+  const t = await getTranslations("AuthPages")
 
   if (user) redirect("/")
 
@@ -22,8 +23,8 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
               alt="logo"
               className="block mb-6"
             />
-            <div className='font-bold text-xl'>Medical AI</div>
-            <div className='text-muted'>AI-powered medical analysis platform</div>
+            <div className='font-bold text-xl'>{t("header.title")}</div>
+            <div className='text-muted'>{t("header.description")}</div>
           </div>
           <div className="flex flex-col items-center justify-center gap-8 w-full">
             {children}
@@ -42,46 +43,33 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         <div className="absolute inset-0 bg-gradient-to-br from-secondary-foreground/90 to-secondary-foreground/80" />
         <div className="relative z-10 flex flex-col justify-center p-12 space-y-8">
           <div className="space-y-4">
-            <h2 className="text-4xl font-bold">AI-Powered Healthcare Solutions</h2>
+            <h2 className="text-4xl font-bold">{t("sidebar.title")}</h2>
             <p className="text-lg opacity-90">
-              Empowering medical professionals with cutting-edge artificial intelligence for accurate
-              diagnostics and optimal patient care.
+              {t("sidebar.description")}
             </p>
           </div>
 
-          {/* Features */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5" />
-              <span>Rapid medical image analysis</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5" />
-              <span>Intelligent diagnostic assistance</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5" />
-              <span>Secure patient data management</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5" />
-              <span>Multi-specialty medical support</span>
-            </div>
+            {t.rich("sidebar.itemsList", {
+              item: (children) => <div className="flex items-center space-x-3">
+                <CheckCircle className="w-5 h-5" />
+                <span>{children}</span>
+              </div>
+            })}
           </div>
 
-          {/* Stats */}
           <div className="flex space-x-8">
             <div className="text-center">
               <div className="text-3xl font-bold">99.2%</div>
-              <div className="text-sm opacity-75">Accuracy</div>
+              <div className="text-sm opacity-75">{t("sidebar.accuracy")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">2.3s</div>
-              <div className="text-sm opacity-75">Analysis</div>
+              <div className="text-sm opacity-75">{t("sidebar.analysis")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">50k+</div>
-              <div className="text-sm opacity-75">Doctors</div>
+              <div className="text-sm opacity-75">{t("sidebar.doctors")}</div>
             </div>
           </div>
         </div>

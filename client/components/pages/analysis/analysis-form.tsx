@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import z from "zod"
 import toast from "react-hot-toast"
 import { useMutation } from "@tanstack/react-query"
-import api, { ApiError } from "@/lib/axios"
+import api from "@/lib/axios"
 import { AnalysisModel, Result } from "@/lib/types/model"
 import { Badge } from "@/components/ui/badge"
 import { Patient } from "@/lib/types/patient"
@@ -19,13 +19,12 @@ import NewCaseBtn from "@/components/ui/new-case-btn"
 import { PopoverContent } from "@/components/ui/popover"
 import AnalysisResult from "./analysis-result"
 import { AnalysisResultSkeleton } from "./skeletons/analysis-result-skeleton"
-
-export const AnalysisFormSchema = z.object({
-  patient: z.string().min(1, { message: "Please select a patient" }),
-  image: z.file().array().min(1, { message: "Please upload a medical image" })
-});
+import { useTranslations } from "next-intl"
+import { AnalysisFormSchema } from "@/lib/schemas/analysis"
 
 export default function AnalysisForm({ model, patients }: { model: AnalysisModel | undefined, patients: Patient[] }) {
+  const t = useTranslations("ModelPage.form")
+
   const { mutateAsync, isPending, data: response, reset: mutationReset } = useMutation({
     mutationFn: (data: FormData) => api.post<{ result: Result }>(`/model/${model?.technical_name}/send_data`, data),
   })
@@ -46,9 +45,9 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
     formData.append("image", data.image[0])
 
     toast.promise(mutateAsync(formData), {
-      loading: "Analyzing your data",
-      error: (error: ApiError) => error?.response?.data.detail || "Analysis error",
-      success: "Analysis completed successfully"
+      loading: t("submit.loading"),
+      error: t("submit.error"),
+      success: t("submit.success")
     })
   }
 
@@ -72,7 +71,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               render={({ field }) => (
                 <FormItem className="flex flex-col p-4 bg-primary border rounded-md shadow-sm w-full aspect-video">
                   <FormLabel className="flex gap-2 items-center font-semibold text-xl">
-                    <Image></Image> Upload Medical Image
+                    <Image></Image> {t("upload.label")}
                   </FormLabel>
                   <FormControl>
                     <Dropzone
@@ -88,10 +87,10 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                         <div className="flex flex-col items-center gap-3">
                           <Upload className="text-secondary bg-secondary/20 p-3 rounded-md box-content" />
                           <div className="space-y-0.5 text-base">
-                            <div className="font-semibold">Drag and drop your medical image here</div>
-                            <div className="text-muted font-light">or click to browse files</div>
+                            <div className="font-semibold">{t("upload.empty.header")}</div>
+                            <div className="text-muted font-light">{t("upload.empty.subheader")}</div>
                           </div>
-                          <div className="border rounded-sm p-2 px-3 bg-background hover:bg-accent duration-200">Browse Files</div>
+                          <div className="border rounded-sm p-2 px-3 bg-background hover:bg-accent duration-200">{t("buttons.browse")}</div>
                           <div className="flex gap-2">
                             {model?.supported_formats.map((format) => (
                               <Badge key={format} className="border border-border text-foreground">{format}</Badge>
@@ -111,7 +110,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                           <div onClick={(e) => {
                             e.stopPropagation()
                             field.onChange([])
-                          }} className="border rounded-sm p-2 px-3 bg-background/70 backdrop-blur-xs hover:bg-accent hover:brightness-90 duration-200">Remove file</div>
+                          }} className="border rounded-sm p-2 px-3 bg-background/70 backdrop-blur-xs hover:bg-accent hover:brightness-90 duration-200">{t("buttons.remove")}</div>
                         </div>
                       </DropzoneContent>
                     </Dropzone>
@@ -130,7 +129,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               render={({ field }) => (
                 <FormItem className="p-4 bg-primary border rounded-md shadow-sm">
                   <FormLabel className="flex gap-2 items-center font-semibold text-xl">
-                    <User /> Patient Assignment
+                    <User />{t("assignment.label")}
                   </FormLabel>
                   <FormControl>
                     <Combobox value={field.value} onChange={field.onChange}>
@@ -139,7 +138,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                           role="combobox"
                           className="flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm"
                         >
-                          <ComboboxValue placeholder="Select a patient" />
+                          <ComboboxValue placeholder={t("assignment.placeholder")} />
                           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
                         </button>
                       </ComboboxTrigger>
@@ -147,7 +146,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                       {patients.length === 0 ? (
                         <PopoverContent forceMount className="w-[var(--radix-popover-trigger-width)] p-0">
                           <div className="px-4 py-2 space-y-2 text-center">
-                            <div className="text-sm text-muted">You have no patients yet.</div>
+                            <div className="text-sm text-muted">{t("noPatientsLabel")}</div>
                             <NewCaseBtn className="h-8 px-0 w-full text-xs" />
                           </div>
                         </PopoverContent>
@@ -159,11 +158,16 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                           estimateSize={56}
                           getLabel={(patient) => patient.name + " " + patient.surname}
                           overscan={8}
+                          noResultsLabel={t("assignment.noResultsLabel")}
                           inputClassName="max-w-full"
                           renderItem={(patient) => (
                             <div className="flex flex-col items-start gap-0.5">
                               <span>{patient.name} {patient.surname}</span>
-                              <span className="text-muted text-xs">{differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))} years old</span>
+                              <span className="text-muted text-xs">
+                                {t("assignment.age", {
+                                  age: differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))
+                                })}
+                              </span>
                             </div>
                           )}
                         />
@@ -176,11 +180,11 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
             />
 
             <div className="flex flex-col gap-4 p-4 bg-primary border rounded-md shadow-sm h-fit lg:h-full">
-              <div className="text-xl font-semibold">Analysis Details</div>
+              <div className="text-xl font-semibold">{t("analysis.label")}</div>
               <div className="text-sm space-y-2">
                 <div className="flex gap-2">
                   <div className="text-muted">
-                    Model:
+                    {t("analysis.modelLabel")}:
                   </div>
                   <div className="font-semibold ml-auto">
                     {model?.title}
@@ -188,7 +192,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                 </div>
                 <div className="flex gap-2">
                   <div className="text-muted">
-                    Expected time:
+                    {t("analysis.expectedTimeLabel")}:
                   </div>
                   <div className="font-semibold ml-auto">
                     {model?.processing_time}
@@ -196,7 +200,7 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
                 </div>
                 <div className="flex gap-2">
                   <div className="text-muted">
-                    Accuracy:
+                    {t("analysis.accuracyLabel")}:
                   </div>
                   <div className="font-semibold ml-auto text-success">
                     {model?.accuracy}%
@@ -205,9 +209,9 @@ export default function AnalysisForm({ model, patients }: { model: AnalysisModel
               </div>
               <div className="flex gap-2 w-min min-w-full rounded-md p-2 bg-secondary/20 text-secondary font-light text-xs mt-auto">
                 <Info className="shrink-0" size={16}></Info>
-                AI analysis results are for reference only and should be reviewed by qualified medical professionals.
+                {t("analysis.warning")}
               </div>
-              <SubmitButton isPending={isPending}>Start Analysis</SubmitButton>
+              <SubmitButton isPending={isPending}>{t("buttons.submit")}</SubmitButton>
             </div>
           </div>
         </form>

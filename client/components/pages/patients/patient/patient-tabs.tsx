@@ -7,8 +7,11 @@ import Scans from "./tabs/scans"
 import AnalysisResults from "./tabs/analysis-results"
 import { Patient } from "@/lib/types/patient"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslations } from "next-intl"
 
 export function PatientTabs({ patient }: { patient: Patient }) {
+  const t = useTranslations("PatientPage.tabs")
+
   const router = useRouter()
 
   const searchParams = useSearchParams()
@@ -27,18 +30,18 @@ export function PatientTabs({ patient }: { patient: Patient }) {
         <TabsList>
           <div className="flex gap-2 items-center justify-start flex-1">
             <TabsTrigger value="general" className="px-4 py-2">
-              General Information
+              {t("generalInformation.label")}
             </TabsTrigger>
             <TabsTrigger value="history" className="px-4 py-2">
-              Medical History
+              {t("medicalHistory.label")}
             </TabsTrigger>
           </div>
           <div className="flex gap-2 items-center justify-start flex-1">
             <TabsTrigger value="scans" className="px-4 py-2">
-              Scans & Images
+              {t("scansAndImages.label")}
             </TabsTrigger>
             <TabsTrigger value="analysis" className="px-4 py-2">
-              Analysis Results
+              {t("analysisResults.label")}
             </TabsTrigger>
           </div>
         </TabsList>

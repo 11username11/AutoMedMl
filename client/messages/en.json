@@ -1,0 +1,520 @@
+{
+  "Chat": {
+    "title": "Medical AI chat",
+    "description": "Get instant medical information and guidance from our AI assistant",
+    "notFound": "Chat doesn't exist",
+    "backButton": "Back to main chat",
+    "warningMessage": "This AI assistant provides general information only. Always consult healthcare professionals for medical advice.",
+    "sidebar": {
+      "mainChatHeader": "AI Consultation",
+      "mainChatDescription": "General medical assistance",
+      "patientsLabel": "Patients",
+      "inputPlaceholder": "Search patients",
+      "buttons": {
+        "addPatient": "Add Patient"
+      }
+    }
+  },
+  "PatientsPage": {
+    "title": "Patients",
+    "description": "Manage and view patient information",
+    "inputPlaceholder": "Search patients",
+    "buttons": {
+      "reset": "Clear",
+      "filter": "Filter",
+      "addPatient": "Add Patient"
+    },
+    "filterMenu": {
+      "title": "Filters",
+      "gender": {
+        "label": "Gender",
+        "all": "All Genders",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Statuses",
+        "active treatment": "Active Treatment",
+        "recovered": "Recovered",
+        "deceased": "Deceased"
+      }
+    },
+    "table": {
+      "notFound": "No patients found",
+      "patientLabel": "Patient",
+      "ageLabel": "Age",
+      "contactLabel": "Contact",
+      "genderLabel": "Gender",
+      "genderOptions": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "statusLabel": "Status",
+      "statusOptions": {
+        "active treatment": "Active Treatment",
+        "recovered": "Recovered",
+        "deceased": "Deceased"
+      },
+      "actions": {
+        "view": "View Details",
+        "edit": "Edit Patient",
+        "delete": "Delete Patient"
+      },
+      "confirmModal": {
+        "title": "Delete patient record?",
+        "description": "You are about to <strong>permanently remove</strong> the record of <strong>{name}</strong>.\n\nThis action will erase all associated information and <underline>cannot be undone</underline>.\n\nPlease double‑check that this is truly what you intend to do before proceeding.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Yes, delete this patient"
+      }
+    }
+  },
+  "PatientPage": {
+    "title": "Patient Details",
+    "description": "Comprehensive patient information and records",
+    "id": "Patient ID: {id}",
+    "age": "{age} years old",
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "status": {
+      "active treatment": "Active Treatment",
+      "recovered": "Recovered",
+      "deceased": "Deceased"
+    },
+    "buttons": {
+      "edit": "Edit Patient",
+      "delete": "Delete Patient",
+      "save": "Save",
+      "cancel": "Cancel Edit"
+    },
+    "actions": {
+      "submit": {
+        "noChanges": "No changes made",
+        "success": "Patient updated successfully",
+        "error": "Failed to update patient. Please try again",
+        "loading": "Updating patient..."
+      },
+      "delete": {
+        "success": "Patient deleted successfully",
+        "error": "Failed to delete patient. Please try again",
+        "loading": "Deleting patient..."
+      }
+    },
+    "confirmModal": {
+      "title": "Delete patient record?",
+      "description": "You are about to <strong>permanently remove</strong> the record of <strong>{name}</strong>.\n\nThis action will erase all associated information and <underline>cannot be undone</underline>.\n\nPlease double‑check that this is truly what you intend to do before proceeding.",
+      "cancelButton": "Cancel",
+      "confirmButton": "Yes, delete this patient"
+    },
+    "tabs": {
+      "generalInformation": {
+        "label": "General Information",
+        "personalInformation": {
+          "label": "Personal Information",
+          "fullNameLabel": "Full Name",
+          "dateOfBirthLabel": "Date of Birth",
+          "genderLabel": "Gender",
+          "gender": {
+            "male": "Male",
+            "female": "Female",
+            "other": "Other"
+          },
+          "statusLabel": "Status",
+          "status": {
+            "active treatment": "Active Treatment",
+            "recovered": "Recovered",
+            "deceased": "Deceased"
+          }
+        },
+        "contactInformation": {
+          "label": "Contact Information",
+          "emailLabel": "Email",
+          "phoneLabel": "Phone Number"
+        }
+      },
+      "medicalHistory": {
+        "label": "Medical History"
+      },
+      "scansAndImages": {
+        "label": "Medical Scans & Images",
+        "buttons": {
+          "view": "View",
+          "download": "Download"
+        }
+      },
+      "analysisResults": {
+        "label": "Analysis Results",
+        "buttons": {
+          "view": "View",
+          "download": "Download"
+        }
+      }
+    },
+    "fields": {
+      "medicalHistory": {
+        "title": "Medical History",
+        "description": "Detailed medical history of the patient"
+      },
+      "scansAndImages": {
+        "title": "Scans and Images",
+        "description": "Medical scans and images related to the patient"
+      },
+      "analysisResults": {
+        "title": "Analysis Results",
+        "description": "Results of medical analyses performed on the patient"
+      }
+    }
+  },
+  "AddPatientPage": {
+    "title": "Create New Patient",
+    "description": "Add a new patient to the system",
+    "form": {
+      "firstNameLabel": "First Name",
+      "firstNamePlaceholder": "Enter first name",
+      "lastNameLabel": "Last Name",
+      "lastNamePlaceholder": "Enter last name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter email address",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "Enter phone number",
+      "dateOfBirthLabel": "Date of Birth",
+      "genderLabel": "Gender",
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "statusLabel": "Status",
+      "status": {
+        "active treatment": "Active Treatment",
+        "recovered": "Recovered",
+        "deceased": "Deceased"
+      },
+      "medicalHistoryLabel": "Medical History",
+      "submitButton": "Create Patient",
+      "cancelButton": "Cancel",
+      "submit": {
+        "success": "Patient created successfully",
+        "error": "Failed to create patient. Please try again",
+        "loading": "Creating patient..."
+      }
+    }
+  },
+  "AnalysisPage": {
+    "title": "Medical Analysis",
+    "description": "Choose from our advanced AI models to analyze medical images and scans",
+    "notFound": "Analysis doesn't exist",
+    "modelCard": {
+      "accuracy": "Accuracy",
+      "processing": "Processing Time",
+      "SupportedFormats": "Supported Formats"
+    }
+  },
+  "ModelPage": {
+    "description": "Upload medical images for AI-powered analysis",
+    "form": {
+      "upload": {
+        "label": "Upload Medical Images",
+        "empty": {
+          "header": "Drag and drop your medical image here",
+          "subheader": "or click to browse files"
+        }
+      },
+      "assignment": {
+        "label": "Patient Assignment",
+        "placeholder": "Select a patient",
+        "searchPlaceholder": "Search patients...",
+        "noResultsLabel": "You have no patients yet.",
+        "age": "{age} years old"
+      },
+      "analysis": {
+        "label": "Analysis Details",
+        "modelLabel": "Model",
+        "expectedTimeLabel": "Expected time",
+        "accuracyLabel": "Accuracy",
+        "warning": "AI analysis results are for reference only and should be reviewed by qualified medical professionals."
+      },
+      "buttons": {
+        "browse": "Browse Files",
+        "remove": "Remove File",
+        "submit": "Start Analysis"
+      },
+      "submit": {
+        "success": "Image analyzed successfully",
+        "error": "Failed to analyze image. Please try again",
+        "loading": "Analyzing image..."
+      },
+      "results": {
+        "label": "Analysis Results",
+        "diagnosisLabel": "Diagnosis",
+        "conditionLabel": "Condition",
+        "probabilityLabel": "Probablity",
+        "warning": "These results are preliminary and require confirmation by a qualified physician.",
+        "buttons": {
+          "new": "New Analysis",
+          "chat": "Chat with patient"
+        },
+        "risk": {
+          "veryLow": "Very low risk",
+          "low": "Low risk",
+          "moderate": "Moderate risk",
+          "high": "High risk",
+          "veryHigh": "Very high risk"
+        },
+        "diagnosis": {
+          "veryLow": "Normal, no pathology detected",
+          "low": "Mostly normal, minor deviations, no clear pathology",
+          "moderate": "Uncertain findings, further evaluation recommended",
+          "high": "Suspicious findings, possible pathology",
+          "veryHigh": "Pathology detected, high probability"
+        }
+      }
+    }
+  },
+  "SettingsPage": {
+    "title": "Settings",
+    "description": "Manage your account preferences and application settings",
+    "cards": {
+      "appearance": {
+        "title": "Appearance",
+        "description": "Customize the look and fell of the application",
+        "theme": {
+          "label": "Theme",
+          "options": {
+            "system": "System",
+            "light": "Light",
+            "dark": "Dark"
+          }
+        }
+      },
+      "region": {
+        "title": "Language & Region",
+        "description": "Choose your preferred language and regional settings",
+        "language": {
+          "label": "Language",
+          "options": {
+            "system": "System",
+            "pl": "Polish",
+            "en": "English"
+          }
+        }
+      },
+      "accountActions": {
+        "title": "Account Actions",
+        "description": "Manage your account and security settings",
+        "sections": {
+          "logout": {
+            "title": "Log Out",
+            "description": "Log out of your account on this device",
+            "buttons": {
+              "logout": "Log Out"
+            }
+          },
+          "deleteAccount": {
+            "title": "Delete Account",
+            "description": "Permanently delete your account and all associated data",
+            "buttons": {
+              "delete": "Delete Account"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Sidebar": {
+    "header": {
+      "description": "AI-powered analysis"
+    },
+    "navigation": {
+      "label": "Navigation",
+      "items": {
+        "chat": "Chat",
+        "patients": "Patients",
+        "analysis": "Analysis",
+        "settings": "Settings"
+      }
+    }
+  },
+  "Header": {
+    "dropdown": {
+      "account": "Account",
+      "logout": "Log Out"
+    },
+    "buttons": {
+      "login": "Login",
+      "register": "Register"
+    }
+  },
+  "AuthPages": {
+    "header": {
+      "title": "Medical AI",
+      "description": "AI-powered medical analysis platform"
+    },
+    "login": {
+      "form": {
+        "header": {
+          "title": "Welcome back",
+          "description": "Enter your credentials to access your account"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "doctor@hospital.com"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "buttons": {
+          "submit": "Sign In"
+        },
+        "footer": "Don't have an account? <underline>Sign Up</underline>",
+        "submit": {
+          "loading": "Verifying your data...",
+          "error": "Invalid data was provided",
+          "success": "You are logged in"
+        }
+      }
+    },
+    "register": {
+      "form": {
+        "header": {
+          "title": "Create your account",
+          "description": "Join our AI-powered medical platform"
+        },
+        "firstName": {
+          "label": "First Name",
+          "placeholder": "John"
+        },
+        "lastName": {
+          "label": "Last Name",
+          "placeholder": "Doe"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "doctor@hospital.com"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "code": {
+          "label": "Invitation code",
+          "placeholder": "Enter code"
+        },
+        "dropzone": {
+          "label": "Identify verification",
+          "placeholder": "Upload file or drag and drop",
+          "description": "{types} up to {size}",
+          "buttons": {
+            "remove": "Remove File"
+          }
+        },
+        "buttons": {
+          "submit": "Sign Up"
+        },
+        "footer": "Already have an account? <underline>Sign In</underline>",
+        "submit": {
+          "loading": "Verifying your data...",
+          "error": "Invalid data was provided",
+          "success": "You are signed up"
+        }
+      }
+    },
+    "sidebar": {
+      "title": "AI-Powered Healthcare Solutions",
+      "description": "Empowering medical professionals with cutting-edge artificial intelligence for accurate diagnostics and optimal patient care.",
+      "itemsList": "<item>Rapid medical image analysis</item> <item>Intelligent diagnostic assistance</item> <item>Secure patient data management</item> <item>Multi-specialty medical support</item>",
+      "accuracy": "Accuracy",
+      "analysis": "Analysis",
+      "doctors": "Doctors"
+    }
+  },
+  "AccountPage": {
+    "title": "Account Settings",
+    "description": "Manage your personal information and account preferences",
+    "memberSince": "Member since",
+    "buttons": {
+      "edit": "Edit Profile",
+      "save": "Save",
+      "cancel": "Cancel Edit"
+    },
+    "form": {
+      "title": "Personal Information",
+      "fullName": {
+        "label": "Full Name"
+      },
+      "email": {
+        "label": "Email"
+      },
+      "password": {
+        "label": "Password"
+      },
+      "submit": {
+        "noChanges": "No changes made",
+        "loading": "Updating your data...",
+        "error": "Failed to update your data",
+        "success": "Your data updated successfully"
+      }
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Irreversible and destructive actions",
+      "deleteAccount": {
+        "title": "Delete Account",
+        "description": "Once you delete your account, there is no going back. Please be certain.",
+        "buttons": {
+          "delete": "Delete Account"
+        }
+      }
+    }
+  },
+  "global": {
+    "modals": {
+      "deleteAccount": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will permanently delete your account and remove your data from our servers. <ul> <li>All medical analyses and results</li> <li>Patient records and associations</li> <li>Account settings and preferences</li> <li>Chat history and conversations</li> </ul>",
+        "buttons": {
+          "submit": "Yes, delete my account",
+          "cancel": "Cancel"
+        },
+        "submit": {
+          "loading": "Deleting your account...",
+          "success": "Your account has been deleted",
+          "error": "Something went wrong"
+        }
+      }
+    }
+  },
+  "Validation": {
+    "invalid_email": "Invalid email",
+    "password_min": "Password must be at least 8 characters long",
+    "password_lowercase": "Password must contain at least one lowercase letter",
+    "password_uppercase": "Password must contain at least one uppercase letter",
+    "password_number": "Password must contain at least one number",
+    "password_special": "Password must contain a special character: !@#$%^&*",
+    "password_required_length": "Password must be at least 8 characters",
+    "password_required_uppercase": "Password must contain an uppercase letter",
+    "password_required_lowercase": "Password must contain a lowercase letter",
+    "password_required_digit": "Password must contain a digit",
+    "password_required_special": "Password must contain a special character (!@#$%^&*?_+-)",
+    "name_required": "Name is required",
+    "surname_required": "Surname is required",
+    "name_min": "Name must be at least 2 characters long",
+    "surname_min": "Surname must be at least 2 characters long",
+    "name_letters_only": "Name can only contain letters",
+    "surname_letters_only": "Surname can only contain letters",
+    "email_invalid": "Please enter a valid email address",
+    "date_invalid": "Invalid date",
+    "gender_required": "Please select a gender",
+    "status_required": "Please select a status",
+    "patient_required": "Please select a patient",
+    "image_required": "Please upload a medical image"
+  }
+}

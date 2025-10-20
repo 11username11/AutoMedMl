@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import z from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -48,4 +49,10 @@ export function filterBySearch<T>(
 
     return matchesSearch && matchesOptions
   })
+}
+
+export function isFieldRequired<T extends z.ZodRawShape>(schema: z.ZodObject<T>, field: keyof T): boolean {
+  const fieldSchema = schema.shape[field];
+
+  return !(fieldSchema instanceof z.ZodOptional || fieldSchema instanceof z.ZodNullable);
 }

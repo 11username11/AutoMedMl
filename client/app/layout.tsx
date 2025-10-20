@@ -10,6 +10,8 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import { getCurrentUser } from "@/lib/data/server/user";
 import { Toaster } from 'react-hot-toast';
 import QueryProvider from "@/providers/QueryProvider";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from "next-intl/server";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,6 +27,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
 
+  const messages = await getMessages()
+
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
@@ -32,41 +36,44 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head />
       <body className="bg-background antialiased overflow-hidden">
-        <QueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-          >
-            <AuthProvider user={user}>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-              >
-                <SidebarProvider defaultOpen={defaultOpen}>
-                  <div className="flex h-screen w-full">
-                    {user && <LayoutSidebar></LayoutSidebar>}
+        <NextIntlClientProvider messages={messages}>
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+            >
+              <AuthProvider user={user}>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                >
+                  <SidebarProvider defaultOpen={defaultOpen}>
+                    <div className="flex h-screen w-full">
+                      {user && <LayoutSidebar></LayoutSidebar>}
 
-                    <div className="flex flex-1 flex-col min-h-screen bg-background/60 overflow-x-hidden">
-                      <Header user={user}></Header>
-                      {children}
+                      <div className="flex flex-1 flex-col min-h-screen bg-background/60 overflow-x-hidden">
+                        <Header user={user}></Header>
+                        {children}
+                      </div>
                     </div>
-                  </div>
 
-                </SidebarProvider>
-              </ThemeProvider>
-            </AuthProvider>
-          </ThemeProvider>
-        </QueryProvider>
-        <Toaster toastOptions={{
-          className: "bg-primary",
-          style: {
-            background: "var(--primary)",
-            color: "var(--foreground)",
-            border: "1px solid var(--border)"
-          }
-        }} />
+                  </SidebarProvider>
+                </ThemeProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </QueryProvider>
+          <Toaster  toastOptions={{
+            className: "bg-primary whitespace-nowrap max-w-none!",
+            style: {
+              background: "var(--primary)",
+              color: "var(--foreground)",
+              border: "1px solid var(--border)",
+              whiteSpace: "nowrap"
+            }
+          }} />
+        </NextIntlClientProvider>
       </body>
     </html>
   )

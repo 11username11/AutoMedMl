@@ -83,6 +83,7 @@ export function ComboboxContent<T>({
   renderItem,
   estimateSize = 56,
   inputClassName,
+  noResultsLabel,
   overscan = 6,
 }: {
   items: T[]
@@ -90,7 +91,8 @@ export function ComboboxContent<T>({
   getLabel: (item: T) => string
   getSearchKeys: (item: T) => (keyof T)[]
   renderItem: (item: T) => React.ReactNode
-  estimateSize?: number
+  estimateSize?: number,
+  noResultsLabel?: string,
   inputClassName?: string
   overscan?: number
 }) {
@@ -131,44 +133,50 @@ export function ComboboxContent<T>({
         >
         </SearchInput>
       </div>
-      <div
-        ref={listRef}
-        style={{ maxHeight: 320, height: "100%", overflowY: "auto" }}
-        className="px-1 scrollbar-thin"
-      >
-        <div
-          style={{
-            position: "relative",
-            height: virtualizer.getTotalSize(),
-          }}
-        >
-          {virtualizer.getVirtualItems().map((row) => {
-            const item = filtered[row.index]
-            const key = getKey(item)
-
-            return (
-              <div
-                key={key}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  transform: `translateY(${row.start}px)`,
-                  height: row.size,
-                }}
-              >
-                <ComboboxItem
-                  value={key}
-                  label={getLabel(item)}
-                >
-                  {renderItem(item)}
-                </ComboboxItem>
-              </div>
-            )
-          })}
+      {filtered.length === 0 ? (
+        <div className="pb-2 text-sm text-center text-muted">
+          {noResultsLabel ?? "No results found"}
         </div>
-      </div>
+      ) : (
+        <div
+          ref={listRef}
+          style={{ maxHeight: 320, height: "100%", overflowY: "auto" }}
+          className="px-1 scrollbar-thin"
+        >
+          <div
+            style={{
+              position: "relative",
+              height: virtualizer.getTotalSize(),
+            }}
+          >
+            {virtualizer.getVirtualItems().map((row) => {
+              const item = filtered[row.index]
+              const key = getKey(item)
+
+              return (
+                <div
+                  key={key}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    transform: `translateY(${row.start}px)`,
+                    height: row.size,
+                  }}
+                >
+                  <ComboboxItem
+                    value={key}
+                    label={getLabel(item)}
+                  >
+                    {renderItem(item)}
+                  </ComboboxItem>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </PopoverContent>
   )
 }

@@ -17,33 +17,14 @@ import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import z from "zod"
 import DangerZone from "@/components/pages/account/danger-zone"
-import { format } from "date-fns"
-
-const UserSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  surname: z.string().min(1, "Surname is required"),
-  email: z.email("Invalid email"),
-  password: z
-    .string()
-    .optional()
-    .refine((val) => !val || val.length >= 8, {
-      message: "Password must be at least 8 characters",
-    })
-    .refine((val) => !val || /[A-Z]/.test(val), {
-      message: "Password must contain an uppercase letter",
-    })
-    .refine((val) => !val || /[a-z]/.test(val), {
-      message: "Password must contain a lowercase letter",
-    })
-    .refine((val) => !val || /\d/.test(val), {
-      message: "Password must contain a digit",
-    })
-    .refine((val) => !val || /[!@#$%^&*?_+-]/.test(val), {
-      message: "Password must contain a special character (!@#$%^&*?_+-)",
-    })
-})
+import { format, isValid } from "date-fns"
+import { useEffect } from "react"
+import { useTranslations } from "next-intl"
+import { UserSchema } from "@/lib/schemas/account"
 
 export default function Account() {
+  const t = useTranslations("AccountPage")
+
   const router = useRouter()
   const user = useAuthStore((state) => state.user!)
 
@@ -51,7 +32,10 @@ export default function Account() {
 
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
-    defaultValues: user,
+    defaultValues: {
+      ...user,
+      password: ""
+    },
   })
 
   const { mutateAsync, isPending } = useMutation(
@@ -69,20 +53,26 @@ export default function Account() {
       name: user.name,
       surname: user.surname,
       email: user.email,
-      password: undefined
+      password: ""
     }
 
     if (isEqual(currentData, data))
-      toast.success("No changes made")
+      toast.success(t("form.submit.noChanges"))
     else
       toast.promise(mutateAsync(data), {
-        loading: "Verifying your data",
-        error: (error: ApiError) => error.response?.data.detail ?? "Something went wrong",
-        success: (success: ApiResponse) => success.data.message ?? "Your data updated successfully"
+        loading: t("form.submit.loading"),
+        error: (error: ApiError) => error.response?.data.detail ?? t("form.submit.error"),
+        success: (success: ApiResponse) => success.data.message ?? t("form.submit.success")
       })
 
     cancelEdit()
   }
+
+  useEffect(() => {
+    form.reset()
+  }, [isEditing])
+
+  const registrationDate = new Date(user.registration_date)
 
   return (
     <Form {...form}>
@@ -90,8 +80,8 @@ export default function Account() {
         <div className="flex flex-col p-10 space-y-4">
           <div className="flex justify-between flex-col gap-4 lg:flex-row lg:gap-24 lg:items-center">
             <div>
-              <div className="text-3xl font-bold">Account Settings</div>
-              <div className="text-muted">Manage your personal information and account preferences</div>
+              <div className="text-3xl font-bold">{t("title")}</div>
+              <div className="text-muted">{t("description")}</div>
             </div>
 
             <div className="flex gap-2">
@@ -99,17 +89,17 @@ export default function Account() {
                 <>
                   <SubmitButton isPending={isPending}>
                     <Save size={20}></Save>
-                    Save
+                    {t("buttons.save")}
                   </SubmitButton>
                   <Button onClick={cancelEdit} size={"lg"} variant={"outline"}>
                     <X size={20}></X>
-                    Cancel Edit
+                    {t("buttons.cancel")}
                   </Button>
                 </>
               ) : (
                 <Button onClick={enableEdit} size={"lg"} variant={"secondary"}>
                   <Edit size={20}></Edit>
-                  Edit Profile
+                  {t("buttons.edit")}
                 </Button>
               )}
             </div>
@@ -119,12 +109,14 @@ export default function Account() {
             <div className="flex justify-center flex-col p-6 rounded-md gap-4 items-center bg-primary border shadow-sm">
               <Avatar className="w-24 h-24 text-2xl" letters={user.name[0] + user.surname[0]}></Avatar>
               <div className="font-semibold text-lg">{user.name} {user.surname}</div>
-              <div className="text-muted flex items-center gap-2 text-sm">
-                <Calendar size={16}></Calendar>
-                <div>
-                  Member since <span className="font-semibold">{format(user.registration_date, "dd.MM.yyyy")}</span>
+              {isValid(registrationDate) && (
+                <div className="text-muted flex items-center gap-2 text-sm">
+                  <Calendar size={16}></Calendar>
+                  <div>
+                    {t("memberSince")} <span className="font-semibold"> {format(registrationDate, "dd.MM.yyyy")}</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -132,12 +124,14 @@ export default function Account() {
 
             <div className="flex gap-2 items-center text-xl font-semibold">
               <User size={20} className="text-secondary"></User>
-              Personal Information
+              {t("form.title")}
             </div>
 
             <div className="space-y-4">
               <div className="text-sm space-y-1">
-                <div className="font-semibold">Full Name</div>
+                <div className="font-semibold">
+                  {t("form.fullName.label")}
+                </div>
                 {isEditing ? (
                   <div className={"flex gap-2"}>
                     <EditableField text={user.name} isEditing={isEditing} name="name"></EditableField>
@@ -149,25 +143,19 @@ export default function Account() {
               </div>
 
               <div className="text-sm space-y-1">
-                <div className="font-semibold flex gap-2 items-center"><Mail size={16}></Mail> Email</div>
-                {isEditing ? (
-                  <div className={"flex gap-2"}>
-                    <EditableField text={user.email} isEditing={isEditing} name="email"></EditableField>
-                  </div>
-                ) : (
-                  <div className="text-muted">{user.email}</div>
-                )}
+                <div className="font-semibold flex gap-2 items-center">
+                  <Mail size={16}></Mail>
+                  {t("form.email.label")}
+                </div>
+                <EditableField text={user.email} isEditing={isEditing} name="email"></EditableField>
               </div>
 
               <div className="text-sm space-y-1">
-                <div className="font-semibold flex gap-2 items-center"><Key size={16}></Key> Password</div>
-                {isEditing ? (
-                  <div className={"flex gap-2"}>
-                    <EditableField text={""} isEditing={isEditing} name="password"></EditableField>
-                  </div>
-                ) : (
-                  <div className="text-muted font-extralight">••••••••</div>
-                )}
+                <div className="font-semibold flex gap-2 items-center">
+                  <Key size={16}></Key>
+                  {t("form.password.label")}
+                </div>
+                <EditableField text={"••••••••"} isEditing={isEditing} type="password" name="password"></EditableField>
               </div>
             </div>
 

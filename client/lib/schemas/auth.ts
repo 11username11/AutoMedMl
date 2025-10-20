@@ -1,32 +1,32 @@
 import * as z from "zod";
 
 export const BaseAuth = z.object({
-  email: z.email({ message: "Invalid email" }),
+  email: z.email({ message: "Validation.invalid_email" }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
+    .min(8, { message: "Validation.password_min" })
     .refine((val) => /[a-z]/.test(val), {
-      message: "Password must contain at least one lowercase letter",
+      message: "Validation.password_lowercase",
     })
     .refine((val) => /[A-Z]/.test(val), {
-      message: "Password must contain at least one uppercase letter",
+      message: "Validation.password_uppercase",
     })
     .refine((val) => /\d/.test(val), {
-      message: "Password must contain at least one number",
+      message: "Validation.password_number",
     })
     .refine((val) => /[!@#$%^&*?_+\-]/.test(val), {
-      message: "Password must contain a special character: !@#$%^&*",
+      message: "Validation.password_special",
     }),
 });
 
 export const LoginSchema = BaseAuth.extend({
-  remember: z.boolean().optional()
+  remember: z.boolean().optional(),
 });
 
 export const RegisterSchema = BaseAuth.extend({
-  name: z.string().min(2),
-  surname: z.string().min(2),
-  verification: z.file().array(),
+  name: z.string().min(2, { message: "Validation.name_min" }),
+  surname: z.string().min(2, { message: "Validation.surname_min" }),
+  verification: z.any().array(),
   code: z.string(),
 });
 

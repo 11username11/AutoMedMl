@@ -2,34 +2,32 @@
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { InputField } from "@/components/ui/input-field"
-import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/shadcn-io/dropzone"
+import { Dropzone, DropzoneContent, DropzoneEmptyState, renderBytes } from "@/components/ui/shadcn-io/dropzone"
 import { RegisterSchema } from "@/lib/schemas/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import Link from "next/link"
 import z from "zod"
-import api from "@/lib/axios"
+import api, { ApiError, ApiResponse } from "@/lib/axios"
 import SubmitButton from "@/components/ui/submit-btn"
 import toast from "react-hot-toast"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { AxiosError, AxiosResponse } from "axios"
+import { useTranslations } from "next-intl"
+import { Check, UploadIcon } from "lucide-react"
 
-interface ApiResponse {
-  message: string,
+interface RegistrationResponse extends ApiResponse {
   verify: boolean
 }
 
-interface ApiError {
-  detail: string
-}
-
 export default function Login() {
+  const t = useTranslations("AuthPages.register.form")
+
   const router = useRouter()
 
   const { mutateAsync, isPending } = useMutation(
     {
-      mutationFn: (data: FormData) => api.post<ApiResponse>("/registration", data),
+      mutationFn: (data: FormData) => api.post<RegistrationResponse>("/registration", data),
       onSuccess: async (response) => {
         if (response.data.verify) {
           window.location.reload()
@@ -49,7 +47,7 @@ export default function Login() {
       email: "",
       password: "",
       code: "",
-      verification: undefined
+      verification: []
     }
   })
 
@@ -64,61 +62,56 @@ export default function Login() {
     formData.append("doc", data.verification[0])
 
     toast.promise(mutateAsync(formData), {
-      loading: "Verifying your data",
-      error: (error: AxiosError<ApiError>) => error?.response?.data.detail || "Something went wrong",
-      success: (success: AxiosResponse<ApiResponse>) => success.data.message || "You are signed up"
+      loading: t("submit.loading"),
+      error: (error: ApiError) => error.response?.data.detail ?? t("submit.error"),
+      success: t("submit.success")
     })
   }
 
   return (
     <div className="flex flex-col gap-2 rounded-md w-full">
-      <div className="font-medium">Create your account</div>
-      <div className="text-muted text-sm">Already have an account? <Link href={"/login"} className="text-foreground underline">Sign In</Link></div>
+      <div className="font-medium">{t("header.title")}</div>
+      <div className="text-muted text-sm">{t("header.description")}</div>
       <Form {...form} >
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-3">
           <div className="flex gap-4 items-start">
             <InputField
-              control={form.control}
               name="name"
-              label="First name"
+              label={t("firstName.label")}
               type="text"
-              placeholder="John"
+              placeholder={t("firstName.placeholder")}
               className="p-3 shadow-none h-12"
             />
             <InputField
-              control={form.control}
               name="surname"
-              label="Last name"
+              label={t("lastName.label")}
               type="text"
-              placeholder="Doe"
+              placeholder={t("lastName.placeholder")}
               className="p-3 shadow-none h-12"
             />
           </div>
 
           <InputField
-            control={form.control}
             name="email"
-            label="Email"
+            label={t("email.label")}
             type="email"
-            placeholder="doctor@hospital.com"
+            placeholder={t("email.placeholder")}
             className="p-3 shadow-none h-12"
           />
 
           <InputField
-            control={form.control}
             name="password"
-            label="Password"
+            label={t("password.label")}
             type="password"
-            placeholder="Enter your password"
+            placeholder={t("password.placeholder")}
             className="p-3 shadow-none h-12"
           />
 
           <InputField
-            control={form.control}
             name="code"
-            label="Invitation code"
+            label={t("code.label")}
             type="text"
-            placeholder="Enter code"
+            placeholder={t("code.placeholder")}
             className="p-3 shadow-none h-12"
           />
 
@@ -127,7 +120,7 @@ export default function Login() {
             name={"verification"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Identify verification</FormLabel>
+                <FormLabel>{t("dropzone.label")}</FormLabel>
                 <FormControl>
                   <Dropzone
                     accept={{ 'image/*': [] }}
@@ -138,8 +131,35 @@ export default function Login() {
                     onError={console.error}
                     src={field.value}
                   >
-                    <DropzoneEmptyState />
-                    <DropzoneContent />
+                    <DropzoneEmptyState>
+                      <div className='flex flex-col gap-2 items-center justify-center'>
+                        <div className="flex items-center justify-center rounded-md text-muted-foreground">
+                          <UploadIcon size={24} />
+                        </div>
+                        <div className="w-full truncate text-wrap text-secondary text-xs">
+                          Upload file or drag and drop
+                        </div>
+                        <div className="text-wrap text-muted font-light text-xs">
+                          {t.rich("dropzone.description", {
+                            types: "PNG, JPEG",
+                            size: "10.00 MB"
+                          })}
+                        </div>
+                      </div>
+                    </DropzoneEmptyState>
+                    <DropzoneContent>
+                      <div className="flex flex-col gap-3.5 items-center justify-center">
+                        {field.value.length > 0 && (
+                          <div className="space-y-0.5 text-sm text-primary dark:text-foreground">
+                            <div className="font-semibold">{field.value[0].name}</div>
+                          </div>
+                        )}
+                        <div onClick={(e) => {
+                          e.stopPropagation()
+                          field.onChange([])
+                        }} className="border rounded-sm p-2 px-3 bg-background/70 backdrop-blur-xs hover:bg-accent hover:brightness-90 duration-200">{t("dropzone.buttons.remove")}</div>
+                      </div>
+                    </DropzoneContent>
                   </Dropzone>
                 </FormControl>
                 <FormMessage />

@@ -1,15 +1,18 @@
 import EditableField from "@/components/ui/editable-field";
 import { Patient } from "@/lib/types/patient";
 import { FileText, Heart, Stethoscope, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function MedicalHistory({ patient, isEditing }: { patient: Patient, isEditing: boolean }) {
+  const t = useTranslations("PatientPage.tabs.medicalHistory")
+
   return (
     <div className="space-y-6">
       <div className="rounded-md p-4 shadow-sm w-full space-y-4 bg-primary">
 
         <div className="flex gap-2 items-center text-xl font-semibold">
           <FileText size={20} className="text-secondary"></FileText>
-          Medical History
+          {t("label")}
         </div>
 
         <div className="text-muted text-sm">

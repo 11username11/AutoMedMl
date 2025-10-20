@@ -1,5 +1,5 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { AlertTriangle, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
 import StatusBadge from "@/components/ui/status-badge";
 import { differenceInYears, parse } from "date-fns";
@@ -13,8 +13,11 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function PatientRow({ patient, ...props }: { patient: Patient } & React.HTMLAttributes<HTMLTableRowElement>) {
+  const t = useTranslations("PatientsPage.table")
+
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -54,8 +57,10 @@ export default function PatientRow({ patient, ...props }: { patient: Patient } &
         </div>
       </TableCell>
       <TableCell>{differenceInYears(new Date(), parse(patient.date_of_birth, "dd.MM.yyyy", new Date()))}</TableCell>
-      <TableCell>{patient.gender}</TableCell>
-      <TableCell><StatusBadge status={patient.status} /></TableCell>
+      <TableCell>{t(`genderOptions.${patient.gender}`)}</TableCell>
+      <TableCell>
+        <StatusBadge statusKey={patient.status} status={t(`statusOptions.${patient.status}`)} />
+      </TableCell>
 
       <TableCell>
         <DropdownMenu>
@@ -68,39 +73,43 @@ export default function PatientRow({ patient, ...props }: { patient: Patient } &
             <Link href={"/patients/" + patient.patient_id}>
               <DropdownMenuItem className="gap-2">
                 <Eye className="h-4 w-4" />
-                View Details
+                {t('actions.view')}
               </DropdownMenuItem>
             </Link>
             <Link href={"/patients/" + patient.patient_id + "?mode=edit"}>
               <DropdownMenuItem className="gap-2">
                 <Edit className="h-4 w-4" />
-                Edit Patient
+                {t('actions.edit')}
               </DropdownMenuItem></Link>
             <DropdownMenuItem onClick={openDialog} className="gap-2">
               <Trash2 className="h-4 w-4" />
-              Delete
+              {t('actions.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="pb-4">
-            <DialogHeader>
-              <DialogTitle>Are you sure?</DialogTitle>
-              <DialogDescription className="space-y-4" asChild>
-                <div>
-                  <div>
-                    This will permanently delete <span className="font-bold">{patient.name} {patient.surname}</span>'s record. This action cannot be undone.
-                  </div>
-
-                  <div className="ml-auto flex w-fit gap-2">
-                    <Button onClick={closeDialog} size={"lg"} variant={"outline"}>Cancel</Button>
-                    <SubmitButton isPending={isPending} onClick={() => handleDelete(patient.patient_id)} size={"lg"} variant={"destructive"}>
-                      Yes, delete this patient
-                    </SubmitButton>
-                  </div>
+            <DialogTitle className="flex items-center gap-2"><AlertTriangle className="text-destructive" />
+              {t("confirmModal.title")}
+            </DialogTitle>
+            <DialogDescription className="space-y-4" asChild>
+              <div>
+                <div className="whitespace-pre-line">
+                  {t.rich("confirmModal.description", {
+                    strong: (children) => <span className="font-semibold text-destructive">{children}</span>,
+                    underline: (children) => <span className="underline">{children}</span>,
+                    name: `${patient.name} ${patient.surname}`
+                  })}
                 </div>
-              </DialogDescription>
-            </DialogHeader>
+
+                <div className="ml-auto flex w-fit gap-2">
+                  <Button onClick={closeDialog} size={"lg"} variant={"outline"}>{t('confirmModal.cancelButton')}</Button>
+                  <SubmitButton isPending={isPending} onClick={() => handleDelete(patient.patient_id)} size={"lg"} variant={"destructive"}>
+                    {t('confirmModal.confirmButton')}
+                  </SubmitButton>
+                </div>
+              </div>
+            </DialogDescription>
           </DialogContent>
         </Dialog>
       </TableCell>

@@ -13,8 +13,11 @@ import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { scrollDown } from "@/lib/utils";
+import { useTranslations } from 'next-intl';
 
 export default function Chat() {
+  const t = useTranslations('Chat');
+
   const params = useSearchParams()
   const router = useRouter()
 
@@ -102,17 +105,17 @@ export default function Chat() {
     <div className="w-full flex max-h-full flex-col overflow-hidden">
       <div className="relative flex flex-col h-full overflow-hidden items-center justify-center bg-primary gap-4 border rounded-md">
         <MessageCircle size={48}></MessageCircle>
-        <div className="text-2xl font-bold">Chat doesn't exist</div>
-        <Button onClick={handleBack} size={"lg"} variant={"secondary"}>Back to main chat</Button>
+        <div className="text-2xl font-bold">{t('notFound')}</div>
+        <Button onClick={handleBack} size={"lg"} variant={"secondary"}>{t('backButton')}</Button>
       </div>
     </div>
   )
 
   return (
     <div onClick={minimizeChatSidebar} className="w-full flex max-h-full flex-col overflow-hidden">
-      <div className="text-2xl font-bold mb-2">Medical AI Chat</div>
+      <div className="text-2xl font-bold mb-2">{t('title')}</div>
       <div className="text-muted mb-4">
-        Get instant medical information and guidance from our AI assistant
+        {t('description')}
       </div>
 
       <div className="relative flex flex-col h-full overflow-hidden">
@@ -137,8 +140,7 @@ export default function Chat() {
         </div>
       </div>
       <div className="text-center text-xs text-muted">
-        This AI assistant provides general information only. Always consult
-        healthcare professionals for medical advice.
+        {t('warningMessage')}
       </div>
     </div>
   );

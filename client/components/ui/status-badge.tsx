@@ -2,13 +2,13 @@ import { STATUS } from "@/lib/constants";
 import { Badge } from "./badge";
 import { Patient } from "@/lib/types/patient";
 
-export default function StatusBadge ({status} : {status: Patient["status"]}) {
+export default function StatusBadge({ statusKey, status }: { statusKey: Patient["status"], status: string }) {
   const statusConfig: Record<typeof STATUS[number], { className: string }> = {
-    "Active Treatment": { className: "bg-success text-accent-foreground" },
-    "Recovered": { className: "bg-secondary text-accent-foreground" },
-    "Deceased": { className: "bg-primary-foreground text-foreground" },
+    "active treatment": { className: "bg-success text-accent-foreground" },
+    "recovered": { className: "bg-secondary text-accent-foreground" },
+    "deceased": { className: "bg-primary-foreground text-foreground" },
   };
 
-  const config = statusConfig[status];
+  const config = statusConfig[statusKey];
   return <Badge className={config?.className}>{status}</Badge>;
 };

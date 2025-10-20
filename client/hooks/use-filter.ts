@@ -5,12 +5,12 @@ export const FILTERS = [
   {
     key: "gender",
     label: "Gender",
-    options: ["All genders", ...GENDER],
+    options: ["all", ...GENDER],
   },
   {
     key: "status",
     label: "Status",
-    options: ["All statuses", ...STATUS],
+    options: ["all", ...STATUS],
   },
 ] as const
 
@@ -28,7 +28,8 @@ export interface FilterState {
 export interface FilterStore extends FilterState {
   setSearchTerm: (searchTerm: string) => void,
   setFilters: (filter: Partial<FilterFields>) => void,
-  reset: () => void
+  resetAll: () => void,
+  resetFilters: () => void,
 }
 
 const defaultFilter: FilterState = {
@@ -40,5 +41,6 @@ export const useFilter = create<FilterStore>((set) => ({
   ...defaultFilter,
   setSearchTerm: (searchTerm: string) => set({ searchTerm }),
   setFilters: (filters) => set((state) => ({ filters: { ...state.filters, ...filters } })),
-  reset: () => set({ ...defaultFilter })
+  resetAll: () => set({ ...defaultFilter }),
+  resetFilters: () => set((state) => ({ filters: {} })),
 }))

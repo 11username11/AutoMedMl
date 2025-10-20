@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Patient } from "@/lib/types/patient";
 import { Download, Eye, FileText, Image, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const scansMock = [{
   name: "CT Scan",
@@ -9,13 +10,16 @@ const scansMock = [{
 }]
 
 export default function Scans({ patient }: { patient: Patient }) {
+  const t = useTranslations("PatientPage.tabs.ScansAndImages")
+
+
   return (
     <div className="flex gap-8">
       <div className="rounded-md p-4 shadow-sm w-full space-y-4 bg-primary">
 
         <div className="flex gap-2 items-center text-xl font-semibold">
           <Image size={20} className="text-secondary"></Image>
-          Medical Scans & Images
+          {t("label")}
         </div>
 
         <div className="space-y-2">
@@ -29,11 +33,11 @@ export default function Scans({ patient }: { patient: Patient }) {
               <div className="space-x-4">
                 <Button variant="outline">
                   <Eye size={16}></Eye>
-                  View
+                  {t("buttons.view")}
                 </Button>
                 <Button variant="outline">
                   <Download size={16}></Download>
-                  Download
+                  {t("buttons.download")}
                 </Button>
               </div>
             </div>

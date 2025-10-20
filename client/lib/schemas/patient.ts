@@ -1,26 +1,26 @@
-import z from "zod"
-import { GENDER, STATUS } from "../constants"
-import { parse } from "date-fns"
+import z from "zod";
+import { GENDER, STATUS } from "../constants";
+import { parse } from "date-fns";
 
 export const PatientSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, { message: "Name must be at least 2 characters long" })
-    .regex(/^\p{L}+$/u, { message: "Name can only contain letters" }),
+    .min(2, { message: "Validation.name_min" })
+    .regex(/^\p{L}+$/u, { message: "Validation.name_letters_only" }),
 
   surname: z
     .string()
     .trim()
-    .min(2, { message: "Surname must be at least 2 characters long" })
-    .regex(/^\p{L}+$/u, { message: "Surname can only contain letters" }),
+    .min(2, { message: "Validation.surname_min" })
+    .regex(/^\p{L}+$/u, { message: "Validation.surname_letters_only" }),
 
   email: z
     .string()
     .trim()
     .optional()
-    .refine((val) => !val || z.email().safeParse(val).success, {
-      message: "Please enter a valid email address",
+    .refine((val) => !val || z.string().email().safeParse(val).success, {
+      message: "Validation.email_invalid",
     }),
 
   phone: z
@@ -29,22 +29,21 @@ export const PatientSchema = z.object({
     .optional(),
 
   date_of_birth: z.string().refine((val) => {
-    const parsed = parse(val, "dd.MM.yyyy", new Date())
-    if (isNaN(parsed.getTime())) return false
+    const parsed = parse(val, "dd.MM.yyyy", new Date());
+    if (isNaN(parsed.getTime())) return false;
 
-    const currentYear = new Date().getFullYear()
-    return parsed.getFullYear() <= currentYear && parsed.getFullYear() >= 1925
+    const currentYear = new Date().getFullYear();
+    return parsed.getFullYear() <= currentYear && parsed.getFullYear() >= 1925;
   }, {
-    message: "Invalid date",
+    message: "Validation.date_invalid",
   }),
-    
-  gender: z.enum(GENDER, {
-    message: "Please select a gender",
 
+  gender: z.enum(GENDER, {
+    message: "Validation.gender_required",
   }),
   status: z.enum(STATUS, {
-    message: "Please select a status",
+    message: "Validation.status_required",
   }),
 
   medical_history: z.string().optional(),
-})
+});

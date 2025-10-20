@@ -4,10 +4,9 @@ import { cn } from "@/lib/utils"
 import { Textarea } from "./textarea"
 import { CalendarInput } from "./calendar-input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./select"
-import { Control, FieldValues, Path } from "react-hook-form"
+import { FieldValues, Path, useFormContext } from "react-hook-form"
 
 interface InputFieldProps<T extends FieldValues> {
-  control: Control<T>
   name: Path<T>
   label?: string
   type?: React.InputHTMLAttributes<HTMLInputElement>["type"]
@@ -15,11 +14,14 @@ interface InputFieldProps<T extends FieldValues> {
   className?: React.ComponentProps<"input">["className"],
   formItemClassName?: React.ComponentProps<"div">["className"],
   inputType?: "select" | "input" | "textarea" | "calendar",
-  selectItems?: string[]
+  selectItems?: [string, string][],
+  isRequired?: boolean
 }
 
 
-export function InputField<T extends FieldValues>({ control, name, label, type = "text", placeholder, className, formItemClassName, inputType = "input", selectItems }: InputFieldProps<T>) {
+export function InputField<T extends FieldValues>({ name, label, type = "text", placeholder, className, formItemClassName, inputType = "input", selectItems, isRequired = false }: InputFieldProps<T>) {
+  const { control } = useFormContext();
+
   return (
     <FormField
       control={control}
@@ -47,14 +49,14 @@ export function InputField<T extends FieldValues>({ control, name, label, type =
         } else if (inputType === "select" && selectItems) {
           inputElement = (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger size="large" className={cn(className)}>
-                <SelectValue>{field.value}</SelectValue>
+              <SelectTrigger size="large" className={cn("w-full", className)}>
+                <SelectValue>{selectItems[field.value]}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {selectItems.map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                  {selectItems.map(([key, value]) => (
+                    <SelectItem key={key} value={key}>
+                      {value.charAt(0).toUpperCase() + value.slice(1)}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -74,7 +76,7 @@ export function InputField<T extends FieldValues>({ control, name, label, type =
 
         return (
           <FormItem className={cn("flex-1 shrink-0", formItemClassName)}>
-            {label && <FormLabel>{label}</FormLabel>}
+            {label && <FormLabel>{isRequired ? `${label} *` : label}</FormLabel>}
             <FormControl>{inputElement}</FormControl>
             <FormMessage />
           </FormItem>

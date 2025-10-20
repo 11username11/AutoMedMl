@@ -11,11 +11,13 @@ import z from "zod"
 import { useMutation } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import SubmitButton from "@/components/ui/submit-btn"
-import { AxiosError, AxiosResponse } from "axios"
-import api from "@/lib/axios"
+import api, { ApiError } from "@/lib/axios"
 import { useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 export default function Login() {
+  const t = useTranslations("AuthPages.login.form")
+
   const params = useSearchParams()
   const isVerifying = params.get("isVerifying")
 
@@ -41,36 +43,34 @@ export default function Login() {
 
   function osSubmit(data: z.infer<typeof LoginSchema>) {
     toast.promise(mutateAsync(data), {
-      loading: "Verifying your data",
-      error: (error: AxiosError<{ detail: string }>) => error?.response?.data.detail || "Something went wrong",
-      success: (success: AxiosResponse<{ detail: string }>) => success.data.detail || "You are logged in"
+      loading: t("submit.loading"),
+      error: (error: ApiError) => error.response?.data.detail ?? t("submit.error"),
+      success: t("submit.success")
     })
   }
 
   return (
     <div className="flex flex-col gap-3 rounded-md w-full">
       <div className="space-y-1">
-        <div className="font-medium text-lg">Welcome back</div>
-        <div className="text-muted text-sm">Enter your credentials to access your account</div>
+        <div className="font-medium text-lg">{t("header.title")}</div>
+        <div className="text-muted text-sm">{t("header.description")}</div>
       </div>
       <Form {...form} >
         <form onSubmit={form.handleSubmit(osSubmit)} className="flex flex-col gap-4 mt-3">
           <div className="flex gap-4 items-start">
             <div className="space-y-4 flex-1">
               <InputField
-                control={form.control}
                 name="email"
-                label="Email"
+                label={t("email.label")}
                 type="email"
-                placeholder="doctor@hospital.com"
+                placeholder={t("email.placeholder")}
                 className="p-3 shadow-none h-12"
               />
               <InputField
-                control={form.control}
                 name="password"
-                label="Password"
+                label={t("password.label")}
                 type="password"
-                placeholder="Enter your password"
+                placeholder={t("password.placeholder")}
                 className="p-3 shadow-none h-12"
               />
             </div>
@@ -82,28 +82,28 @@ export default function Login() {
               name="remember"
               render={({ field }) => {
                 return (
-                  <FormItem
-                    className="flex flex-row items-center gap-2"
-                  >
+                  <FormItem className="flex flex-row items-center gap-2"                  >
                     <FormControl>
                       <Checkbox />
                     </FormControl>
                     <FormLabel className="text-sm font-normal">
-                      Remember me
+                      {t("rememberMe")}
                     </FormLabel>
                   </FormItem>
                 )
               }}
             />
             <div className="text-secondary hover:underline cursor-pointer">
-              Forgot password?
+              {t("forgotPassword")}
             </div>
           </div>
-          <SubmitButton isPending={isPending}>Sign In</SubmitButton>
+          <SubmitButton isPending={isPending}>{t("buttons.submit")}</SubmitButton>
         </form>
       </Form>
       <div className="text-muted text-sm text-center mt-2">
-        Don't have an account? <Link href={"/register"} className="text-foreground underline underline-offset-2">Sign Up</Link>
+        {t.rich("footer", {
+          underline: (children) => <Link href={"/register"} className="text-foreground underline underline-offset-2">{children}</Link>
+        })}
       </div>
       {isVerifying && (
         <div className="text-center text-sm" suppressHydrationWarning={true}>

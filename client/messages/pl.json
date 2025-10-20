@@ -1,0 +1,520 @@
+{
+  "Chat": {
+    "title": "Medyczny czat AI",
+    "description": "Uzyskaj natychmiastowe informacje medyczne i wskazówki od naszego asystenta AI",
+    "notFound": "Czat nie istnieje",
+    "backButton": "Powrót do głównego czatu",
+    "warningMessage": "Ten asystent AI dostarcza jedynie ogólnych informacji. Zawsze konsultuj się z pracownikami służby zdrowia w sprawach medycznych.",
+    "sidebar": {
+      "mainChatHeader": "Konsultacja AI",
+      "mainChatDescription": "Ogólna pomoc medyczna",
+      "patientsLabel": "Pacjenci",
+      "inputPlaceholder": "Szukaj pacjentów",
+      "buttons": {
+        "addPatient": "Dodaj pacjenta"
+      }
+    }
+  },
+  "PatientsPage": {
+    "title": "Pacjenci",
+    "description": "Zarządzaj i przeglądaj informacje o pacjentach",
+    "inputPlaceholder": "Szukaj pacjentów",
+    "buttons": {
+      "reset": "Wyczyść",
+      "filter": "Filtruj",
+      "addPatient": "Dodaj pacjenta"
+    },
+    "filterMenu": {
+      "title": "Filtry",
+      "gender": {
+        "label": "Płeć",
+        "all": "Wszystkie płcie",
+        "male": "Mężczyzna",
+        "female": "Kobieta",
+        "other": "Inna"
+      },
+      "status": {
+        "label": "Status",
+        "all": "Wszystkie statusy",
+        "active treatment": "W trakcie leczenia",
+        "recovered": "Wyleczony",
+        "deceased": "Zmarły"
+      }
+    },
+    "table": {
+      "notFound": "Nie znaleziono pacjentów",
+      "patientLabel": "Pacjent",
+      "ageLabel": "Wiek",
+      "contactLabel": "Kontakt",
+      "genderLabel": "Płeć",
+      "genderOptions": {
+        "male": "Mężczyzna",
+        "female": "Kobieta",
+        "other": "Inna"
+      },
+      "statusLabel": "Status",
+      "statusOptions": {
+        "active treatment": "W trakcie leczenia",
+        "recovered": "Wyleczony",
+        "deceased": "Zmarły"
+      },
+      "actions": {
+        "view": "Zobacz szczegóły",
+        "edit": "Edytuj pacjenta",
+        "delete": "Usuń pacjenta"
+      },
+      "confirmModal": {
+        "title": "Usunąć dane pacjenta?",
+        "description": "Zamierzasz <strong>trwale usunąć</strong> dane pacjenta <strong>{name}</strong>.\n\nTa akcja spowoduje usunięcie wszystkich powiązanych informacji i <underline>nie może zostać cofnięta</underline>.\n\nProszę upewnij się, że naprawdę chcesz to zrobić przed kontynuacją.",
+        "cancelButton": "Anuluj",
+        "confirmButton": "Tak, usuń pacjenta"
+      }
+    }
+  },
+  "PatientPage": {
+    "title": "Szczegóły pacjenta",
+    "description": "Kompleksowe informacje i dokumentacja pacjenta",
+    "id": "ID pacjenta: {id}",
+    "age": "{age} lat",
+    "gender": {
+      "male": "Mężczyzna",
+      "female": "Kobieta",
+      "other": "Inna"
+    },
+    "status": {
+      "active treatment": "W trakcie leczenia",
+      "recovered": "Wyleczony",
+      "deceased": "Zmarły"
+    },
+    "buttons": {
+      "edit": "Edytuj pacjenta",
+      "delete": "Usuń pacjenta",
+      "save": "Zapisz",
+      "cancel": "Anuluj edycję"
+    },
+    "actions": {
+      "submit": {
+        "noChanges": "Nie wprowadzono zmian",
+        "success": "Pacjent został pomyślnie zaktualizowany",
+        "error": "Nie udało się zaktualizować pacjenta. Spróbuj ponownie",
+        "loading": "Aktualizowanie pacjenta..."
+      },
+      "delete": {
+        "success": "Pacjent został pomyślnie usunięty",
+        "error": "Nie udało się usunąć pacjenta. Spróbuj ponownie",
+        "loading": "Usuwanie pacjenta..."
+      }
+    },
+    "confirmModal": {
+      "title": "Usunąć dane pacjenta?",
+      "description": "Zamierzasz <strong>trwale usunąć</strong> dane pacjenta <strong>{name}</strong>.\n\nTa akcja spowoduje usunięcie wszystkich powiązanych informacji i <underline>nie może zostać cofnięta</underline>.\n\nProszę upewnij się, że naprawdę chcesz to zrobić przed kontynuacją.",
+      "cancelButton": "Anuluj",
+      "confirmButton": "Tak, usuń pacjenta"
+    },
+    "tabs": {
+      "generalInformation": {
+        "label": "Informacje ogólne",
+        "personalInformation": {
+          "label": "Informacje osobiste",
+          "fullNameLabel": "Imię i nazwisko",
+          "dateOfBirthLabel": "Data urodzenia",
+          "genderLabel": "Płeć",
+          "gender": {
+            "male": "Mężczyzna",
+            "female": "Kobieta",
+            "other": "Inna"
+          },
+          "statusLabel": "Status",
+          "status": {
+            "active treatment": "W trakcie leczenia",
+            "recovered": "Wyleczony",
+            "deceased": "Zmarły"
+          }
+        },
+        "contactInformation": {
+          "label": "Informacje kontaktowe",
+          "emailLabel": "Email",
+          "phoneLabel": "Numer telefonu"
+        }
+      },
+      "medicalHistory": {
+        "label": "Historia medyczna"
+      },
+      "scansAndImages": {
+        "label": "Badania i obrazy medyczne",
+        "buttons": {
+          "view": "Zobacz",
+          "download": "Pobierz"
+        }
+      },
+      "analysisResults": {
+        "label": "Wyniki analizy",
+        "buttons": {
+          "view": "Zobacz",
+          "download": "Pobierz"
+        }
+      }
+    },
+    "fields": {
+      "medicalHistory": {
+        "title": "Historia medyczna",
+        "description": "Szczegółowa historia medyczna pacjenta"
+      },
+      "scansAndImages": {
+        "title": "Badania i obrazy",
+        "description": "Badania i obrazy medyczne powiązane z pacjentem"
+      },
+      "analysisResults": {
+        "title": "Wyniki analizy",
+        "description": "Rezultaty analiz medycznych wykonanych u pacjenta"
+      }
+    }
+  },
+  "AddPatientPage": {
+    "title": "Utwórz nowego pacjenta",
+    "description": "Dodaj nowego pacjenta do systemu",
+    "form": {
+      "firstNameLabel": "Imię",
+      "firstNamePlaceholder": "Wpisz imię",
+      "lastNameLabel": "Nazwisko",
+      "lastNamePlaceholder": "Wpisz nazwisko",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Wpisz adres e-mail",
+      "phoneLabel": "Numer telefonu",
+      "phonePlaceholder": "Wpisz numer telefonu",
+      "dateOfBirthLabel": "Data urodzenia",
+      "genderLabel": "Płeć",
+      "gender": {
+        "male": "Mężczyzna",
+        "female": "Kobieta",
+        "other": "Inna"
+      },
+      "statusLabel": "Status",
+      "status": {
+        "active treatment": "W trakcie leczenia",
+        "recovered": "Wyleczony",
+        "deceased": "Zmarły"
+      },
+      "medicalHistoryLabel": "Historia medyczna",
+      "submitButton": "Utwórz pacjenta",
+      "cancelButton": "Anuluj",
+      "submit": {
+        "success": "Pacjent został pomyślnie utworzony",
+        "error": "Nie udało się utworzyć pacjenta. Spróbuj ponownie",
+        "loading": "Tworzenie pacjenta..."
+      }
+    }
+  },
+  "AnalysisPage": {
+    "title": "Analiza medyczna",
+    "description": "Wybierz spośród naszych zaawansowanych modeli AI, aby analizować obrazy i skany medyczne",
+    "notFound": "Analiza nie istnieje",
+    "modelCard": {
+      "accuracy": "Dokładność",
+      "processing": "Czas przetwarzania",
+      "SupportedFormats": "Obsługiwane formaty"
+    }
+  },
+  "ModelPage": {
+    "description": "Prześlij obrazy medyczne do analizy wspieranej przez AI",
+    "form": {
+      "upload": {
+        "label": "Prześlij obrazy medyczne",
+        "empty": {
+          "header": "Przeciągnij i upuść tutaj swój obraz medyczny",
+          "subheader": "lub kliknij, aby wybrać pliki"
+        }
+      },
+      "assignment": {
+        "label": "Przypisanie pacjenta",
+        "placeholder": "Wybierz pacjenta",
+        "searchPlaceholder": "Szukaj pacjentów...",
+        "noResultsLabel": "Nie masz jeszcze pacjentów.",
+        "age": "{age} lat"
+      },
+      "analysis": {
+        "label": "Szczegóły analizy",
+        "modelLabel": "Model",
+        "expectedTimeLabel": "Przewidywany czas",
+        "accuracyLabel": "Dokładność",
+        "warning": "Wyniki analizy AI mają charakter wyłącznie informacyjny i powinny być zweryfikowane przez wykwalifikowanych specjalistów medycznych."
+      },
+      "buttons": {
+        "browse": "Przeglądaj pliki",
+        "remove": "Usuń plik",
+        "submit": "Rozpocznij analizę"
+      },
+      "submit": {
+        "success": "Obraz został pomyślnie przeanalizowany",
+        "error": "Nie udało się przeanalizować obrazu. Spróbuj ponownie",
+        "loading": "Analizowanie obrazu..."
+      },
+      "results": {
+        "label": "Wyniki analizy",
+        "diagnosisLabel": "Diagnoza",
+        "conditionLabel": "Stan",
+        "probabilityLabel": "Prawdopodobieństwo",
+        "warning": "Te wyniki są wstępne i wymagają potwierdzenia przez wykwalifikowanego lekarza.",
+        "buttons": {
+          "new": "Nowa analiza",
+          "chat": "Czat z pacjentem"
+        },
+        "risk": {
+          "veryLow": "Bardzo niskie ryzyko",
+          "low": "Niskie ryzyko",
+          "moderate": "Umiarkowane ryzyko",
+          "high": "Wysokie ryzyko",
+          "veryHigh": "Bardzo wysokie ryzyko"
+        },
+        "diagnosis": {
+          "veryLow": "Prawidłowy, brak wykrytej patologii",
+          "low": "W większości prawidłowy, drobne odchylenia, brak wyraźnej patologii",
+          "moderate": "Niepewne wyniki, zalecana dalsza ocena",
+          "high": "Podejrzane wyniki, możliwa patologia",
+          "veryHigh": "Wykryto patologię, wysokie prawdopodobieństwo"
+        }
+      }
+    }
+  },
+  "SettingsPage": {
+    "title": "Ustawienia",
+    "description": "Zarządzaj preferencjami konta i ustawieniami aplikacji",
+    "cards": {
+      "appearance": {
+        "title": "Wygląd",
+        "description": "Dostosuj wygląd aplikacji",
+        "theme": {
+          "label": "Motyw",
+          "options": {
+            "system": "Systemowy",
+            "light": "Jasny",
+            "dark": "Ciemny"
+          }
+        }
+      },
+      "region": {
+        "title": "Język i region",
+        "description": "Wybierz preferowany język i ustawienia regionalne",
+        "language": {
+          "label": "Język",
+          "options": {
+            "system": "Systemowy",
+            "pl": "Polski",
+            "en": "Angielski"
+          }
+        }
+      },
+      "accountActions": {
+        "title": "Akcje konta",
+        "description": "Zarządzaj swoim kontem i ustawieniami bezpieczeństwa",
+        "sections": {
+          "logout": {
+            "title": "Wyloguj się",
+            "description": "Wyloguj się ze swojego konta na tym urządzeniu",
+            "buttons": {
+              "logout": "Wyloguj się"
+            }
+          },
+          "deleteAccount": {
+            "title": "Usuń konto",
+            "description": "Trwale usuń swoje konto i wszystkie powiązane dane",
+            "buttons": {
+              "delete": "Usuń konto"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Sidebar": {
+    "header": {
+      "description": "Analiza wspierana przez AI"
+    },
+    "navigation": {
+      "label": "Nawigacja",
+      "items": {
+        "chat": "Czat",
+        "patients": "Pacjenci",
+        "analysis": "Analiza",
+        "settings": "Ustawienia"
+      }
+    }
+  },
+  "Header": {
+    "dropdown": {
+      "account": "Konto",
+      "logout": "Wyloguj się"
+    },
+    "buttons": {
+      "login": "Zaloguj się",
+      "register": "Zarejestruj się"
+    }
+  },
+  "AuthPages": {
+    "header": {
+      "title": "Medyczne AI",
+      "description": "Platforma analizy medycznej wspierana przez AI"
+    },
+    "login": {
+      "form": {
+        "header": {
+          "title": "Witaj ponownie",
+          "description": "Wprowadź swoje dane, aby uzyskać dostęp do konta"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "doctor@hospital.com"
+        },
+        "password": {
+          "label": "Hasło",
+          "placeholder": "Wpisz swoje hasło"
+        },
+        "rememberMe": "Zapamiętaj mnie",
+        "forgotPassword": "Zapomniałeś hasła?",
+        "buttons": {
+          "submit": "Zaloguj się"
+        },
+        "footer": "Nie masz konta? <underline>Zarejestruj się</underline>",
+        "submit": {
+          "loading": "Weryfikacja danych...",
+          "error": "Podano nieprawidłowe dane",
+          "success": "Zostałeś zalogowany"
+        }
+      }
+    },
+    "register": {
+      "form": {
+        "header": {
+          "title": "Utwórz konto",
+          "description": "Dołącz do naszej platformy medycznej wspieranej przez AI"
+        },
+        "firstName": {
+          "label": "Imię",
+          "placeholder": "Jan"
+        },
+        "lastName": {
+          "label": "Nazwisko",
+          "placeholder": "Kowalski"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "doctor@hospital.com"
+        },
+        "password": {
+          "label": "Hasło",
+          "placeholder": "Wpisz swoje hasło"
+        },
+        "code": {
+          "label": "Kod zaproszenia",
+          "placeholder": "Wpisz kod"
+        },
+        "dropzone": {
+          "label": "Weryfikacja tożsamości",
+          "placeholder": "Prześlij plik lub przeciągnij i upuść",
+          "description": "{types} do {size}",
+          "buttons": {
+            "remove": "Usuń plik"
+          }
+        },
+        "buttons": {
+          "submit": "Zarejestruj się"
+        },
+        "footer": "Masz już konto? <underline>Zaloguj się</underline>",
+        "submit": {
+          "loading": "Weryfikacja danych...",
+          "error": "Podano nieprawidłowe dane",
+          "success": "Konto zostało utworzone"
+        }
+      }
+    },
+    "sidebar": {
+      "title": "Rozwiązania medyczne wspierane przez AI",
+      "description": "Wspieramy pracowników medycznych dzięki najnowocześniejszej sztucznej inteligencji dla dokładnej diagnostyki i optymalnej opieki nad pacjentem.",
+      "itemsList": "<item>Szybka analiza obrazów medycznych</item> <item>Inteligentna pomoc diagnostyczna</item> <item>Bezpieczne zarządzanie danymi pacjentów</item> <item>Wsparcie wielospecjalistyczne</item>",
+      "accuracy": "Dokładność",
+      "analysis": "Analiza",
+      "doctors": "Lekarze"
+    }
+  },
+  "AccountPage": {
+    "title": "Ustawienia konta",
+    "description": "Zarządzaj swoimi danymi osobowymi i preferencjami konta",
+    "memberSince": "Członek od",
+    "buttons": {
+      "edit": "Edytuj profil",
+      "save": "Zapisz",
+      "cancel": "Anuluj edycję"
+    },
+    "form": {
+      "title": "Informacje osobiste",
+      "fullName": {
+        "label": "Imię i nazwisko"
+      },
+      "email": {
+        "label": "Email"
+      },
+      "password": {
+        "label": "Hasło"
+      },
+      "submit": {
+        "noChanges": "Nie wprowadzono zmian",
+        "loading": "Aktualizowanie danych...",
+        "error": "Nie udało się zaktualizować danych",
+        "success": "Dane zostały pomyślnie zaktualizowane"
+      }
+    },
+    "dangerZone": {
+      "title": "Strefa zagrożenia",
+      "description": "Nieodwracalne i destrukcyjne działania",
+      "deleteAccount": {
+        "title": "Usuń konto",
+        "description": "Po usunięciu konta nie będzie możliwości jego przywrócenia. Proszę upewnij się.",
+        "buttons": {
+          "delete": "Usuń konto"
+        }
+      }
+    }
+  },
+  "global": {
+    "modals": {
+      "deleteAccount": {
+        "title": "Czy jesteś absolutnie pewien?",
+        "description": "Tej akcji nie można cofnąć. Spowoduje to trwałe usunięcie Twojego konta i usunięcie Twoich danych z naszych serwerów. <ul> <li>Wszystkie analizy medyczne i wyniki</li> <li>Rekordy pacjentów i powiązania</li> <li>Ustawienia konta i preferencje</li> <li>Historia czatu i rozmów</li> </ul>",
+        "buttons": {
+          "submit": "Tak, usuń moje konto",
+          "cancel": "Anuluj"
+        },
+        "submit": {
+          "loading": "Usuwanie konta...",
+          "success": "Twoje konto zostało usunięte",
+          "error": "Coś poszło nie tak"
+        }
+      }
+    }
+  },
+  "Validation": {
+    "invalid_email": "Nieprawidłowy adres e-mail",
+    "password_min": "Hasło musi mieć co najmniej 8 znaków",
+    "password_lowercase": "Hasło musi zawierać co najmniej jedną małą literę",
+    "password_uppercase": "Hasło musi zawierać co najmniej jedną wielką literę",
+    "password_number": "Hasło musi zawierać co najmniej jedną cyfrę",
+    "password_special": "Hasło musi zawierać znak specjalny: !@#$%^&*",
+    "password_required_length": "Hasło musi mieć co najmniej 8 znaków",
+    "password_required_uppercase": "Hasło musi zawierać wielką literę",
+    "password_required_lowercase": "Hasło musi zawierać małą literę",
+    "password_required_digit": "Hasło musi zawierać cyfrę",
+    "password_required_special": "Hasło musi zawierać znak specjalny (!@#$%^&*?_+-)",
+    "name_required": "Imię jest wymagane",
+    "surname_required": "Nazwisko jest wymagane",
+    "name_min": "Imię musi mieć co najmniej 2 znaki",
+    "surname_min": "Nazwisko musi mieć co najmniej 2 znaki",
+    "name_letters_only": "Imię może zawierać tylko litery",
+    "surname_letters_only": "Nazwisko może zawierać tylko litery",
+    "email_invalid": "Proszę podać prawidłowy adres e-mail",
+    "date_invalid": "Nieprawidłowa data",
+    "gender_required": "Proszę wybrać płeć",
+    "status_required": "Proszę wybrać status",
+    "patient_required": "Proszę wybrać pacjenta",
+    "image_required": "Proszę przesłać obraz medyczny"
+  }
+}

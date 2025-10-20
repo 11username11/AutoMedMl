@@ -7,15 +7,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FILTERS, useFilter } from "@/hooks/use-filter"
 import { X } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export default function PatientsFilter() {
+  const t = useTranslations("PatientsPage")
+
   const searchTerm = useFilter((state) => state.searchTerm)
   const setSearchTerm = useFilter((state) => state.setSearchTerm)
 
   const filters = useFilter((state) => state.filters)
   const setFilters = useFilter((state) => state.setFilters)
 
-  const reset = useFilter((state) => state.reset)
+  const resetAll = useFilter((state) => state.resetAll)
+  const resetFilters = useFilter((state) => state.resetFilters)
 
   return (
     <div className="flex gap-4 flex-col lg:flex-row">
@@ -29,22 +33,22 @@ export default function PatientsFilter() {
         <PopoverTrigger asChild>
           <Button variant="outline" size="lg" className="bg-primary w-full lg:w-auto  data-[state=open]:border-ring">
             <CiFilter strokeWidth={1.5} size={16} />
-            Filter
+            {t("buttons.filter")}
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-80 p-4 space-y-4">
           <div className="flex justify-between items-center h-9">
             <div>
-              Filters
+              {t("filterMenu.title")}
             </div>
 
-            {Object.values(filters).some(value => value != undefined) && <Button onClick={reset} variant={"ghost"} className="text-muted px-2"><X size={18}></X> Clear</Button>}
+            {Object.values(filters).some(value => value != undefined) && <Button onClick={resetFilters} variant={"ghost"} className="text-muted px-2"><X size={18}></X> {t("buttons.reset")}</Button>}
           </div>
 
           <div className="text-sm space-y-4">
             {FILTERS.map((filter) => (
               <div key={filter.key} className="space-y-2">
-                <div>{filter.label}</div>
+                <div>{t(`filterMenu.${filter.key}.label`)}</div>
                 <Select
                   defaultValue={filters[filter.key] ?? filter.options[0]}
                   value={filters[filter.key] ?? filter.options[0]}
@@ -53,13 +57,13 @@ export default function PatientsFilter() {
                   }
                 >
                   <SelectTrigger size="large" className="w-full cursor-pointer bg-primary">
-                    <SelectValue>{filters[filter.key] ?? filter.options[0]}</SelectValue>
+                    <SelectValue>{t(`filterMenu.${filter.key}.${filters[filter.key] ?? filter.options[0]}`)}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      {filter.options.map((gender) => (
-                        <SelectItem key={gender} value={gender}>
-                          {gender}
+                      {filter.options.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {t(`filterMenu.${filter.key}.${option}`)}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -71,7 +75,7 @@ export default function PatientsFilter() {
 
         </PopoverContent>
       </Popover>
-      {Object.values(filters).some(value => value != undefined) && <Button onClick={reset} variant={"ghost"} size={"lg"} className="text-muted px-4"><X size={18}></X> Clear</Button>}
+      {[...Object.values(filters), searchTerm].some(value => !!value) && <Button onClick={resetAll} variant={"ghost"} size={"lg"} className="text-muted px-4"><X size={18}></X> Clear</Button>}
     </div >
   )
 }

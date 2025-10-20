@@ -9,8 +9,11 @@ import LogoutButton from "../ui/logout-btn";
 import { User } from "@/lib/types/user";
 import Avatar from "../ui/avatar";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 export default function Header({ user }: { user: User | null }) {
+  const t = useTranslations("Header")
+
   return (
     <div className="flex py-2 px-6 items-center w-full border-b border-b-sidebar-border bg-sidebar sticky top-0 z-20">
       {user ? (
@@ -53,14 +56,14 @@ export default function Header({ user }: { user: User | null }) {
                 <DropdownMenuItem asChild>
                   <Link href="/account" className="flex items-center gap-2 cursor-pointer">
                     <UserIcon className="h-4 w-4" />
-                    Account
+                    {t("dropdown.account")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <LogoutButton>
                   <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    {t("dropdown.logout")}
                   </DropdownMenuItem>
                 </LogoutButton>
               </DropdownMenuGroup>
@@ -72,13 +75,13 @@ export default function Header({ user }: { user: User | null }) {
           <Link href={"/login"}>
             <Button variant={"ghost"}>
               <LogIn className="group-hover:translate-x-0.5 duration-200 will-change-transform" size={18} />
-              Login
+              {t("buttons.login")}
             </Button>
           </Link>
           <Link href={"/register"}>
             <Button variant={"secondary"}>
               <UserPlus size={18}></UserPlus>
-              Register
+              {t("buttons.register")}
             </Button>
           </Link>
         </div >

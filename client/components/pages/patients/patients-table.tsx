@@ -9,8 +9,12 @@ import { useVirtualizer } from "@tanstack/react-virtual"
 import { filterBySearch } from "@/lib/utils"
 import { useFilter } from "@/hooks/use-filter"
 import PatientsFilter from "./patients-filter"
+import { useTranslations } from 'next-intl';
 
 export default function PatientsTable({ patients }: { patients: Patient[] }) {
+  const t = useTranslations("PatientsPage")
+  const m = useTranslations("PatientsPage")
+
   const parentRef = useRef<HTMLDivElement>(null)
 
   const filters = useFilter((state) => state.filters)
@@ -33,18 +37,18 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
     <div className="flex flex-col gap-4 w-full h-full overflow-hidden">
       <div className="flex justify-between gap-4 flex-col lg:flex-row">
         <PatientsFilter></PatientsFilter>
-        <NewCaseBtn className=" w-full lg:w-auto" />
+        <NewCaseBtn className="w-full lg:w-auto">{m("buttons.addPatient")}</NewCaseBtn>
       </div>
 
       <div className="rounded-lg border bg-primary overflow-hidden">
         <Table containerRef={parentRef} className="w-full">
           <TableHeader>
             <TableRow className="secondary-foreground/50">
-              <TableHead>Patient</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Age</TableHead>
-              <TableHead>Gender</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t('table.patientLabel')}</TableHead>
+              <TableHead>{t('table.contactLabel')}</TableHead>
+              <TableHead>{t('table.ageLabel')}</TableHead>
+              <TableHead>{t('table.genderLabel')}</TableHead>
+              <TableHead>{t('table.statusLabel')}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -82,7 +86,7 @@ export default function PatientsTable({ patients }: { patients: Patient[] }) {
             {filteredPatients.length === 0 && (
               <TableRow>
                 <TableCell className="text-center py-8 text-muted text-base" colSpan={6}>
-                  No patients found.
+                  {t('table.notFound')}
                 </TableCell>
               </TableRow>
             )}
