@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   backend:
     build:
@@ -10,8 +11,10 @@ services:
       - ./server:/app
     environment:
       - PORT=8000
+      - ORTHANC_URL=http://orthanc:8042
     depends_on:
       - server_gpu
+      - orthanc
 
   server_gpu:
     build:
@@ -36,3 +39,30 @@ services:
       - NEXT_PUBLIC_API_URL=http://backend:8000
     depends_on:
       - backend
+
+  orthanc:
+    image: orthancteam/orthanc:latest
+    container_name: automedml_orthanc
+    ports:
+      - "8042:8042"
+      - "4242:4242"
+    environment:
+      ORTHANC_JSON: |
+        {
+          "Name": "TestPACS",
+          "AuthenticationEnabled": false,
+          "RemoteAccessAllowed": true,
+          "HttpDescribeErrors": true,
+          "DicomAet": "ORTHANC",
+          "DicomPort": 4242,
+          "HttpPort": 8042,
+          "StorageCompression": true,
+          "Plugins": ["/usr/share/orthanc/plugins"],
+          "DicomWeb": {
+            "EnableWado": true,
+            "EnableStow": true,
+            "EnableQido": true
+          }
+        }
+    volumes:
+      - ./orthanc-db:/var/lib/orthanc/db

@@ -76,12 +76,14 @@ USER_COLLECTION = config["users_collection"]
 PATIENTS_COLLECTION = config["patients_collection"]
 MODELS_COLLECTION = config["models_collection"]
 CHATS_COLLECTION = config["chats_collection"]
+RESEARCH_COLLECTION = config["research_collection"]
 
 db = client[DB_NAME]
 users_collection = db[USER_COLLECTION]
 models_collection = db[MODELS_COLLECTION]
 patients_collection = db[PATIENTS_COLLECTION]
 chats_collection = db[CHATS_COLLECTION]
+research_collection = db[RESEARCH_COLLECTION]
 
 STATUS_PATIENTS_LIST = ["Active Treatment", "Recovered", "Deceased"]
 
@@ -156,15 +158,18 @@ async def user_info(current_user: dict = Depends(get_optional_user)):
     }
 
 
-@app.get("/chat_history/{chat}")
-async def chat_history(chat: str, current_user: dict = Depends(get_optional_user)):
-    result = chats_collection.find_one({"medic_id": current_user["id"]})
-    if not result:
-        raise HTTPException(status_code=404, detail="Medic not found")
+@app.get("/chat_history/{chat_id}")
+async def chat_history(chat_id: str, current_user: dict = Depends(get_optional_user)):
+    result = chats_collection.find_one(
+        {"medic_id": current_user["id"], "chats.chat_id": chat_id},
+        {"chats.$": 1}
+    )
 
-    chat_data = next((c for c in result.get("chats", []) if c["chat_id"] == chat), None)
-    if not chat_data:
+    if not result or "chats" not in result or not result["chats"]:
         raise HTTPException(status_code=404, detail="Chat not found")
+
+    chat_data = result["chats"][0]
+
     return {
         "chat_id": chat_data["chat_id"],
         "name": chat_data["name"],
@@ -293,6 +298,12 @@ async def add_patient(
             }
         )
 
+        research_collection.insert_one({
+            "patient_id": new_patient_id,
+            "medic_id": current_user["id"],
+            "research_list": []
+        })
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -344,20 +355,22 @@ async def current_model(model_name: str, current_user: dict = Depends(get_option
 async def send_data_model(
         response: Response,
         model_name: str,
-        current_user: dict = Depends(get_optional_user),
-        image: UploadFile = Form(...)
+        patient: str = Form(...),
+        image: UploadFile = Form(...),
+        current_user: dict = Depends(get_optional_user)
 ):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     image_bytes = await image.read()
+    file_location = f"{IMAGE_DIR}/{model_name}_{image.filename}"
 
     try:
-        file_location = f"{IMAGE_DIR}/{model_name}_{image.filename}"
         with open(file_location, "wb") as f:
             f.write(image_bytes)
 
         async with httpx.AsyncClient() as client_:
-            files = {
-                "image": (image.filename, image_bytes, image.content_type)
-            }
+            files = {"image": (image.filename, image_bytes, image.content_type)}
             gpu_response = await client_.post(
                 f"{GPU_SERVER_ADDRESS}/predict/{model_name}",
                 files=files
@@ -366,10 +379,31 @@ async def send_data_model(
         if gpu_response.status_code != 200:
             raise HTTPException(status_code=gpu_response.status_code, detail=gpu_response.text)
 
-        return JSONResponse(content=gpu_response.json(), status_code=gpu_response.status_code)
+        gpu_data = gpu_response.json()
+
+        current_date = datetime.now()
+        research_doc = {
+            "research_id": str(ObjectId()),
+            "patient_id": patient,
+            "medic_id": current_user["id"],
+            "model_name": model_name,
+            "research_name": fr"{model_name} - {patient} - {current_date}",
+            "file_path": file_location,
+            "result": gpu_data,
+            "created_at": current_date,
+            "new": True
+        }
+
+        research_collection.update_one(
+            {"patient_id": patient},
+            {"$push": {"research_list": research_doc}},
+            upsert=True
+        )
+
+        return JSONResponse(content=gpu_data, status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to contact GPU server: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to process research: {e}")
 
 
 @app.post("/registration")
@@ -717,3 +751,66 @@ async def change_user(update_user_data: UpdateUser,
         raise HTTPException(status_code=304, detail="No changes were applied")
 
     return {"message": "User data updated successfully"}
+
+
+@app.get("/get_all_research/{patient_id}")
+async def get_all_research(patient_id: str, current_user: dict = Depends(get_optional_user)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    result = research_collection.find_one({"patient_id": patient_id})
+    if not result:
+        return {"research_list": []}
+
+    return result.get("research_list", [])
+
+
+@app.post("/send_research_to_chat/{patient_id}/{research_id}")
+async def send_research_to_chat(patient_id: str, research_id: str, current_user: dict = Depends(get_optional_user)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    research_doc = research_collection.find_one(
+        {"patient_id": patient_id, "research_list.research_id": research_id},
+        {"research_list.$": 1}
+    )
+
+    if not research_doc or not research_doc.get("research_list"):
+        raise HTTPException(status_code=404, detail="Research not found")
+
+    research = research_doc["research_list"][0]
+
+    if not research.get("new", False):
+        raise HTTPException(status_code=400, detail="This research has already been sent to chat")
+
+    model = research.get("model_name", "Unknown model")
+    result = research.get("result", 0)
+    if not result:
+        raise HTTPException(status_code=404, detail="Result not found!")
+    result = result["result"]
+    label = result.get("label", 0)
+    if not result["label"]:
+        raise HTTPException(status_code=404, detail="Label in result not found!")
+    prob = result.get("probability", 0.0)
+
+    message_text = f"Research Result ({model}):\nDiagnosis: {label}\nConfidence: {prob:.2f}%"
+
+    update_result = chats_collection.update_one(
+        {"medic_id": current_user["id"], "chats.chat_id": patient_id},
+        {"$push": {"chats.$.messages": {
+            "sender": "system",
+            "text": message_text,
+            "timestamp": datetime.now()
+        }}}
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Chat for this patient not found")
+
+    research_collection.update_one(
+        {"patient_id": patient_id, "research_list.research_id": research_id},
+        {"$set": {"research_list.$.new": False}}
+    )
+
+    return {"message": "Research result successfully sent to chat"}
+

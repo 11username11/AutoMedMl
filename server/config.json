@@ -8,5 +8,6 @@
   "users_collection": "users",
   "patients_collection": "patients",
   "models_collection": "models",
-  "chats_collection": "chats"
+  "chats_collection": "chats",
+  "research_collection": "research"
 }
